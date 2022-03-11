@@ -13,4 +13,7 @@ export const { styled, css, globalCss, keyframes, getCssText, theme, createTheme
         2: '14px',
       },
     },
+    utils: {
+      px: (value: string) => ({ paddingLeft: value, paddingRight: value }),
+    },
   })
