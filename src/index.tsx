@@ -1,18 +1,26 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { BrowserRouter } from 'react-router-dom'
+import { reset } from 'stitches-reset'
 
-import 'normalize.css'
 import App from './App'
 import reportWebVitals from './reportWebVitals'
 import { globalCss } from './stitches.config'
 
 const globalStyles = globalCss({
+  ...reset,
   body: {
+    ...reset.body,
     fontFamily: '-apple-system,Roboto,sans-serif',
     fontSize: '$2',
     backgroundColor: '$blue1',
     color: '$blue12',
+  },
+  '::placeholder': {
+    color: '$blue12',
+  },
+  '*, *::before, *::after': {
+    boxSizing: 'border-box',
   },
 })
 
