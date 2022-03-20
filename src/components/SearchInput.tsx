@@ -1,40 +1,85 @@
-import { ChangeEvent, useState } from 'react'
+import { useState } from 'react'
 import { styled } from '@stitches/react'
 import { Cross1Icon, MagnifyingGlassIcon } from '@radix-ui/react-icons'
+import { useCombobox } from 'downshift'
+
+import { Popover } from '../components'
+
+const items = ['zifkage', 'nazif', 'nabil', 'ben', 'nathan', 'bob', 'john', 'naruto']
 
 export const SearchInput = (): JSX.Element => {
   const [focused, setFocused] = useState(false)
-  const [term, setTerm] = useState('')
+  const [inputItems, setInputItems] = useState(items)
+  const {
+    isOpen,
+    getMenuProps,
+    getInputProps,
+    getComboboxProps,
+    highlightedIndex,
+    getItemProps,
+    inputValue,
+    setInputValue,
+  } = useCombobox({
+    items: inputItems,
+    onInputValueChange: ({ inputValue = '' }) => {
+      setInputItems(items.filter((item) => item.toLowerCase().startsWith(inputValue.toLowerCase())))
+    },
+  })
 
-  const handleTermChange = (e: ChangeEvent<HTMLInputElement>) => setTerm(e.target.value)
-  const handleDismiss = () => setTerm('')
   const handleFocus = () => setFocused(true)
-  const handleBlur = () => {
-    setTimeout(() => {
-      setFocused(false)
-    }, 150)
-  }
+  const handleBlur = () => setFocused(false)
+  const handleDismiss = () => setInputValue('')
+  const preventDefault = (e: Event) => e.preventDefault()
 
   return (
-    <Wrapper>
-      {!focused && (
-        <SearchIcon>
-          <MagnifyingGlassIcon width="20px" height="20px" />
-        </SearchIcon>
-      )}
-      <InputField
-        value={term}
-        onChange={handleTermChange}
-        onFocus={handleFocus}
-        onBlur={handleBlur}
-        placeholder="Search"
-      />
-      {focused && (
-        <CloseBtn onClick={handleDismiss}>
-          <Cross1Icon color="black" />
-        </CloseBtn>
-      )}
-    </Wrapper>
+    <Popover.Root open={true}>
+      <Wrapper {...getComboboxProps()}>
+        {!focused && (
+          <SearchIcon>
+            <MagnifyingGlassIcon width="20px" height="20px" />
+          </SearchIcon>
+        )}
+        <InputField
+          {...getInputProps()}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
+          placeholder="Search"
+        />
+        {inputValue && (
+          <CloseBtn onClick={handleDismiss}>
+            <Cross1Icon color="black" />
+          </CloseBtn>
+        )}
+        <Popover.Content
+          css={{ width: '375px', height: '362px' }}
+          onOpenAutoFocus={preventDefault}
+          onCloseAutoFocus={preventDefault}
+          onPointerDownOutside={preventDefault}
+          onFocusOutside={preventDefault}
+          onInteractOutside={preventDefault}
+          sideOffset={6}
+          hidden={!isOpen || inputValue === ''}
+          {...getMenuProps()}
+        >
+          <ul>
+            {inputItems.map((item, index) => (
+              <li
+                style={
+                  highlightedIndex === index
+                    ? { backgroundColor: '#000', zIndex: 3 }
+                    : { zIndex: 3 }
+                }
+                key={`${item}${index}`}
+                {...getItemProps({ item, index })}
+              >
+                {item}
+              </li>
+            ))}
+          </ul>
+          <Popover.Arrow />
+        </Popover.Content>
+      </Wrapper>
+    </Popover.Root>
   )
 }
 
@@ -46,12 +91,13 @@ const SearchIcon = styled('span', {
   backgroundColor: 'transparent',
 })
 
-const Wrapper = styled('div', {
+const Wrapper = styled(Popover.Anchor, {
   position: 'relative',
-  backgroundColor: '$blue3',
+  backgroundColor: '$blue1',
   borderRadius: '0.25rem',
   width: '100%',
   maxWidth: '16.75rem',
+  border: 'none',
 })
 
 const InputField = styled('input', {
@@ -76,14 +122,11 @@ const CloseBtn = styled('button', {
   right: '0.625rem',
   top: '50%',
   transform: 'translateY(-50%)',
-  backgroundColor: '$gray3',
+  backgroundColor: '$blue12',
   border: 'none',
   borderRadius: '50%',
   height: '1rem',
   width: '1rem',
   padding: '0.125rem',
   cursor: 'pointer',
-  '&:hover': {
-    backgroundColor: '$gray4',
-  },
 })

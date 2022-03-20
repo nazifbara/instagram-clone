@@ -1,12 +1,12 @@
 import { createStitches } from '@stitches/react'
-import { blueDark, gray } from '@radix-ui/colors'
+import { blueDark, grayDark } from '@radix-ui/colors'
 
 export const { styled, css, globalCss, keyframes, getCssText, theme, createTheme, config } =
   createStitches({
     theme: {
       colors: {
         ...blueDark,
-        ...gray,
+        ...grayDark,
       },
       fontSizes: {
         1: '12px',

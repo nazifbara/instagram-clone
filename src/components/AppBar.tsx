@@ -3,7 +3,7 @@ import { Container, Logo, SearchInput } from '.'
 import { styled } from '../stitches.config'
 
 const Header = styled('header', {
-  backgroundColor: '$blue2',
+  backgroundColor: '$blue3',
 })
 
 export const AppBar = (): JSX.Element => {
