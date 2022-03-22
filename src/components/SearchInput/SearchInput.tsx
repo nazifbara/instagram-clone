@@ -1,15 +1,15 @@
 import { useState } from 'react'
-import { styled } from '@stitches/react'
 import { Cross1Icon, MagnifyingGlassIcon } from '@radix-ui/react-icons'
 import { useCombobox } from 'downshift'
 
-import { Popover } from '../components'
-
-const items = ['zifkage', 'nazif', 'nabil', 'ben', 'nathan', 'bob', 'john', 'naruto']
+import { Popover } from '../'
+import { ResultItem } from './ResultItem'
+import { users } from '../../data'
+import { styled } from '../../stitches.config'
 
 export const SearchInput = (): JSX.Element => {
   const [focused, setFocused] = useState(false)
-  const [inputItems, setInputItems] = useState(items)
+  const [inputItems, setInputItems] = useState(users)
   const {
     isOpen,
     getMenuProps,
@@ -22,7 +22,12 @@ export const SearchInput = (): JSX.Element => {
   } = useCombobox({
     items: inputItems,
     onInputValueChange: ({ inputValue = '' }) => {
-      setInputItems(items.filter((item) => item.toLowerCase().startsWith(inputValue.toLowerCase())))
+      setInputItems(users)
+    },
+    onSelectedItemChange: (changes) => {
+      if (changes.selectedItem) {
+        setInputValue(changes.selectedItem.username)
+      }
     },
   })
 
@@ -63,17 +68,12 @@ export const SearchInput = (): JSX.Element => {
         >
           <ul>
             {inputItems.map((item, index) => (
-              <li
-                style={
-                  highlightedIndex === index
-                    ? { backgroundColor: '#000', zIndex: 3 }
-                    : { zIndex: 3 }
-                }
-                key={`${item}${index}`}
-                {...getItemProps({ item, index })}
-              >
-                {item}
-              </li>
+              <ResultItem
+                key={`${item.id}-search-item}`}
+                highlighted={highlightedIndex === index}
+                item={item}
+                itemProps={getItemProps({ item, index })}
+              />
             ))}
           </ul>
           <Popover.Arrow />

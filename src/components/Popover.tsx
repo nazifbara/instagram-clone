@@ -22,9 +22,8 @@ const slideLeftAndFade = keyframes({
 })
 const StyledContent = styled(PopoverPrimitive.Content, {
   borderRadius: 4,
-  padding: 20,
   minWidth: 260,
-  backgroundColor: '$blue9',
+  backgroundColor: '$blue5',
   '@media (prefers-reduced-motion: no-preference)': {
     animationDuration: '400ms',
     animationTimingFunction: 'cubic-bezier(0.16, 1, 0.3, 1)',
@@ -37,10 +36,19 @@ const StyledContent = styled(PopoverPrimitive.Content, {
       '&[data-side="left"]': { animationName: slideRightAndFade },
     },
   },
+  variants: {
+    padding: {
+      true: {
+        padding: '1.25rem',
+      },
+    },
+  },
 })
 
 const StyledArrow = styled(PopoverPrimitive.Arrow, {
-  fill: '$blue9',
+  fill: '$blue5',
+  width: 19,
+  height: 8,
 })
 
 export const Root = PopoverPrimitive.Root
