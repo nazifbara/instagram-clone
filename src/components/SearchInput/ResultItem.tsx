@@ -1,37 +1,25 @@
-import { forwardRef, MouseEventHandler, ForwardedRef } from 'react'
+import { forwardRef, ForwardedRef } from 'react'
 import { GetItemPropsOptions } from 'downshift'
-import { useNavigate } from 'react-router-dom'
 
 import { styled } from '../../stitches.config'
 import { User } from '../../types'
 import { Text, Avatar } from '../'
 
 export const ResultItem = forwardRef(
-  ({ item, itemProps, highlighted }: ResultItemProps, ref: ForwardedRef<HTMLLIElement>) => {
-    const navigate = useNavigate()
-
-    const handleClick: MouseEventHandler<HTMLLIElement> = (event) => {
-      if (itemProps.onClick) {
-        itemProps.onClick(event)
-      }
-      navigate(item.username)
-    }
-
-    return (
-      <StyledResultItem highlighted={highlighted} onClick={handleClick} ref={ref}>
-        <Avatar.Root css={{ marginRight: '0.75rem' }}>
-          <Avatar.Image src={item.avatar} alt={item.name} />
-          <Avatar.Fallback delayMs={600}>{item.username[0].toUpperCase()}</Avatar.Fallback>
-        </Avatar.Root>
-        <div>
-          <Text bold>{item.username}</Text>
-          <Text css={{ mt: '0.5rem' }} gray>
-            {item.name}
-          </Text>
-        </div>
-      </StyledResultItem>
-    )
-  }
+  ({ item, itemProps, highlighted }: ResultItemProps, ref: ForwardedRef<HTMLLIElement>) => (
+    <StyledResultItem highlighted={highlighted} {...itemProps} ref={ref}>
+      <Avatar.Root css={{ marginRight: '0.75rem' }}>
+        <Avatar.Image src={item.avatar} alt={item.name} />
+        <Avatar.Fallback delayMs={600}>{item.username[0].toUpperCase()}</Avatar.Fallback>
+      </Avatar.Root>
+      <div>
+        <Text bold>{item.username}</Text>
+        <Text css={{ mt: '0.5rem' }} gray>
+          {item.name}
+        </Text>
+      </div>
+    </StyledResultItem>
+  )
 )
 
 type ResultItemProps = {

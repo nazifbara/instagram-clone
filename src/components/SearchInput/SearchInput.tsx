@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Cross1Icon, MagnifyingGlassIcon } from '@radix-ui/react-icons'
 import { useCombobox } from 'downshift'
+import { useNavigate } from 'react-router-dom'
 
 import { Popover } from '../'
 import { ResultItem } from './ResultItem'
@@ -27,9 +28,11 @@ export const SearchInput = (): JSX.Element => {
     onSelectedItemChange: (changes) => {
       if (changes.selectedItem) {
         setInputValue(changes.selectedItem.username)
+        navigate(changes.selectedItem.username)
       }
     },
   })
+  const navigate = useNavigate()
 
   const handleFocus = () => setFocused(true)
   const handleBlur = () => setFocused(false)
