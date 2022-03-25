@@ -17,5 +17,6 @@ export const { styled, css, globalCss, keyframes, getCssText, theme, createTheme
       mt: (value: string) => ({ marginTop: value }),
       p: (value: string) => ({ padding: value }),
       px: (value: string) => ({ paddingLeft: value, paddingRight: value }),
+      wh: (value: string) => ({ width: value, height: value }),
     },
   })

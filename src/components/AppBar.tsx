@@ -1,4 +1,4 @@
-import { Container, Logo, SearchInput } from '.'
+import { Container, Logo, SearchInput, NavBar } from '.'
 
 import { styled } from '../stitches.config'
 
@@ -19,6 +19,7 @@ export const AppBar = (): JSX.Element => {
       >
         <Logo />
         <SearchInput />
+        <NavBar />
       </Container>
     </Header>
   )

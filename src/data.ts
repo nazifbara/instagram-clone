@@ -5,6 +5,14 @@ import avatar1 from './assets/avatars/giovanikososki.jpeg'
 import avatar2 from './assets/avatars/icijapon.jpeg'
 import avatar3 from './assets/avatars/joma.jpeg'
 import avatar4 from './assets/avatars/missionjapon.jpeg'
+import avatar5 from './assets/avatars/nazifbara.jpeg'
+
+export const currentUser: User = {
+  id: uuidv4(),
+  username: 'nazifbara',
+  name: 'Nazif Barassounon',
+  avatar: avatar5,
+}
 
 export const users: User[] = [
   {

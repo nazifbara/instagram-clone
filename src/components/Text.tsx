@@ -6,7 +6,7 @@ export const Text = styled('div', {
   variants: {
     gray: {
       true: {
-        color: '$gray12',
+        color: '$gray11',
       },
     },
     bold: {
