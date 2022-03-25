@@ -15,6 +15,8 @@ export const { styled, css, globalCss, keyframes, getCssText, theme, createTheme
     },
     utils: {
       m: (value: string) => ({ margin: value }),
+      mx: (value: string) => ({ marginLeft: value, marginRight: value }),
+      my: (value: string) => ({ marginTop: value, marginBottom: value }),
       mt: (value: string) => ({ marginTop: value }),
       ml: (value: string) => ({ marginLeft: value }),
       mr: (value: string) => ({ marginRight: value }),

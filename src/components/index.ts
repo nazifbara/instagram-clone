@@ -1,3 +1,6 @@
+export { Button } from './Button'
+export { Box } from './Box'
+export * as Dialog from './Dialog'
 export { Separator } from './Separator'
 export { NavBar } from './NavBar'
 export * as Icons from './Icons'
