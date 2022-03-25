@@ -1,5 +1,23 @@
+import { CSSProperties } from '@stitches/react'
+
 import { styled } from '../stitches.config'
 import * as AvatarPrimitive from '@radix-ui/react-avatar'
+
+type AvatarProps = {
+  size?: string
+  src: string
+  alt: string
+  fallback: any
+  css?: CSSProperties
+}
+export const Avatar = ({ size = '2.75rem', src, alt, fallback, css }: AvatarProps) => {
+  return (
+    <StyledAvatar css={{ ...css, wh: size }}>
+      <StyledImage src={src} alt={alt} />
+      <StyledFallback delayMs={600}>{fallback}</StyledFallback>
+    </StyledAvatar>
+  )
+}
 
 const StyledAvatar = styled(AvatarPrimitive.Root, {
   display: 'inline-flex',
@@ -33,7 +51,3 @@ const StyledFallback = styled(AvatarPrimitive.Fallback, {
   lineHeight: 1,
   fontWeight: 500,
 })
-
-export const Root = StyledAvatar
-export const Image = StyledImage
-export const Fallback = StyledFallback

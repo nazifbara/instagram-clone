@@ -8,10 +8,12 @@ import { Text, Avatar } from '../'
 export const ResultItem = forwardRef(
   ({ item, itemProps, highlighted }: ResultItemProps, ref: ForwardedRef<HTMLLIElement>) => (
     <StyledResultItem highlighted={highlighted} {...itemProps} ref={ref}>
-      <Avatar.Root css={{ marginRight: '0.75rem' }}>
-        <Avatar.Image src={item.avatar} alt={item.name} />
-        <Avatar.Fallback delayMs={600}>{item.username[0].toUpperCase()}</Avatar.Fallback>
-      </Avatar.Root>
+      <Avatar
+        css={{ marginRight: '0.75rem' }}
+        src={item.avatar}
+        alt={item.name ?? ''}
+        fallback={item.username[0].toUpperCase()}
+      />
       <div>
         <Text bold>{item.username}</Text>
         <Text css={{ mt: '0.5rem' }} gray>

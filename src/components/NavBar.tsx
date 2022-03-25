@@ -19,10 +19,12 @@ export const NavBar = (): JSX.Element => {
           <Icons.Create />
         </li>
         <li>
-          <Avatar.Root css={{ wh: '1.5rem' }}>
-            <Avatar.Image src={currentUser.avatar} alt={currentUser.name} />
-            <Avatar.Fallback delayMs={600}>{currentUser.username[0].toUpperCase()}</Avatar.Fallback>
-          </Avatar.Root>
+          <Avatar
+            size="1.5rem"
+            src={currentUser.avatar}
+            alt={currentUser.name ?? ''}
+            fallback={currentUser.username[0].toUpperCase()}
+          />
         </li>
       </ul>
     </StyledNav>
