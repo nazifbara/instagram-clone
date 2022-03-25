@@ -18,15 +18,15 @@ export const ProfileButton = (): JSX.Element => {
         <Popover.Arrow />
         <MenuItem>
           <Icons.Pofile />
-          <Text>Profile</Text>
+          <Text css={{ ml: '0.75rem' }}>Profile</Text>
         </MenuItem>
         <MenuItem>
           <Icons.Settings />
-          <Text>Settings</Text>
+          <Text css={{ ml: '0.75rem' }}>Settings</Text>
         </MenuItem>
         <Separator />
         <MenuItem>
-          <Text css={{ ml: '0px !important' }}>Logout</Text>
+          <Text>Logout</Text>
         </MenuItem>
       </Popover.Content>
     </Popover.Root>
@@ -54,8 +54,5 @@ const MenuItem = styled('a', {
         backgroundColor: '$blue4',
       },
     },
-  },
-  [`& ${Text}`]: {
-    ml: '0.75rem',
   },
 })
