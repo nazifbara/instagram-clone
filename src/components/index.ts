@@ -1,3 +1,4 @@
+export { Separator } from './Separator'
 export { NavBar } from './NavBar'
 export * as Icons from './Icons'
 export { Text } from './Text'

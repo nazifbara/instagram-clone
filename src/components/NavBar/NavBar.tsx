@@ -1,8 +1,8 @@
 import { Link, useMatch } from 'react-router-dom'
 
-import { styled } from '../stitches.config'
-import { Icons, Avatar } from '.'
-import { currentUser } from '../data'
+import { styled } from '../../stitches.config'
+import { Icons } from '../'
+import { ProfileButton } from './ProfileButton'
 
 export const NavBar = (): JSX.Element => {
   const homeMatch = useMatch('/')
@@ -19,12 +19,7 @@ export const NavBar = (): JSX.Element => {
           <Icons.Create />
         </li>
         <li>
-          <Avatar
-            size="1.5rem"
-            src={currentUser.avatar}
-            alt={currentUser.name ?? ''}
-            fallback={currentUser.username[0].toUpperCase()}
-          />
+          <ProfileButton />
         </li>
       </ul>
     </StyledNav>

@@ -14,7 +14,11 @@ export const { styled, css, globalCss, keyframes, getCssText, theme, createTheme
       },
     },
     utils: {
+      m: (value: string) => ({ margin: value }),
       mt: (value: string) => ({ marginTop: value }),
+      ml: (value: string) => ({ marginLeft: value }),
+      mr: (value: string) => ({ marginRight: value }),
+      mb: (value: string) => ({ marginBottom: value }),
       p: (value: string) => ({ padding: value }),
       px: (value: string) => ({ paddingLeft: value, paddingRight: value }),
       wh: (value: string) => ({ width: value, height: value }),
