@@ -22,6 +22,9 @@ const globalStyles = globalCss({
   '*, *::before, *::after': {
     boxSizing: 'border-box',
   },
+  img: {
+    width: '100%',
+  },
 })
 
 const Root = (): JSX.Element => {

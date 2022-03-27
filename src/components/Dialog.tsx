@@ -26,17 +26,17 @@ const StyledOverlay = styled(DialogPrimitive.Overlay, {
 
 const StyledContent = styled(DialogPrimitive.Content, {
   backgroundColor: '$blue2',
-  borderRadius: 6,
+  borderRadius: 12,
   position: 'fixed',
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  width: 581,
-  height: 624,
+  overflow: 'hidden',
   '@media (prefers-reduced-motion: no-preference)': {
     animation: `${contentShow} 150ms cubic-bezier(0.16, 1, 0.3, 1) forwards`,
   },
   '&:focus': { outline: 'none' },
+  transition: 'width 0.3s ease-out',
 })
 
 const StyledClose = styled(DialogPrimitive.Close, {
@@ -67,6 +67,7 @@ export const Content = ({ children, css }: ContentProps) => (
 const StyledTitle = styled(DialogPrimitive.Title, {
   fontWeight: 600,
   fontSize: '1rem',
+  textAlign: 'center',
 })
 
 const StyledDescription = styled(DialogPrimitive.Description, {
