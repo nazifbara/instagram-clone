@@ -17,13 +17,16 @@ const globalStyles = globalCss({
     color: '$blue12',
   },
   '::placeholder': {
-    color: '$blue12',
+    color: '$gray11',
   },
   '*, *::before, *::after': {
     boxSizing: 'border-box',
   },
   img: {
     width: '100%',
+  },
+  textarea: {
+    fontFamily: '-apple-system,Roboto,sans-serif',
   },
 })
 

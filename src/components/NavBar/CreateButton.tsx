@@ -1,6 +1,7 @@
 import { ChangeEventHandler, useState } from 'react'
 
-import { Dialog, Icons, Separator, Box, Button, Text, IconButton } from '../'
+import { Dialog, Icons, Separator, Box, Button, Text, IconButton, Avatar } from '../'
+import { currentUser } from '../../data'
 import { styled } from '../../stitches.config'
 
 type NewPost = {
@@ -85,13 +86,42 @@ export const CreateButton = (): JSX.Element => {
                 width: '62%',
               }}
             />
-            <Box>username</Box>
+            <Separator orientation="vertical" />
+            <Box css={{ flexGrow: 1 }}>
+              <Box css={{ display: 'flex', alignItems: 'center', mx: '1rem', height: '3.75rem' }}>
+                <Avatar
+                  src={currentUser.avatar}
+                  fallback="p"
+                  alt={currentUser.username}
+                  size="1.75rem"
+                  css={{ marginRight: '0.75rem' }}
+                />
+                <Text bold>{currentUser.username}</Text>
+              </Box>
+              <StyledCaptionInput placeholder="Write a caption..." />
+              <Separator orientation="horizontal" />
+            </Box>
           </Box>
         )}
       </Dialog.Content>
     </Dialog.Root>
   )
 }
+
+const StyledCaptionInput = styled('textarea', {
+  width: '100%',
+  height: 'calc(50% - 2.625rem)',
+  px: '1rem',
+  backgroundColor: 'transparent',
+  border: 'none',
+  resize: 'none',
+  color: '$blue12',
+  fontSize: '1rem',
+  overflowY: 'scroll',
+  '&:focus': {
+    outline: 'none',
+  },
+})
 
 const StyledTopBar = styled('div', {
   display: 'flex',
