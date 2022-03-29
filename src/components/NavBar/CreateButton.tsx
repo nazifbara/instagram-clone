@@ -28,9 +28,9 @@ export const CreateButton = (): JSX.Element => {
 
   return (
     <Dialog.Root onOpenChange={(o) => o && handleBackClick()}>
-      <StyledButton>
+      <IconButton as={Dialog.Trigger}>
         <Icons.Create />
-      </StyledButton>
+      </IconButton>
       <Dialog.Content css={{ width: captionStep ? '57.5625rem' : '36.3125rem', height: '39rem' }}>
         <StyledTopBar>
           {captionStep && (
@@ -139,11 +139,4 @@ const StyledFileInput = styled('input', {
   overflow: 'hidden',
   position: 'absolute',
   zIndex: -1,
-})
-
-const StyledButton = styled(Dialog.Trigger, {
-  borderRadius: '100%',
-  border: 'none',
-  backgroundColor: 'transparent',
-  cursor: 'pointer',
 })

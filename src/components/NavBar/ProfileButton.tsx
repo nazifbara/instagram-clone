@@ -1,4 +1,4 @@
-import { Avatar, Popover, Text, Separator, Icons } from '../'
+import { Avatar, Popover, Text, Separator, Icons, IconButton } from '../'
 import { Trigger as PopoverTrigger } from '../Popover'
 import { currentUser } from '../../data'
 import { styled } from '../../stitches.config'
@@ -6,14 +6,14 @@ import { styled } from '../../stitches.config'
 export const ProfileButton = (): JSX.Element => {
   return (
     <Popover.Root>
-      <StyledButton>
+      <IconButton as={PopoverTrigger}>
         <Avatar
           size="1.5rem"
           src={currentUser.avatar}
           alt={currentUser.name ?? ''}
           fallback={currentUser.username[0].toUpperCase()}
         />
-      </StyledButton>
+      </IconButton>
       <Popover.Content sideOffset={6}>
         <Popover.Arrow />
         <MenuItem>
@@ -32,13 +32,6 @@ export const ProfileButton = (): JSX.Element => {
     </Popover.Root>
   )
 }
-
-const StyledButton = styled(PopoverTrigger, {
-  borderRadius: '100%',
-  border: 'none',
-  backgroundColor: 'transparent',
-  cursor: 'pointer',
-})
 
 const MenuItem = styled('a', {
   display: 'flex',
