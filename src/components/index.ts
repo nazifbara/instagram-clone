@@ -1,3 +1,5 @@
+export { PostCard } from './PostCard'
+export { Feed } from './Feed'
 export { IconButton } from './IconButton'
 export { Button } from './Button'
 export { Box } from './Box'
