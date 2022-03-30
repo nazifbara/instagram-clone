@@ -11,6 +11,9 @@ export const { styled, css, globalCss, keyframes, getCssText, theme, createTheme
       fontSizes: {
         1: '12px',
         2: '14px',
+        3: '16px',
+        4: '22px',
+        5: '28px',
       },
     },
     utils: {
