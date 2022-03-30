@@ -17,6 +17,10 @@ export const Button = styled('button', {
           backgroundColor: '$blue10',
         },
       },
+      simple: {
+        border: '1px solid $gray6',
+        color: 'inherit',
+      },
     },
   },
 })
