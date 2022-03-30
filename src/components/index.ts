@@ -1,3 +1,4 @@
+export { ContentBox } from './ContentBox'
 export { PostCard } from './PostCard'
 export { Feed } from './Feed'
 export { IconButton } from './IconButton'

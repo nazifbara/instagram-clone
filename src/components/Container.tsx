@@ -8,7 +8,6 @@ export const Container = styled('div', {
     type: {
       feed: {
         maxWidth: '38.375rem',
-        pt: 'calc(3.75rem + 1.875rem)',
         px: '0',
       },
     },
