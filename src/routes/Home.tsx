@@ -1,7 +1,8 @@
 import { ViewRoute } from '../types'
+import { Feed } from '../components'
 
 const HomeView = (): JSX.Element => {
-  return <h1>Sweet Home</h1>
+  return <Feed />
 }
 
 export const homeRoute: ViewRoute = {
