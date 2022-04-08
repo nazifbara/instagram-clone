@@ -1,8 +1,8 @@
 import { useParams } from 'react-router-dom'
 
 import { ViewRoute } from '../types'
-import { Container, Box, Avatar, Text, Button } from '../components'
-import { currentUser } from '../data'
+import { Container, Box, Avatar, Text, Button, Separator, Icons } from '../components'
+import { currentUser, posts } from '../data'
 
 const ProfileView = (): JSX.Element => {
   const params = useParams()
@@ -56,6 +56,49 @@ const ProfileView = (): JSX.Element => {
             </Text>
           </Box>
         </Box>
+      </Box>
+
+      <Separator css={{ my: '1.875rem' }} />
+
+      <Box
+        as="section"
+        css={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(3, 1fr)',
+          gridAutoRows: 'auto',
+          gridGap: '28px',
+          alignItems: 'stretch',
+        }}
+      >
+        {posts.concat([...posts, ...posts]).map((p, i) => (
+          <Box
+            key={p.id + i}
+            css={{
+              height: '290px',
+              cursor: 'pointer',
+              backgroundImage: `url(${p.media})`,
+              backgroundPosition: 'center',
+              backgroundSize: 'cover',
+              '&:hover > div': {
+                display: 'flex',
+              },
+            }}
+          >
+            <Box
+              css={{
+                display: 'none',
+                alignItems: 'center',
+                justifyContent: 'center',
+                height: '100%',
+                width: '100%',
+                backgroundColor: '$blackA11',
+              }}
+            >
+              <Icons.Like fill />
+              <Box css={{ ml: '0.5rem' }}>{p.likeCount}</Box>
+            </Box>
+          </Box>
+        ))}
       </Box>
     </Container>
   )
