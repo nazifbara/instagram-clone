@@ -18,7 +18,7 @@ export const Button = styled('button', {
         },
       },
       simple: {
-        border: '1px solid $gray6',
+        border: '1px solid $gray7',
         color: 'inherit',
       },
     },
