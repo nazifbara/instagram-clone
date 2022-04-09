@@ -1,12 +1,14 @@
-import { useParams } from 'react-router-dom'
+import { MouseEventHandler } from 'react'
 
 import { ViewRoute } from '../types'
 import { Container, Box, Avatar, Text, Button, Separator, Icons, Dialog } from '../components'
 import { currentUser, posts } from '../data'
 
 const ProfileView = (): JSX.Element => {
-  const params = useParams()
-  console.log(params.username)
+  const handleBackClick: MouseEventHandler<HTMLButtonElement> = () =>
+    console.log('back button clicked!')
+  const handleNextClick: MouseEventHandler<HTMLButtonElement> = () =>
+    console.log('next button clicked!')
 
   return (
     <Container>
@@ -71,7 +73,7 @@ const ProfileView = (): JSX.Element => {
         }}
       >
         {posts.concat([...posts]).map((p, i) => (
-          <Dialog.Root key={p.id + i}>
+          <Dialog.Root modal={true} key={p.id + i}>
             <Box
               as={Dialog.Trigger}
               css={{
@@ -103,7 +105,10 @@ const ProfileView = (): JSX.Element => {
               </Box>
             </Box>
             <Dialog.Content
-              css={{ width: '90%', height: '90%', borderRadius: '0 0.75rem 0.75rem 0' }}
+              navigation={true}
+              onBackClick={handleBackClick}
+              onNextClick={handleNextClick}
+              css={{ width: '85%', height: '95%', borderRadius: '0 0.75rem 0.75rem 0' }}
             >
               <Box
                 css={{
