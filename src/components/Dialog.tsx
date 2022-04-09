@@ -53,6 +53,8 @@ type ContentProps = {
   children: any
   css?: CSSProperties
   navigation?: boolean
+  currentIndex?: number
+  lastIndex?: number
   onBackClick?: MouseEventHandler<HTMLButtonElement>
   onNextClick?: MouseEventHandler<HTMLButtonElement>
 }
@@ -60,6 +62,8 @@ export const Content = ({
   children,
   css,
   navigation = false,
+  currentIndex,
+  lastIndex,
   onBackClick,
   onNextClick,
 }: ContentProps) => (
@@ -69,10 +73,14 @@ export const Content = ({
       <StyledClose>
         <Icons.Close />
       </StyledClose>
-      {navigation && (
+      {navigation && lastIndex !== undefined && currentIndex !== undefined && (
         <>
-          <PostNavButton onClick={onBackClick} side="left" offset="-5%" />
-          <PostNavButton onClick={onNextClick} side="right" offset="-5%" />
+          {lastIndex - currentIndex !== lastIndex && (
+            <PostNavButton onClick={onBackClick} side="left" offset="-5%" />
+          )}
+          {lastIndex - currentIndex !== 0 && (
+            <PostNavButton onClick={onNextClick} side="right" offset="-5%" />
+          )}
         </>
       )}
       {children}
@@ -100,6 +108,9 @@ const PostNavButton = ({ side, offset = '2rem', onClick }: PostNavButtonProps) =
       borderRadius: '50%',
       backgroundColor: '$blue3',
       transform: `rotate(${side === 'left' ? '-90deg' : '90deg'}) translateY(-50%)`,
+      '&:hover': {
+        backgroundColor: '$blue4',
+      },
     }}
   >
     <Icons.Chevron />
