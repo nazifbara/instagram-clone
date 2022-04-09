@@ -4,6 +4,7 @@ import { GetItemPropsOptions } from 'downshift'
 import { styled } from '../../stitches.config'
 import { User } from '../../types'
 import { Text, Avatar } from '../'
+import { Box } from '../Box'
 
 export const ResultItem = forwardRef(
   ({ item, itemProps, highlighted }: ResultItemProps, ref: ForwardedRef<HTMLLIElement>) => (
@@ -15,10 +16,12 @@ export const ResultItem = forwardRef(
         fallback={item.username[0].toUpperCase()}
       />
       <div>
-        <Text bold>{item.username}</Text>
-        <Text css={{ mt: '0.5rem' }} gray>
-          {item.name}
-        </Text>
+        <Box>
+          <Text bold>{item.username}</Text>
+        </Box>
+        <Box css={{ mt: '0.25rem' }}>
+          <Text gray>{item.name}</Text>
+        </Box>
       </div>
     </StyledResultItem>
   )
@@ -35,6 +38,7 @@ const StyledResultItem = styled('li', {
   alignItems: 'center',
   p: '0.5rem 1rem',
   cursor: 'pointer',
+  lineHeight: 'initial',
   '&:hover': {
     backgroundColor: '$blue4',
   },

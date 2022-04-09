@@ -4,6 +4,9 @@ import { styled } from '../stitches.config'
 
 const Header = styled('header', {
   backgroundColor: '$blue3',
+  borderBottom: '1px solid $gray6',
+  position: 'fixed',
+  width: '100%',
 })
 
 export const AppBar = (): JSX.Element => {
