@@ -1,7 +1,7 @@
 import { useParams } from 'react-router-dom'
 
 import { ViewRoute } from '../types'
-import { Container, Box, Avatar, Text, Button, Separator, Icons } from '../components'
+import { Container, Box, Avatar, Text, Button, Separator, Icons, Dialog } from '../components'
 import { currentUser, posts } from '../data'
 
 const ProfileView = (): JSX.Element => {
@@ -66,38 +66,102 @@ const ProfileView = (): JSX.Element => {
           display: 'grid',
           gridTemplateColumns: 'repeat(3, 1fr)',
           gridAutoRows: 'auto',
-          gridGap: '28px',
+          gridGap: '1.75rem',
           alignItems: 'stretch',
         }}
       >
-        {posts.concat([...posts, ...posts]).map((p, i) => (
-          <Box
-            key={p.id + i}
-            css={{
-              height: '290px',
-              cursor: 'pointer',
-              backgroundImage: `url(${p.media})`,
-              backgroundPosition: 'center',
-              backgroundSize: 'cover',
-              '&:hover > div': {
-                display: 'flex',
-              },
-            }}
-          >
+        {posts.concat([...posts]).map((p, i) => (
+          <Dialog.Root key={p.id + i}>
             <Box
+              as={Dialog.Trigger}
               css={{
-                display: 'none',
-                alignItems: 'center',
-                justifyContent: 'center',
-                height: '100%',
-                width: '100%',
-                backgroundColor: '$blackA11',
+                height: '18.125rem',
+                cursor: 'pointer',
+                border: 'none',
+                p: '0',
+                color: 'inherit',
+                backgroundImage: `url(${p.media})`,
+                backgroundPosition: 'center',
+                backgroundSize: 'cover',
+                '&:hover > div': {
+                  display: 'flex',
+                },
               }}
             >
-              <Icons.Like fill />
-              <Box css={{ ml: '0.5rem' }}>{p.likeCount}</Box>
+              <Box
+                css={{
+                  display: 'none',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  height: '100%',
+                  width: '100%',
+                  backgroundColor: '$blackA11',
+                }}
+              >
+                <Icons.Like fill />
+                <Box css={{ ml: '0.5rem', fontWeight: 600, fontSize: '$3' }}>{p.likeCount}</Box>
+              </Box>
             </Box>
-          </Box>
+            <Dialog.Content
+              css={{ width: '90%', height: '90%', borderRadius: '0 0.75rem 0.75rem 0' }}
+            >
+              <Box
+                css={{
+                  height: '100%',
+                  width: '100%',
+                  display: 'flex',
+                }}
+              >
+                <Box
+                  css={{
+                    height: '100%',
+                    width: '62%',
+                    display: 'flex',
+                    backgroundImage: `url("${p.media}")`,
+                    backgroundRepeat: 'no-repeat',
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                  }}
+                />
+                <Separator orientation="vertical" />
+                <Box css={{ width: '38%' }}>
+                  <Box
+                    css={{ display: 'flex', alignItems: 'center', mx: '1rem', height: '3.75rem' }}
+                  >
+                    <Avatar
+                      src={currentUser.avatar}
+                      fallback="p"
+                      alt={currentUser.username}
+                      size="1.75rem"
+                      css={{ marginRight: '0.75rem' }}
+                    />
+                    <Text bold>{currentUser.username}</Text>
+                  </Box>
+                  <Separator orientation="horizontal" />
+                  <Box css={{ p: '0.875rem 1rem' }}>
+                    <Box css={{ display: 'flex' }}>
+                      <Box css={{ width: '2rem', mr: '1rem' }}>
+                        <Avatar
+                          size="1.75rem"
+                          src={p.owner.avatar}
+                          fallback="u"
+                          alt={p.owner.username}
+                        />
+                      </Box>
+                      <Box css={{ display: 'inline' }}>
+                        <Text bold css={{ mr: '0.3125rem' }}>
+                          {p.owner.username}
+                        </Text>
+                        <Text as="p" css={{ display: 'inline' }}>
+                          {p.caption}
+                        </Text>
+                      </Box>
+                    </Box>
+                  </Box>
+                </Box>
+              </Box>
+            </Dialog.Content>
+          </Dialog.Root>
         ))}
       </Box>
     </Container>
