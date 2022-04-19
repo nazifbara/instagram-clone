@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import { Box, Avatar, Text, Icons } from '.'
+import { Link, Box, Avatar, Text, Icons } from '.'
 import { styled } from '../stitches.config'
 import { Post } from '../types'
 import { IconButton } from './IconButton'
@@ -18,9 +18,9 @@ export const PostCard = ({ post, ...otherProps }: PostCardProps): JSX.Element =>
     <StyledPost {...otherProps}>
       <Box css={{ p: '0.875rem 1rem', display: 'flex', alignItems: 'center' }}>
         <Avatar size="2rem" src={post.owner.avatar} fallback="u" alt={post.owner.username} />
-        <Text bold css={{ ml: '0.875rem' }}>
+        <Link to={`/${post.owner.username}`} css={{ ml: '0.875rem' }}>
           {post.owner.username}
-        </Text>
+        </Link>
       </Box>
       <img src={post.media} alt="" />
       <Box as="section" css={{ p: '0.875rem 1rem' }}>

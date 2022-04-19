@@ -1,3 +1,4 @@
+export { Link } from './Link'
 export { ContentBox } from './ContentBox'
 export { PostCard } from './PostCard'
 export { Feed } from './Feed'
