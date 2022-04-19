@@ -3,8 +3,8 @@ import { Container, Logo, SearchInput, NavBar } from '.'
 import { styled } from '../stitches.config'
 
 const Header = styled('header', {
-  backgroundColor: '$blue3',
-  borderBottom: '1px solid $gray6',
+  backgroundColor: '$accentBg',
+  borderBottom: '1px solid $grayBorder',
   position: 'fixed',
   width: '100%',
 })

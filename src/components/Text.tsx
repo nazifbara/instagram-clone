@@ -1,12 +1,12 @@
 import { styled } from '../stitches.config'
 
 export const Text = styled('span', {
-  color: '$blue12',
+  color: '$textBase',
   lineHeight: '1.125rem',
   variants: {
     gray: {
       true: {
-        color: '$gray11',
+        color: '$textGray',
       },
     },
     bold: {

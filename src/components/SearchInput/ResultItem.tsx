@@ -40,12 +40,12 @@ const StyledResultItem = styled('li', {
   cursor: 'pointer',
   lineHeight: 'initial',
   '&:hover': {
-    backgroundColor: '$blue4',
+    backgroundColor: '$accentBgHover',
   },
   variants: {
     highlighted: {
       true: {
-        backgroundColor: '$blue4',
+        backgroundColor: '$accentBgHover',
       },
     },
   },

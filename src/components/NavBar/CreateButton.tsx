@@ -115,7 +115,7 @@ const StyledCaptionInput = styled('textarea', {
   backgroundColor: 'transparent',
   border: 'none',
   resize: 'none',
-  color: '$blue12',
+  color: '$accentTextContrast',
   fontSize: '1rem',
   overflowY: 'scroll',
   '&:focus': {

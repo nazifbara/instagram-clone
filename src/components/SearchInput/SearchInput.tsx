@@ -22,7 +22,7 @@ export const SearchInput = (): JSX.Element => {
     setInputValue,
   } = useCombobox({
     items: inputItems,
-    onInputValueChange: ({ inputValue = '' }) => {
+    onInputValueChange: () => {
       setInputItems(users)
     },
     onSelectedItemChange: (changes) => {
@@ -43,9 +43,9 @@ export const SearchInput = (): JSX.Element => {
     <Popover.Root open={true}>
       <Wrapper {...getComboboxProps()}>
         {!focused && (
-          <SearchIcon>
-            <MagnifyingGlassIcon width="20px" height="20px" />
-          </SearchIcon>
+          <SearchIconWrapper>
+            <SearchIcon width="20px" height="20px" />
+          </SearchIconWrapper>
         )}
         <InputField
           {...getInputProps()}
@@ -55,7 +55,7 @@ export const SearchInput = (): JSX.Element => {
         />
         {inputValue && (
           <CloseBtn onClick={handleDismiss}>
-            <Cross1Icon color="black" />
+            <CloseIcon />
           </CloseBtn>
         )}
         <Popover.Content
@@ -86,7 +86,10 @@ export const SearchInput = (): JSX.Element => {
   )
 }
 
-const SearchIcon = styled('span', {
+const CloseIcon = styled(Cross1Icon, { color: '$accentBase' })
+const SearchIcon = styled(MagnifyingGlassIcon, { color: '$grayPlaceholderText' })
+
+const SearchIconWrapper = styled('span', {
   position: 'absolute',
   left: '0.625rem',
   top: '50%',
@@ -96,7 +99,7 @@ const SearchIcon = styled('span', {
 
 const Wrapper = styled(Popover.Anchor, {
   position: 'relative',
-  backgroundColor: '$blue1',
+  backgroundColor: '$accentBase',
   borderRadius: '0.25rem',
   width: '100%',
   maxWidth: '16.75rem',
@@ -104,7 +107,7 @@ const Wrapper = styled(Popover.Anchor, {
 })
 
 const InputField = styled('input', {
-  color: '$blue12',
+  color: '$accentTextContrast',
   backgroundColor: 'transparent',
   border: 'none',
   width: '100%',
@@ -125,7 +128,7 @@ const CloseBtn = styled('button', {
   right: '0.625rem',
   top: '50%',
   transform: 'translateY(-50%)',
-  backgroundColor: '$blue12',
+  backgroundColor: '$accentTextContrast',
   border: 'none',
   borderRadius: '50%',
   height: '1rem',

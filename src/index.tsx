@@ -13,11 +13,11 @@ const globalStyles = globalCss({
     ...reset.body,
     fontFamily: '-apple-system,Roboto,sans-serif',
     fontSize: '$2',
-    backgroundColor: '$blue1',
-    color: '$blue12',
+    backgroundColor: '$accentBase',
+    color: '$textBase',
   },
   '::placeholder': {
-    color: '$gray11',
+    color: '$grayPlaceholderText',
   },
   '*, *::before, *::after': {
     boxSizing: 'border-box',

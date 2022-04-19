@@ -2,7 +2,7 @@ import { styled } from '../stitches.config'
 
 export const Button = styled('button', {
   backgroundColor: 'transparent',
-  color: '$blue9',
+  textPrimary: '$accentSolid',
   p: '5px 9px',
   borderRadius: '4px',
   fontWeight: 600,
@@ -11,14 +11,14 @@ export const Button = styled('button', {
   variants: {
     type: {
       contained: {
-        backgroundColor: '$blue9',
-        color: '$blue12',
+        backgroundColor: '$accentSolid',
+        color: '$textBase',
         '&:active': {
-          backgroundColor: '$blue10',
+          backgroundColor: '$accentSolidHover',
         },
       },
       simple: {
-        border: '1px solid $gray7',
+        border: '1px solid $grayBorder',
         color: 'inherit',
       },
     },
