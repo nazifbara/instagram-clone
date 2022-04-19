@@ -1,23 +1,45 @@
+import { Formik, Form, Field } from 'formik'
 import { ViewRoute } from '../types'
 import { Text, Logo, Button } from '../components'
 import { styled } from '../stitches.config'
 
+type FormState = {
+  email: string
+  fullName: string
+  username: string
+  password: string
+}
+
 const SignUp = (): JSX.Element => {
+  const initialState: FormState = { email: '', fullName: '', username: '', password: '' }
+
   return (
     <Wrapper>
       <Logo big />
       <Text gray bold css={{ fontSize: '$3', textAlign: 'center', m: '10px 40px' }}>
         Sign up to see photos from your friends.
       </Text>
-      <Form>
-        <TextInput placeholder="Email" />
-        <TextInput placeholder="Full Name" />
-        <TextInput placeholder="Username" />
-        <TextInput placeholder="Password" type="password" />
-        <Button type="contained" fullWidth>
-          Sign up
-        </Button>
-      </Form>
+      <Formik
+        initialValues={initialState}
+        onSubmit={(values, { setSubmitting }) => {
+          setTimeout(() => {
+            alert(JSON.stringify(values, null, 2))
+            setSubmitting(false)
+          }, 400)
+        }}
+      >
+        {({ isSubmitting }) => (
+          <FormWrapper as={Form}>
+            <TextInput as={Field} placeholder="Email" type="email" name="email" />
+            <TextInput as={Field} placeholder="FullName" name="fullName" />
+            <TextInput as={Field} placeholder="Username" name="username" />
+            <TextInput as={Field} placeholder="Password" type="password" name="password" />
+            <Button type="contained" fullWidth>
+              {isSubmitting ? 'Submitting...' : 'Sign up'}
+            </Button>
+          </FormWrapper>
+        )}
+      </Formik>
     </Wrapper>
   )
 }
@@ -25,12 +47,13 @@ const SignUp = (): JSX.Element => {
 const TextInput = styled('input', {
   width: '100%',
   backgroundColor: '$accentBase',
+  color: '$textBase',
   p: '9px 7px',
   border: '1px solid $grayBorder',
   borderRadius: '3px',
 })
 
-const Form = styled('form', { width: '70%', '& > input': { mb: '10px' } })
+const FormWrapper = styled('div', { width: '70%', '& > input': { mb: '10px' } })
 
 const Wrapper = styled('div', {
   display: 'flex',
