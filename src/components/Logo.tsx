@@ -1,8 +1,8 @@
-export const Logo = (): JSX.Element => {
+export const Logo = ({ big = false }: { big?: boolean }): JSX.Element => {
   return (
     <svg
-      width="103"
-      height="30"
+      width={big ? '175' : '103'}
+      height={big ? '51' : '30'}
       viewBox="0 0 103 30"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
