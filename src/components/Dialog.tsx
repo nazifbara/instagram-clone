@@ -26,7 +26,7 @@ const StyledOverlay = styled(DialogPrimitive.Overlay, {
 })
 
 const StyledContent = styled(DialogPrimitive.Content, {
-  backgroundColor: '$blue3',
+  backgroundColor: '$accentBg',
   borderRadius: 12,
   position: 'fixed',
   top: '50%',
@@ -106,10 +106,10 @@ const PostNavButton = ({ side, offset = '2rem', onClick }: PostNavButtonProps) =
       right: side === 'right' ? offset : 'initial',
       top: '50%',
       borderRadius: '50%',
-      backgroundColor: '$blue3',
+      backgroundColor: '$accentBg',
       transform: `rotate(${side === 'left' ? '-90deg' : '90deg'}) translateY(-50%)`,
       '&:hover': {
-        backgroundColor: '$blue4',
+        backgroundColor: '$accentBgHover',
       },
     }}
   >

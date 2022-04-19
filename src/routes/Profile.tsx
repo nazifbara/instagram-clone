@@ -57,7 +57,7 @@ const ProfileView = (): JSX.Element => {
             <Text
               as="a"
               bold
-              css={{ textDecoration: 'none', color: '$blue9' }}
+              css={{ textDecoration: 'none', color: '$textPrimary' }}
               href="https://www.nazifbara.com"
               target="_blank"
             >

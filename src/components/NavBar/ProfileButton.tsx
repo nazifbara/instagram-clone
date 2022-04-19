@@ -39,12 +39,12 @@ const MenuItem = styled('a', {
   p: '0.5rem 1rem',
   cursor: 'pointer',
   '&:hover': {
-    backgroundColor: '$blue4',
+    backgroundColor: '$accentBgHover',
   },
   variants: {
     highlighted: {
       true: {
-        backgroundColor: '$blue4',
+        backgroundColor: '$accentBgHover',
       },
     },
   },

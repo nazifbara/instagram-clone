@@ -58,10 +58,10 @@ const StyledActionButton = styled(IconButton, {
 })
 
 const StyledPost = styled('article', {
-  backgroundColor: '$blue3',
+  backgroundColor: '$accentBg',
   display: 'flex',
   flexDirection: 'column',
   borderRadius: '3px',
-  border: '1px solid $gray6',
+  border: '1px solid $grayBorder',
   mb: '1.5rem',
 })
