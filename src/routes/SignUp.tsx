@@ -3,7 +3,7 @@ import { Auth } from 'aws-amplify'
 import { useNavigate } from 'react-router-dom'
 
 import { ViewRoute } from '../types'
-import { TextInput, Text, Logo, Button } from '../components'
+import { TextInput, Text, Logo, Button, Link } from '../components'
 import { styled } from '../stitches.config'
 
 type FormState = {
@@ -43,6 +43,13 @@ const SignUp = (): JSX.Element => {
           </FormWrapper>
         )}
       </Formik>
+
+      <Text>
+        Have an account?{' '}
+        <Link color="primary" to="/accounts/login">
+          Log in
+        </Link>
+      </Text>
     </Wrapper>
   )
 }
@@ -63,7 +70,7 @@ const signUp = async ({ username, password, email, fullName }: FormState) => {
   }
 }
 
-const FormWrapper = styled('div', { width: '70%', '& > input': { mb: '10px' } })
+const FormWrapper = styled('div', { width: '70%', mb: '2rem', '& > input': { mb: '10px' } })
 
 const Wrapper = styled('div', {
   display: 'flex',
