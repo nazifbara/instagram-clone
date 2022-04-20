@@ -51,6 +51,10 @@ const TextInput = styled('input', {
   p: '9px 7px',
   border: '1px solid $grayBorder',
   borderRadius: '3px',
+  '&:focus': {
+    outline: '2px solid $accentFocus',
+    border: 'none',
+  },
 })
 
 const FormWrapper = styled('div', { width: '70%', '& > input': { mb: '10px' } })

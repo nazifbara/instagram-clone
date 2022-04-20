@@ -16,6 +16,7 @@ export const { styled, css, globalCss, keyframes, getCssText, theme, createTheme
         accentBgActive: '$blue5',
         accentLine: '$blue6',
         accentBorder: '$blue7',
+        accentFocus: '$blue7',
         accentBorderHover: '$blue8',
         accentSolid: '$blue9',
         accentSolidHover: '$blue10',
