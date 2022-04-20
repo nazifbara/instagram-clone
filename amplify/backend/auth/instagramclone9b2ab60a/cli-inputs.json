@@ -1,0 +1,89 @@
+{
+  "version": "1",
+  "cognitoConfig": {
+    "identityPoolName": "instagramclone9b2ab60a_identitypool_9b2ab60a",
+    "allowUnauthenticatedIdentities": false,
+    "resourceNameTruncated": "instag9b2ab60a",
+    "userPoolName": "instagramclone9b2ab60a_userpool_9b2ab60a",
+    "autoVerifiedAttributes": [
+      "email"
+    ],
+    "mfaConfiguration": "OFF",
+    "mfaTypes": [
+      "SMS Text Message"
+    ],
+    "smsAuthenticationMessage": "Your authentication code is {####}",
+    "smsVerificationMessage": "Your verification code is {####}",
+    "emailVerificationSubject": "1995",
+    "emailVerificationMessage": "Your verification code is {####}",
+    "defaultPasswordPolicy": false,
+    "passwordPolicyMinLength": 8,
+    "passwordPolicyCharacters": [],
+    "requiredAttributes": [
+      "email",
+      "name"
+    ],
+    "aliasAttributes": [],
+    "userpoolClientGenerateSecret": false,
+    "userpoolClientRefreshTokenValidity": 30,
+    "userpoolClientWriteAttributes": [
+      "website",
+      "email",
+      "name"
+    ],
+    "userpoolClientReadAttributes": [
+      "email",
+      "name",
+      "website"
+    ],
+    "userpoolClientLambdaRole": "instag9b2ab60a_userpoolclient_lambda_role",
+    "userpoolClientSetAttributes": true,
+    "sharedId": "9b2ab60a",
+    "resourceName": "instagramclone9b2ab60a",
+    "authSelections": "identityPoolAndUserPool",
+    "useDefault": "manual",
+    "triggers": {
+      "PreSignup": [
+        "custom"
+      ]
+    },
+    "userPoolGroupList": [],
+    "serviceName": "Cognito",
+    "usernameCaseSensitive": false,
+    "useEnabledMfas": true,
+    "authRoleArn": {
+      "Fn::GetAtt": [
+        "AuthRole",
+        "Arn"
+      ]
+    },
+    "unauthRoleArn": {
+      "Fn::GetAtt": [
+        "UnauthRole",
+        "Arn"
+      ]
+    },
+    "breakCircularDependency": true,
+    "dependsOn": [
+      {
+        "category": "function",
+        "resourceName": "instagramclone9b2ab60aPreSignup",
+        "triggerProvider": "Cognito",
+        "attributes": [
+          "Arn",
+          "Name"
+        ]
+      }
+    ],
+    "thirdPartyAuth": false,
+    "userPoolGroups": false,
+    "adminQueries": false,
+    "hostedUI": false,
+    "authProviders": [],
+    "parentStack": {
+      "Ref": "AWS::StackId"
+    },
+    "permissions": [],
+    "authTriggerConnections": "[\n  {\n    \"triggerType\": \"PreSignUp\",\n    \"lambdaFunctionName\": \"instagramclone9b2ab60aPreSignup\"\n  }\n]"
+  }
+}

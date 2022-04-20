@@ -1,11 +1,14 @@
-import React from 'react'
-import ReactDOM from 'react-dom'
+import { createRoot } from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
 import { reset } from 'stitches-reset'
+import { Amplify } from 'aws-amplify'
 
 import App from './App'
 import reportWebVitals from './reportWebVitals'
 import { globalCss } from './stitches.config'
+import awsExports from './aws-exports'
+
+Amplify.configure(awsExports)
 
 const globalStyles = globalCss({
   ...reset,
@@ -40,12 +43,10 @@ const Root = (): JSX.Element => {
   )
 }
 
-ReactDOM.render(
-  <React.StrictMode>
-    <Root />
-  </React.StrictMode>,
-  document.getElementById('root')
-)
+const container = document.getElementById('app')
+const root = createRoot(container!)
+
+root.render(<Root />)
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
