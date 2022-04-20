@@ -1,6 +1,6 @@
 import { Formik, Form, Field } from 'formik'
 import { ViewRoute } from '../types'
-import { Text, Logo, Button } from '../components'
+import { TextInput, Text, Logo, Button } from '../components'
 import { styled } from '../stitches.config'
 
 type FormState = {
@@ -31,7 +31,7 @@ const SignUp = (): JSX.Element => {
         {({ isSubmitting }) => (
           <FormWrapper as={Form}>
             <TextInput as={Field} placeholder="Email" type="email" name="email" />
-            <TextInput as={Field} placeholder="FullName" name="fullName" />
+            <TextInput as={Field} placeholder="Full Name" name="fullName" />
             <TextInput as={Field} placeholder="Username" name="username" />
             <TextInput as={Field} placeholder="Password" type="password" name="password" />
             <Button type="contained" fullWidth>
@@ -43,19 +43,6 @@ const SignUp = (): JSX.Element => {
     </Wrapper>
   )
 }
-
-const TextInput = styled('input', {
-  width: '100%',
-  backgroundColor: '$accentBase',
-  color: '$textBase',
-  p: '9px 7px',
-  border: '1px solid $grayBorder',
-  borderRadius: '3px',
-  '&:focus': {
-    outline: '2px solid $accentFocus',
-    border: 'none',
-  },
-})
 
 const FormWrapper = styled('div', { width: '70%', '& > input': { mb: '10px' } })
 

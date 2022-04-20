@@ -1,3 +1,4 @@
+export { TextInput } from './TextInput'
 export { Link } from './Link'
 export { ContentBox } from './ContentBox'
 export { PostCard } from './PostCard'
