@@ -1,4 +1,7 @@
 import { Formik, Form, Field } from 'formik'
+import { Auth } from 'aws-amplify'
+import { useNavigate } from 'react-router-dom'
+
 import { ViewRoute } from '../types'
 import { TextInput, Text, Logo, Button } from '../components'
 import { styled } from '../stitches.config'
@@ -12,6 +15,7 @@ type FormState = {
 
 const SignUp = (): JSX.Element => {
   const initialState: FormState = { email: '', fullName: '', username: '', password: '' }
+  const navigate = useNavigate()
 
   return (
     <Wrapper>
@@ -21,11 +25,10 @@ const SignUp = (): JSX.Element => {
       </Text>
       <Formik
         initialValues={initialState}
-        onSubmit={(values, { setSubmitting }) => {
-          setTimeout(() => {
-            alert(JSON.stringify(values, null, 2))
-            setSubmitting(false)
-          }, 400)
+        onSubmit={async (values, { setSubmitting }) => {
+          await signUp(values)
+          setSubmitting(false)
+          navigate('/accounts/login')
         }}
       >
         {({ isSubmitting }) => (
@@ -42,6 +45,22 @@ const SignUp = (): JSX.Element => {
       </Formik>
     </Wrapper>
   )
+}
+
+const signUp = async ({ username, password, email, fullName }: FormState) => {
+  try {
+    const { user } = await Auth.signUp({
+      username,
+      password,
+      attributes: {
+        email,
+        name: fullName,
+      },
+    })
+    console.log({ userSignedUp: user })
+  } catch (error) {
+    console.error({ signUpError: error })
+  }
 }
 
 const FormWrapper = styled('div', { width: '70%', '& > input': { mb: '10px' } })
