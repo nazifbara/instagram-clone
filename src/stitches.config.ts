@@ -1,10 +1,11 @@
 import { createStitches } from '@stitches/react'
-import { blackA, blueDark, grayDark } from '@radix-ui/colors'
+import { blackA, blueDark, grayDark, red } from '@radix-ui/colors'
 
 export const { styled, css, globalCss, keyframes, getCssText, theme, createTheme, config } =
   createStitches({
     theme: {
       colors: {
+        ...red,
         ...blueDark,
         ...grayDark,
         ...blackA,
@@ -36,6 +37,19 @@ export const { styled, css, globalCss, keyframes, getCssText, theme, createTheme
         graySolidHover: '$gray10',
         grayText: '$gray11',
         grayTextContrast: '$gray12',
+
+        dangerBase: '$red1',
+        dangerBgSubtle: '$red2',
+        dangerBg: '$red3',
+        dangerBgHover: '$red4',
+        dangerBgActive: '$red5',
+        dangerLine: '$red6',
+        dangerBorder: '$red7',
+        dangerBorderHover: '$red8',
+        dangerSolid: '$red9',
+        dangerPlaceholderText: '$red9',
+        dangerSolidHover: '$red10',
+        dangerTextContrast: '$red12',
 
         textBase: '$accentTextContrast',
         textGray: '$grayText',
