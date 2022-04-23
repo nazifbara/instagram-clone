@@ -29,7 +29,7 @@ const ProfileView = (): JSX.Element => {
             <Text as="h2" css={{ fontSize: '$5', fontWeight: 300 }}>
               {currentUser.username}
             </Text>
-            <Button as={Link} to="/accounts/edit" css={{ ml: '1.25rem' }} type="simple">
+            <Button as={Link} to="/app/account/edit" css={{ ml: '1.25rem' }} type="simple">
               Edit Profile
             </Button>
           </Box>
@@ -148,7 +148,7 @@ const ProfileView = (): JSX.Element => {
                     size="1.75rem"
                     css={{ marginRight: '0.75rem' }}
                   />
-                  <Link to={`/${currentUser.username}`}>{currentUser.username}</Link>
+                  <Link to={`/app/${currentUser.username}`}>{currentUser.username}</Link>
                 </Box>
                 <Separator orientation="horizontal" />
                 <Box css={{ p: '0.875rem 1rem' }}>
@@ -183,7 +183,7 @@ const ProfileView = (): JSX.Element => {
 export const profileRoute: ViewRoute = {
   name: 'ProfileView',
   props: {
-    path: '/:username',
+    path: ':username',
     element: <ProfileView />,
   },
 }

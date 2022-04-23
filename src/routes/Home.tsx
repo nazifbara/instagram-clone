@@ -8,7 +8,7 @@ const HomeView = (): JSX.Element => {
 export const homeRoute: ViewRoute = {
   name: 'HomeView',
   props: {
-    path: '/',
+    path: '',
     element: <HomeView />,
   },
 }

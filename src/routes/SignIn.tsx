@@ -7,17 +7,13 @@ import { TextInput, Text, Logo, Button, Link } from '../components'
 import { styled } from '../stitches.config'
 
 type FormState = {
-  email: string
-  fullName: string
   username: string
   password: string
   globaleError: string
 }
 
-const SignUp = (): JSX.Element => {
+const SignInView = (): JSX.Element => {
   const initialState: FormState = {
-    email: '',
-    fullName: '',
     username: '',
     password: '',
     globaleError: '',
@@ -27,21 +23,12 @@ const SignUp = (): JSX.Element => {
   return (
     <Wrapper>
       <Logo big />
-      <Text gray bold css={{ fontSize: '$3', textAlign: 'center', m: '10px 40px' }}>
-        Sign up to see photos from your friends.
-      </Text>
       <Formik
         initialValues={initialState}
         validate={(values) => {
-          const errors: any = {}
+          const errors: { username?: string; password?: string } = {}
 
-          if (!values.email) {
-            errors.email = 'Email is required'
-          } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)) {
-            errors.email = 'Invalid email address'
-          } else if (!values.fullName) {
-            errors.fullName = 'Full name is required'
-          } else if (!values.username) {
+          if (!values.username) {
             errors.username = 'Username is required'
           } else if (!values.password) {
             errors.password = 'Password is required'
@@ -50,76 +37,64 @@ const SignUp = (): JSX.Element => {
         }}
         onSubmit={async (values, { setSubmitting, setFieldError }) => {
           try {
-            await signUp(values)
+            await signIn(values)
           } catch (error: any) {
             console.error({ signUpError: error })
             switch (error.code) {
-              case 'UsernameExistsException':
-                setFieldError('globaleError', 'That username is taken. Try another.')
+              case 'UserNotFoundException':
+              case 'NotAuthorizedException':
+                setFieldError('globaleError', error.message)
                 break
-
-              case 'InvalidParameterException':
-                if (error.message.includes('password')) {
-                  setFieldError('globaleError', 'Password must be at least 8 characters long.')
-                } else {
-                  setFieldError('globaleError', 'Something went wrong...')
-                }
+              case 'NetworkError':
+                setFieldError(
+                  'globaleError',
+                  'Please check your internet connection and try again.'
+                )
                 break
-
               default:
                 setFieldError('globaleError', 'Something went wrong...')
                 break
             }
+            setSubmitting(false)
             return
           }
-          setSubmitting(false)
-          navigate('/auth/login')
+          navigate('/app')
         }}
       >
         {({ isSubmitting }) => (
           <FormWrapper as={Form}>
-            <InputErrorMessage name="email" component="div" />
-            <TextInput as={Field} placeholder="Email" type="email" name="email" />
-            <InputErrorMessage name="fullName" component="div" />
-            <TextInput as={Field} placeholder="Full Name" name="fullName" />
             <InputErrorMessage name="username" component="div" />
             <TextInput as={Field} placeholder="Username" name="username" />
             <InputErrorMessage name="password" component="div" />
             <TextInput as={Field} placeholder="Password" type="password" name="password" />
             <InputErrorMessage name="globaleError" component="div" />
             <Button type="contained" fullWidth>
-              {isSubmitting ? 'Submitting...' : 'Sign up'}
+              {isSubmitting ? 'Loging in...' : 'Log in'}
             </Button>
           </FormWrapper>
         )}
       </Formik>
 
       <Text>
-        Have an account?{' '}
-        <Link color="primary" to="/auth/login">
-          Log in
+        Don't have an account?{' '}
+        <Link color="primary" to="/auth/signup">
+          Sign up
         </Link>
       </Text>
     </Wrapper>
   )
 }
 
-const signUp = async ({ username, password, email, fullName }: FormState) => {
-  const { user } = await Auth.signUp({
-    username,
-    password,
-    attributes: {
-      email,
-      name: fullName,
-    },
-  })
-  console.info({ userSignedUp: user })
+const signIn = async ({ username, password }: FormState) => {
+  const user = await Auth.signIn({ username, password })
+  console.info({ signedInUser: user })
 }
 
-const FormWrapper = styled('div', { width: '70%', mb: '2rem', '& > input': { mb: '10px' } })
+const FormWrapper = styled('div', { width: '70%', my: '2rem', '& > input': { mb: '10px' } })
 
 const InputErrorMessage = styled(ErrorMessage, {
   color: '$dangerSolid',
+  mb: '5px',
 })
 const Wrapper = styled('div', {
   display: 'flex',
@@ -132,10 +107,10 @@ const Wrapper = styled('div', {
   border: '1px solid $grayBorder',
 })
 
-export const signUpRoute: ViewRoute = {
-  name: 'SignUpView',
+export const signInRoute: ViewRoute = {
+  name: 'SignInView',
   props: {
-    path: '/auth/signup',
-    element: <SignUp />,
+    path: '/auth/login',
+    element: <SignInView />,
   },
 }

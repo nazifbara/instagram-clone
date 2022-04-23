@@ -1,7 +1,11 @@
+import { signInRoute } from './SignIn'
 import { signUpRoute } from './SignUp'
 import { profileRoute } from './Profile'
 import { homeRoute } from './Home'
 
-const routes = [signUpRoute, profileRoute, homeRoute]
+const routes = {
+  privateRoutes: [profileRoute, homeRoute],
+  publicRoutes: [signInRoute, signUpRoute],
+}
 
 export default routes

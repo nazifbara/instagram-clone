@@ -28,7 +28,7 @@ export const SearchInput = (): JSX.Element => {
     onSelectedItemChange: (changes) => {
       if (changes.selectedItem) {
         setInputValue(changes.selectedItem.username)
-        navigate(changes.selectedItem.username)
+        navigate(`/app/${changes.selectedItem.username}`)
       }
     },
   })
