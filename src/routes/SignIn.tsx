@@ -26,20 +26,35 @@ const SignInView = (): JSX.Element => {
       <Formik
         initialValues={initialState}
         validate={(values) => {
-          const errors: any = {}
+          const errors: { username?: string; password?: string } = {}
 
           if (!values.username) {
-            errors.email = 'Username is required'
+            errors.username = 'Username is required'
           } else if (!values.password) {
             errors.password = 'Password is required'
           }
           return errors
         }}
-        onSubmit={async (values, { setSubmitting }) => {
+        onSubmit={async (values, { setSubmitting, setFieldError }) => {
           try {
             await signIn(values)
           } catch (error: any) {
             console.error({ signUpError: error })
+            switch (error.code) {
+              case 'UserNotFoundException':
+              case 'NotAuthorizedException':
+                setFieldError('globaleError', error.message)
+                break
+              case 'NetworkError':
+                setFieldError(
+                  'globaleError',
+                  'Please check your internet connection and try again.'
+                )
+                break
+              default:
+                setFieldError('globaleError', 'Something went wrong...')
+                break
+            }
             setSubmitting(false)
             return
           }
@@ -79,6 +94,7 @@ const FormWrapper = styled('div', { width: '70%', my: '2rem', '& > input': { mb:
 
 const InputErrorMessage = styled(ErrorMessage, {
   color: '$dangerSolid',
+  mb: '5px',
 })
 const Wrapper = styled('div', {
   display: 'flex',

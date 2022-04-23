@@ -53,7 +53,7 @@ const SignUp = (): JSX.Element => {
             await signUp(values)
           } catch (error: any) {
             console.error({ signUpError: error })
-            switch (error.name) {
+            switch (error.code) {
               case 'UsernameExistsException':
                 setFieldError('globaleError', 'That username is taken. Try another.')
                 break
