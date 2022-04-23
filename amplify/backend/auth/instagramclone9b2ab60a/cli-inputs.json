@@ -27,6 +27,7 @@
     "userpoolClientGenerateSecret": false,
     "userpoolClientRefreshTokenValidity": 30,
     "userpoolClientWriteAttributes": [
+      "picture",
       "website",
       "email",
       "name"
@@ -34,6 +35,7 @@
     "userpoolClientReadAttributes": [
       "email",
       "name",
+      "picture",
       "website"
     ],
     "userpoolClientLambdaRole": "instag9b2ab60a_userpoolclient_lambda_role",
