@@ -16,11 +16,11 @@ export const ProfileButton = (): JSX.Element => {
       </IconButton>
       <Popover.Content sideOffset={6}>
         <Popover.Arrow />
-        <MenuItem to={`/${currentUser.username}`} text>
+        <MenuItem to={`/app/${currentUser.username}`} text>
           <Icons.Pofile />
           <Text css={{ ml: '0.75rem' }}>Profile</Text>
         </MenuItem>
-        <MenuItem text to="/accounts/edit">
+        <MenuItem text to="/app/account/edit">
           <Icons.Settings />
           <Text css={{ ml: '0.75rem' }}>Settings</Text>
         </MenuItem>

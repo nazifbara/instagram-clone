@@ -18,7 +18,7 @@ export const PostCard = ({ post, ...otherProps }: PostCardProps): JSX.Element =>
     <StyledPost {...otherProps}>
       <Box css={{ p: '0.875rem 1rem', display: 'flex', alignItems: 'center' }}>
         <Avatar size="2rem" src={post.owner.avatar} fallback="u" alt={post.owner.username} />
-        <Link to={`/${post.owner.username}`} css={{ ml: '0.875rem' }}>
+        <Link to={`/app/${post.owner.username}`} css={{ ml: '0.875rem' }}>
           {post.owner.username}
         </Link>
       </Box>

@@ -73,7 +73,7 @@ const SignUp = (): JSX.Element => {
             return
           }
           setSubmitting(false)
-          navigate('/accounts/login')
+          navigate('/auth/login')
         }}
       >
         {({ isSubmitting }) => (
@@ -96,7 +96,7 @@ const SignUp = (): JSX.Element => {
 
       <Text>
         Have an account?{' '}
-        <Link color="primary" to="/accounts/login">
+        <Link color="primary" to="/auth/login">
           Log in
         </Link>
       </Text>
@@ -126,7 +126,7 @@ const Wrapper = styled('div', {
   flexDirection: 'column',
   alignItems: 'center',
   maxWidth: '21.875rem',
-  margin: '0 auto',
+  margin: '50px auto',
   py: '50px',
   backgroundColor: '$accentBg',
   border: '1px solid $grayBorder',
@@ -135,7 +135,7 @@ const Wrapper = styled('div', {
 export const signUpRoute: ViewRoute = {
   name: 'SignUpView',
   props: {
-    path: '/accounts/emailsignup',
+    path: '/auth/signup',
     element: <SignUp />,
   },
 }
