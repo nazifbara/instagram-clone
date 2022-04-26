@@ -2,13 +2,27 @@ import { createRoot } from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
 import { reset } from 'stitches-reset'
 import { Amplify } from 'aws-amplify'
+import { Provider } from 'react-redux'
+import createSagaMiddleware from '@redux-saga/core'
+import { configureStore } from '@reduxjs/toolkit'
 
 import App from './App'
+import { rootSaga } from './sagas'
+import rootReducer from './slices'
 import reportWebVitals from './reportWebVitals'
 import { globalCss } from './stitches.config'
 import awsExports from './aws-exports'
 
 Amplify.configure(awsExports)
+
+const sagaMiddleware = createSagaMiddleware()
+const store = configureStore({
+  reducer: rootReducer,
+  middleware: (getDefaultMiddleware) => [sagaMiddleware, ...getDefaultMiddleware()],
+  devTools: process.env.NODE_ENV !== 'production',
+})
+
+sagaMiddleware.run(rootSaga)
 
 const globalStyles = globalCss({
   ...reset,
@@ -37,9 +51,11 @@ const Root = (): JSX.Element => {
   globalStyles()
 
   return (
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
+    <Provider store={store}>
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
+    </Provider>
   )
 }
 

@@ -1,24 +1,35 @@
 import { Formik, Form, Field, ErrorMessage } from 'formik'
-import { Auth } from 'aws-amplify'
-import { useNavigate } from 'react-router-dom'
+import { Navigate } from 'react-router-dom'
+import { useSelector, useDispatch } from 'react-redux'
 
-import { ViewRoute } from '../types'
+import { ViewRoute, LoginFormState } from '../types'
+import { getAuth } from '../selectors'
+import { login } from '../slices/auth'
 import { TextInput, Text, Logo, Button, Link } from '../components'
 import { styled } from '../stitches.config'
 
-type FormState = {
-  username: string
-  password: string
-  globaleError: string
-}
-
 const SignInView = (): JSX.Element => {
-  const initialState: FormState = {
+  // ===========================================================================
+  // Selectors
+  // ===========================================================================
+
+  const { error, loading, isAuthenticated } = useSelector(getAuth)
+
+  // ===========================================================================
+  // Dispatch
+  // ===========================================================================
+
+  const dispatch = useDispatch()
+
+  const initialState: LoginFormState = {
     username: '',
     password: '',
     globaleError: '',
   }
-  const navigate = useNavigate()
+
+  if (isAuthenticated) {
+    return <Navigate to="/app" />
+  }
 
   return (
     <Wrapper>
@@ -35,41 +46,17 @@ const SignInView = (): JSX.Element => {
           }
           return errors
         }}
-        onSubmit={async (values, { setSubmitting, setFieldError }) => {
-          try {
-            await signIn(values)
-          } catch (error: any) {
-            console.error({ signUpError: error })
-            switch (error.code) {
-              case 'UserNotFoundException':
-              case 'NotAuthorizedException':
-                setFieldError('globaleError', error.message)
-                break
-              case 'NetworkError':
-                setFieldError(
-                  'globaleError',
-                  'Please check your internet connection and try again.'
-                )
-                break
-              default:
-                setFieldError('globaleError', 'Something went wrong...')
-                break
-            }
-            setSubmitting(false)
-            return
-          }
-          navigate('/app')
-        }}
+        onSubmit={async (values) => dispatch(login(values))}
       >
-        {({ isSubmitting }) => (
+        {() => (
           <FormWrapper as={Form}>
-            <InputErrorMessage name="username" component="div" />
+            <ErrorMessage name="username" component={InputErrorMessage} />
             <TextInput as={Field} placeholder="Username" name="username" />
-            <InputErrorMessage name="password" component="div" />
+            <ErrorMessage name="password" component={InputErrorMessage} />
             <TextInput as={Field} placeholder="Password" type="password" name="password" />
-            <InputErrorMessage name="globaleError" component="div" />
+            <InputErrorMessage>{error}</InputErrorMessage>
             <Button type="contained" fullWidth>
-              {isSubmitting ? 'Loging in...' : 'Log in'}
+              {loading ? 'Loging in...' : 'Log in'}
             </Button>
           </FormWrapper>
         )}
@@ -85,14 +72,9 @@ const SignInView = (): JSX.Element => {
   )
 }
 
-const signIn = async ({ username, password }: FormState) => {
-  const user = await Auth.signIn({ username, password })
-  console.info({ signedInUser: user })
-}
-
 const FormWrapper = styled('div', { width: '70%', my: '2rem', '& > input': { mb: '10px' } })
 
-const InputErrorMessage = styled(ErrorMessage, {
+const InputErrorMessage = styled('div', {
   color: '$dangerSolid',
   mb: '5px',
 })

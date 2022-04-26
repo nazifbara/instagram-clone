@@ -1,4 +1,26 @@
 import { RouteProps } from 'react-router-dom'
+import { CognitoUser } from '@aws-amplify/auth'
+
+//==============================================================================
+// State
+//==============================================================================
+
+export interface LoginFormState {
+  username: string
+  password: string
+  globaleError: string
+}
+
+export interface AuthState {
+  loading: boolean
+  currentUser: CognitoUser | null
+  isAuthenticated: boolean
+  error?: string
+}
+
+export interface RootState {
+  authState: AuthState
+}
 
 //==============================================================================
 // Posts
