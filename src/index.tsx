@@ -18,7 +18,8 @@ Amplify.configure(awsExports)
 const sagaMiddleware = createSagaMiddleware()
 const store = configureStore({
   reducer: rootReducer,
-  middleware: (getDefaultMiddleware) => [sagaMiddleware, ...getDefaultMiddleware()],
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({ serializableCheck: false }).concat(sagaMiddleware),
   devTools: process.env.NODE_ENV !== 'production',
 })
 

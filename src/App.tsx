@@ -1,60 +1,55 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
-import { useEffect, useState } from 'react'
-import { Auth, Hub } from 'aws-amplify'
+import { useEffect, useCallback } from 'react'
+import { Hub } from 'aws-amplify'
+import { useDispatch } from 'react-redux'
 
+import { checkAuth } from './slices/auth'
 import { AppBar, ContentBox, PrivateRoute } from './components'
 import routes from './routes'
 
 const App = (): JSX.Element => {
-  const [isAuthenicated, setIsAuthenicated] = useState<boolean>(false)
-  const [loading, setLoading] = useState<boolean>(true)
+  // ===========================================================================
+  // Dispatch
+  // ===========================================================================
+
+  const dispatch = useDispatch()
+  const _checkAuth = useCallback(() => dispatch(checkAuth()), [dispatch])
 
   useEffect(() => {
-    const updateUser = async () => {
-      try {
-        await Auth.currentAuthenticatedUser()
-        setIsAuthenicated(true)
-      } catch {
-        setIsAuthenicated(false)
-      }
-      setLoading(false)
-    }
-    updateUser()
-    Hub.listen('auth', updateUser)
-    return () => Hub.remove('auth', updateUser)
-  })
+    _checkAuth()
+    Hub.listen('auth', _checkAuth)
+    return () => Hub.remove('auth', _checkAuth)
+  }, [_checkAuth])
+
   return (
     <>
-      {!loading && (
-        <Routes>
-          <Route path="/" element={<Navigate to="/app" />} />
+      <Routes>
+        <Route path="/" element={<Navigate to="/app" />} />
 
-          <Route path="app">
-            {routes.privateRoutes.map((r) => (
-              <Route
-                key={r.name}
-                path={r.props.path}
-                element={
-                  <PrivateRoute
-                    isAuthenticated={isAuthenicated}
-                    component={() => (
-                      <>
-                        <AppBar />
+        <Route path="app">
+          {routes.privateRoutes.map((r) => (
+            <Route
+              key={r.name}
+              path={r.props.path}
+              element={
+                <PrivateRoute
+                  component={() => (
+                    <>
+                      <AppBar />
 
-                        <ContentBox>{r.props.element}</ContentBox>
-                      </>
-                    )}
-                  />
-                }
-              />
-            ))}
-          </Route>
-          {routes.publicRoutes.map((r) => (
-            <Route key={r.name} {...r.props} />
+                      <ContentBox>{r.props.element}</ContentBox>
+                    </>
+                  )}
+                />
+              }
+            />
           ))}
-          <Route path="*" element={<h1>There's nothing here!</h1>} />
-        </Routes>
-      )}
+        </Route>
+        {routes.publicRoutes.map((r) => (
+          <Route key={r.name} {...r.props} />
+        ))}
+        <Route path="*" element={<h1>There's nothing here!</h1>} />
+      </Routes>
     </>
   )
 }

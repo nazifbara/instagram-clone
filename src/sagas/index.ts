@@ -1,14 +1,30 @@
 import { all, put, takeLatest } from 'redux-saga/effects'
 import { PayloadAction } from '@reduxjs/toolkit'
 import { Auth } from 'aws-amplify'
-import { CognitoUser } from '@aws-amplify/auth'
 
-import { LoginFormState } from '../types'
-import { login, loginSuccess, loginError } from '../slices/auth'
+import { LoginFormState, User } from '../types'
+import {
+  login,
+  loginSuccess,
+  loginError,
+  checkAuth,
+  checkAuthSuccess,
+  checkAuthError,
+} from '../slices/auth'
+
+function* getCurrentUser() {
+  try {
+    const user: User = yield Auth.currentAuthenticatedUser()
+    console.log(user)
+    yield put(checkAuthSuccess(user))
+  } catch (error) {
+    yield put(checkAuthError())
+  }
+}
 
 function* loginUser({ payload: { username, password } }: PayloadAction<LoginFormState>) {
   try {
-    const user: CognitoUser = yield Auth.signIn({ username, password })
+    const user: User = yield Auth.signIn({ username, password })
     console.info({ signedInUser: user })
     yield put(loginSuccess(user))
   } catch (error: any) {
@@ -30,5 +46,5 @@ function* loginUser({ payload: { username, password } }: PayloadAction<LoginForm
 }
 
 export function* rootSaga() {
-  yield all([takeLatest(login.type, loginUser)])
+  yield all([takeLatest(login.type, loginUser), takeLatest(checkAuth.type, getCurrentUser)])
 }

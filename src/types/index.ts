@@ -1,5 +1,4 @@
 import { RouteProps } from 'react-router-dom'
-import { CognitoUser } from '@aws-amplify/auth'
 
 //==============================================================================
 // State
@@ -8,12 +7,12 @@ import { CognitoUser } from '@aws-amplify/auth'
 export interface LoginFormState {
   username: string
   password: string
-  globaleError: string
 }
 
 export interface AuthState {
   loading: boolean
-  currentUser: CognitoUser | null
+  checking: boolean
+  currentUser: User | null
   isAuthenticated: boolean
   error?: string
 }
@@ -39,10 +38,7 @@ export interface Post {
 //==============================================================================
 
 export interface User {
-  id: string
-  username: string
-  name?: string
-  avatar: string
+  [anyProp: string]: any
 }
 
 //==============================================================================

@@ -24,7 +24,6 @@ const SignInView = (): JSX.Element => {
   const initialState: LoginFormState = {
     username: '',
     password: '',
-    globaleError: '',
   }
 
   if (isAuthenticated) {
