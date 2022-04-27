@@ -5,6 +5,7 @@ import { AuthState, LoginFormState, User } from '../types'
 export const initialState: AuthState = {
   currentUser: null,
   isAuthenticated: false,
+  signUpSuccess: false,
   error: '',
   loading: false,
   checking: true,
@@ -14,12 +15,33 @@ const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
+    signUp: (state, action: PayloadAction<LoginFormState>) => {
+      state.loading = true
+    },
+
+    signUpSuccess: (state) => {
+      state.signUpSuccess = true
+      state.error = ''
+      state.loading = false
+    },
+
+    signUpError: (state, { payload }: PayloadAction<string>) => {
+      state.error = payload
+      state.signUpSuccess = false
+      state.loading = false
+    },
+
+    signUpReset: (state) => {
+      state.signUpSuccess = false
+    },
+
     login: (state, action: PayloadAction<LoginFormState>) => {
       state.loading = true
     },
 
     loginSuccess: (state, { payload }: PayloadAction<User>) => {
       state.currentUser = payload
+      state.error = ''
       state.isAuthenticated = true
       state.loading = false
     },
@@ -48,7 +70,17 @@ const authSlice = createSlice({
   },
 })
 
-export const { login, loginError, loginSuccess, checkAuth, checkAuthSuccess, checkAuthError } =
-  authSlice.actions
+export const {
+  signUp,
+  signUpSuccess,
+  signUpError,
+  signUpReset,
+  login,
+  loginError,
+  loginSuccess,
+  checkAuth,
+  checkAuthSuccess,
+  checkAuthError,
+} = authSlice.actions
 
 export const authReducer = authSlice.reducer

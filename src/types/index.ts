@@ -4,6 +4,12 @@ import { RouteProps } from 'react-router-dom'
 // State
 //==============================================================================
 
+export type SignUpFormState = {
+  email: string
+  fullName: string
+  username: string
+  password: string
+}
 export interface LoginFormState {
   username: string
   password: string
@@ -14,6 +20,7 @@ export interface AuthState {
   checking: boolean
   currentUser: User | null
   isAuthenticated: boolean
+  signUpSuccess: boolean
   error?: string
 }
 

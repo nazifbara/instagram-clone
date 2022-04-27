@@ -1,28 +1,52 @@
+import { useEffect } from 'react'
 import { Formik, Form, Field, ErrorMessage } from 'formik'
-import { Auth } from 'aws-amplify'
-import { useNavigate } from 'react-router-dom'
+import { Navigate } from 'react-router-dom'
+import { useSelector, useDispatch } from 'react-redux'
 
-import { ViewRoute } from '../types'
+import { signUp, signUpReset } from '../slices/auth'
+import { getAuth } from '../selectors'
+import { ViewRoute, SignUpFormState } from '../types'
 import { TextInput, Text, Logo, Button, Link } from '../components'
 import { styled } from '../stitches.config'
 
-type FormState = {
-  email: string
-  fullName: string
-  username: string
-  password: string
-  globaleError: string
-}
-
 const SignUp = (): JSX.Element => {
-  const initialState: FormState = {
+  // ===========================================================================
+  // State
+  // ===========================================================================
+
+  const initialState: SignUpFormState = {
     email: '',
     fullName: '',
     username: '',
     password: '',
-    globaleError: '',
   }
-  const navigate = useNavigate()
+
+  // ===========================================================================
+  // Hook
+  // ===========================================================================
+
+  useEffect(() => () => {
+    _signUpReset()
+  })
+
+  // ===========================================================================
+  // Selectors
+  // ===========================================================================
+
+  const { error, loading, signUpSuccess } = useSelector(getAuth)
+
+  // ===========================================================================
+  // Dispatch
+  // ===========================================================================
+
+  const dispatch = useDispatch()
+
+  const _signUp = (data: SignUpFormState) => dispatch(signUp(data))
+  const _signUpReset = () => dispatch(signUpReset())
+
+  if (signUpSuccess) {
+    return <Navigate to="/auth/login" />
+  }
 
   return (
     <Wrapper>
@@ -48,47 +72,21 @@ const SignUp = (): JSX.Element => {
           }
           return errors
         }}
-        onSubmit={async (values, { setSubmitting, setFieldError }) => {
-          try {
-            await signUp(values)
-          } catch (error: any) {
-            console.error({ signUpError: error })
-            switch (error.code) {
-              case 'UsernameExistsException':
-                setFieldError('globaleError', 'That username is taken. Try another.')
-                break
-
-              case 'InvalidParameterException':
-                if (error.message.includes('password')) {
-                  setFieldError('globaleError', 'Password must be at least 8 characters long.')
-                } else {
-                  setFieldError('globaleError', 'Something went wrong...')
-                }
-                break
-
-              default:
-                setFieldError('globaleError', 'Something went wrong...')
-                break
-            }
-            return
-          }
-          setSubmitting(false)
-          navigate('/auth/login')
-        }}
+        onSubmit={async (values) => _signUp(values)}
       >
-        {({ isSubmitting }) => (
+        {() => (
           <FormWrapper as={Form}>
-            <InputErrorMessage name="email" component="div" />
+            <ErrorMessage name="email" component={InputErrorMessage} />
             <TextInput as={Field} placeholder="Email" type="email" name="email" />
-            <InputErrorMessage name="fullName" component="div" />
+            <ErrorMessage name="fullName" component={InputErrorMessage} />
             <TextInput as={Field} placeholder="Full Name" name="fullName" />
-            <InputErrorMessage name="username" component="div" />
+            <ErrorMessage name="username" component={InputErrorMessage} />
             <TextInput as={Field} placeholder="Username" name="username" />
-            <InputErrorMessage name="password" component="div" />
+            <ErrorMessage name="password" component={InputErrorMessage} />
             <TextInput as={Field} placeholder="Password" type="password" name="password" />
-            <InputErrorMessage name="globaleError" component="div" />
+            <InputErrorMessage>{error}</InputErrorMessage>
             <Button type="contained" fullWidth>
-              {isSubmitting ? 'Submitting...' : 'Sign up'}
+              {loading ? 'Submitting...' : 'Sign up'}
             </Button>
           </FormWrapper>
         )}
@@ -104,22 +102,11 @@ const SignUp = (): JSX.Element => {
   )
 }
 
-const signUp = async ({ username, password, email, fullName }: FormState) => {
-  const { user } = await Auth.signUp({
-    username,
-    password,
-    attributes: {
-      email,
-      name: fullName,
-    },
-  })
-  console.info({ userSignedUp: user })
-}
-
 const FormWrapper = styled('div', { width: '70%', mb: '2rem', '& > input': { mb: '10px' } })
 
-const InputErrorMessage = styled(ErrorMessage, {
+const InputErrorMessage = styled('div', {
   color: '$dangerSolid',
+  mb: '5px',
 })
 const Wrapper = styled('div', {
   display: 'flex',
