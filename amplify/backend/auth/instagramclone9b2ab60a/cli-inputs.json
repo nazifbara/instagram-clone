@@ -2,7 +2,7 @@
   "version": "1",
   "cognitoConfig": {
     "identityPoolName": "instagramclone9b2ab60a_identitypool_9b2ab60a",
-    "allowUnauthenticatedIdentities": false,
+    "allowUnauthenticatedIdentities": true,
     "resourceNameTruncated": "instag9b2ab60a",
     "userPoolName": "instagramclone9b2ab60a_userpool_9b2ab60a",
     "autoVerifiedAttributes": [
@@ -86,6 +86,8 @@
       "Ref": "AWS::StackId"
     },
     "permissions": [],
-    "authTriggerConnections": "[\n  {\n    \"triggerType\": \"PreSignUp\",\n    \"lambdaFunctionName\": \"instagramclone9b2ab60aPreSignup\"\n  }\n]"
+    "authTriggerConnections": [
+      "{\"triggerType\":\"PreSignUp\",\"lambdaFunctionName\":\"instagramclone9b2ab60aPreSignup\"}"
+    ]
   }
 }

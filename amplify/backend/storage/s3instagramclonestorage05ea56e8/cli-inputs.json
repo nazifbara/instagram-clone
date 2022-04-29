@@ -1,0 +1,14 @@
+{
+  "resourceName": "s3instagramclonestorage05ea56e8",
+  "bucketName": "instagramclone-storage-05ea56e8",
+  "policyUUID": "f6e9687f",
+  "storageAccess": "authAndGuest",
+  "guestAccess": [
+    "READ"
+  ],
+  "authAccess": [
+    "CREATE_AND_UPDATE",
+    "READ",
+    "DELETE"
+  ]
+}
