@@ -33,7 +33,7 @@ const SignUp = (): JSX.Element => {
   // Selectors
   // ===========================================================================
 
-  const { error, loading, signUpSuccess } = useSelector(getAuth)
+  const { error, loading, signUpSuccess, isAuthenticated } = useSelector(getAuth)
 
   // ===========================================================================
   // Dispatch
@@ -43,6 +43,10 @@ const SignUp = (): JSX.Element => {
 
   const _signUp = (data: SignUpFormState) => dispatch(signUp(data))
   const _signUpReset = () => dispatch(signUpReset())
+
+  if (isAuthenticated) {
+    return <Navigate to="/app" />
+  }
 
   if (signUpSuccess) {
     return <Navigate to="/auth/login" />
