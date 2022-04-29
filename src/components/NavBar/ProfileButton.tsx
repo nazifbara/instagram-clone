@@ -1,22 +1,30 @@
+import { useSelector } from 'react-redux'
+
+import { getAuth } from '../../selectors'
 import { Link, Avatar, Popover, Text, Separator, Icons, IconButton } from '../'
 import { Trigger as PopoverTrigger } from '../Popover'
-import { currentUser } from '../../data'
 import { styled } from '../../stitches.config'
 
 export const ProfileButton = (): JSX.Element => {
+  // ===========================================================================
+  // Selectors
+  // ===========================================================================
+
+  const { currentUser } = useSelector(getAuth)
+
   return (
     <Popover.Root>
       <IconButton as={PopoverTrigger}>
         <Avatar
           size="1.5rem"
-          src={currentUser.avatar}
-          alt={currentUser.name ?? ''}
-          fallback={currentUser.username[0].toUpperCase()}
+          src={currentUser?.avatar}
+          alt={currentUser?.name}
+          fallback={currentUser?.username[0].toUpperCase()}
         />
       </IconButton>
       <Popover.Content sideOffset={6}>
         <Popover.Arrow />
-        <MenuItem to={`/app/${currentUser.username}`} text>
+        <MenuItem to={`/app/${currentUser?.username}`} text>
           <Icons.Pofile />
           <Text css={{ ml: '0.75rem' }}>Profile</Text>
         </MenuItem>
