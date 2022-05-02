@@ -23,13 +23,20 @@ export const schema = {
                     "type": {
                         "model": "Media"
                     },
-                    "isRequired": true,
+                    "isRequired": false,
                     "attributes": [],
                     "isArrayNullable": true,
                     "association": {
                         "connectionType": "HAS_MANY",
                         "associatedWith": "postID"
                     }
+                },
+                "likeCount": {
+                    "name": "likeCount",
+                    "isArray": false,
+                    "type": "Int",
+                    "isRequired": false,
+                    "attributes": []
                 },
                 "createdAt": {
                     "name": "createdAt",
@@ -160,6 +167,15 @@ export const schema = {
                                     "delete",
                                     "read"
                                 ]
+                            },
+                            {
+                                "allow": "private",
+                                "operations": [
+                                    "create",
+                                    "update",
+                                    "delete",
+                                    "read"
+                                ]
                             }
                         ]
                     }
@@ -169,5 +185,5 @@ export const schema = {
     },
     "enums": {},
     "nonModels": {},
-    "version": "dd38ed613aae6775a91dc8742810026c"
+    "version": "b04c735b567636ba9d63f21cf15bdfae"
 };

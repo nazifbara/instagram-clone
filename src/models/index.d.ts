@@ -15,7 +15,8 @@ type MediaMetaData = {
 export declare class Post {
   readonly id: string;
   readonly caption?: string | null;
-  readonly Media?: Media[] | null;
+  readonly Media?: (Media | null)[] | null;
+  readonly likeCount?: number | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
   constructor(init: ModelInit<Post, PostMetaData>);

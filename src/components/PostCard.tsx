@@ -17,12 +17,12 @@ export const PostCard = ({ post, ...otherProps }: PostCardProps): JSX.Element =>
   return (
     <StyledPost {...otherProps}>
       <Box css={{ p: '0.875rem 1rem', display: 'flex', alignItems: 'center' }}>
-        <Avatar size="2rem" src={post.owner.avatar} fallback="u" alt={post.owner.username} />
-        <Link to={`/app/${post.owner.username}`} css={{ ml: '0.875rem' }}>
-          {post.owner.username}
+        <Avatar size="2rem" src="" fallback="u" alt={post.owner ?? ''} />
+        <Link to={`/app/${post.owner}`} css={{ ml: '0.875rem' }}>
+          {post.owner}
         </Link>
       </Box>
-      <img src={post.media} alt="" />
+      <img src="" alt="" />
       <Box as="section" css={{ p: '0.875rem 1rem' }}>
         <StyledActionBox>
           <StyledActionButton>
@@ -33,19 +33,21 @@ export const PostCard = ({ post, ...otherProps }: PostCardProps): JSX.Element =>
           <Text bold>{post.likeCount} likes</Text>
         </Box>
       </Box>
-      <Box css={{ p: '0 0.875rem 1rem 0.875rem', '&>*': { display: 'inline' } }}>
-        <Text bold>{post.owner.username} </Text>
-        <Text as="p">{more ? post.caption : post.caption.slice(0, 30) + '...'}</Text>
-        {!more && (
-          <Box
-            as="button"
-            css={{ border: 'none', backgroundColor: 'transparent', cursor: 'pointer' }}
-            onClick={showFullCaption}
-          >
-            <Text gray>more</Text>
-          </Box>
-        )}
-      </Box>
+      {post.caption && (
+        <Box css={{ p: '0 0.875rem 1rem 0.875rem', '&>*': { display: 'inline' } }}>
+          <Text bold>{post.owner} </Text>
+          <Text as="p">{more ? post.caption : post.caption.slice(0, 30) + '...'}</Text>
+          {!more && (
+            <Box
+              as="button"
+              css={{ border: 'none', backgroundColor: 'transparent', cursor: 'pointer' }}
+              onClick={showFullCaption}
+            >
+              <Text gray>more</Text>
+            </Box>
+          )}
+        </Box>
+      )}
     </StyledPost>
   )
 }

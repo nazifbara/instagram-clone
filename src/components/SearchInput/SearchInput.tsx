@@ -5,12 +5,11 @@ import { useNavigate } from 'react-router-dom'
 
 import { Popover } from '../'
 import { ResultItem } from './ResultItem'
-import { users } from '../../data'
 import { styled } from '../../stitches.config'
 
 export const SearchInput = (): JSX.Element => {
   const [focused, setFocused] = useState(false)
-  const [inputItems, setInputItems] = useState(users)
+  /*   const [inputItems, setInputItems] = useState(users)
   const {
     isOpen,
     getMenuProps,
@@ -31,17 +30,17 @@ export const SearchInput = (): JSX.Element => {
         navigate(`/app/${changes.selectedItem.username}`)
       }
     },
-  })
+  }) */
   const navigate = useNavigate()
 
   const handleFocus = () => setFocused(true)
   const handleBlur = () => setFocused(false)
-  const handleDismiss = () => setInputValue('')
-  const preventDefault = (e: Event) => e.preventDefault()
+  /*   const handleDismiss = () => setInputValue('')
+   */ const preventDefault = (e: Event) => e.preventDefault()
 
   return (
     <Popover.Root open={true}>
-      <Wrapper {...getComboboxProps()}>
+      {/* <Wrapper {...getComboboxProps()}>
         {!focused && (
           <SearchIconWrapper>
             <SearchIcon width="20px" height="20px" />
@@ -81,7 +80,7 @@ export const SearchInput = (): JSX.Element => {
           </ul>
           <Popover.Arrow />
         </Popover.Content>
-      </Wrapper>
+      </Wrapper> */}
     </Popover.Root>
   )
 }

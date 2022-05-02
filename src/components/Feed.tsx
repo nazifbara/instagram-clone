@@ -1,12 +1,5 @@
-import { PostCard, Container } from '.'
-import { posts } from '../data'
+import { Container } from '.'
 
 export const Feed = (): JSX.Element => {
-  return (
-    <Container type="feed">
-      {posts.map((p) => (
-        <PostCard key={p.id} post={p} />
-      ))}
-    </Container>
-  )
+  return <Container type="feed"></Container>
 }

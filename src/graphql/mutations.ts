@@ -24,6 +24,7 @@ export const createPost = /* GraphQL */ `
         nextToken
         startedAt
       }
+      likeCount
       createdAt
       updatedAt
       _version
@@ -55,6 +56,7 @@ export const updatePost = /* GraphQL */ `
         nextToken
         startedAt
       }
+      likeCount
       createdAt
       updatedAt
       _version
@@ -86,6 +88,7 @@ export const deletePost = /* GraphQL */ `
         nextToken
         startedAt
       }
+      likeCount
       createdAt
       updatedAt
       _version

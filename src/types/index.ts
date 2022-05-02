@@ -1,10 +1,19 @@
 import { RouteProps } from 'react-router-dom'
+import { CreatePostInput, Post as PostAPI } from '../API'
 
 //==============================================================================
 // State
 //==============================================================================
 
-export type SignUpFormState = {
+export interface PostState {
+  posts: Post[]
+  isFetchingPosts: boolean
+  isCreatingPost: boolean
+  postCreationSuccess: boolean
+  error: string
+}
+
+export interface SignUpFormState {
   email: string
   fullName: string
   username: string
@@ -25,6 +34,7 @@ export interface AuthState {
 }
 
 export interface RootState {
+  postState: PostState
   authState: AuthState
 }
 
@@ -32,12 +42,11 @@ export interface RootState {
 // Posts
 //==============================================================================
 
-export interface Post {
-  id: string
-  owner: User
-  media: string
-  caption: string
-  likeCount: number
+export interface Post extends PostAPI {}
+
+export interface NewPost {
+  postInput: CreatePostInput
+  medias: File[]
 }
 
 //==============================================================================

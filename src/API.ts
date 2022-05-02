@@ -5,11 +5,13 @@
 export type CreatePostInput = {
   id?: string | null,
   caption?: string | null,
+  likeCount?: number | null,
   _version?: number | null,
 };
 
 export type ModelPostConditionInput = {
   caption?: ModelStringInput | null,
+  likeCount?: ModelIntInput | null,
   and?: Array< ModelPostConditionInput | null > | null,
   or?: Array< ModelPostConditionInput | null > | null,
   not?: ModelPostConditionInput | null,
@@ -55,11 +57,24 @@ export type ModelSizeInput = {
   between?: Array< number | null > | null,
 };
 
+export type ModelIntInput = {
+  ne?: number | null,
+  eq?: number | null,
+  le?: number | null,
+  lt?: number | null,
+  ge?: number | null,
+  gt?: number | null,
+  between?: Array< number | null > | null,
+  attributeExists?: boolean | null,
+  attributeType?: ModelAttributeTypes | null,
+};
+
 export type Post = {
   __typename: "Post",
   id: string,
   caption?: string | null,
   Media?: ModelMediaConnection | null,
+  likeCount?: number | null,
   createdAt: string,
   updatedAt: string,
   _version: number,
@@ -90,6 +105,7 @@ export type Media = {
 export type UpdatePostInput = {
   id: string,
   caption?: string | null,
+  likeCount?: number | null,
   _version?: number | null,
 };
 
@@ -144,6 +160,7 @@ export type DeleteMediaInput = {
 export type ModelPostFilterInput = {
   id?: ModelIDInput | null,
   caption?: ModelStringInput | null,
+  likeCount?: ModelIntInput | null,
   and?: Array< ModelPostFilterInput | null > | null,
   or?: Array< ModelPostFilterInput | null > | null,
   not?: ModelPostFilterInput | null,
@@ -191,6 +208,7 @@ export type CreatePostMutation = {
       nextToken?: string | null,
       startedAt?: number | null,
     } | null,
+    likeCount?: number | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -226,6 +244,7 @@ export type UpdatePostMutation = {
       nextToken?: string | null,
       startedAt?: number | null,
     } | null,
+    likeCount?: number | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -261,6 +280,7 @@ export type DeletePostMutation = {
       nextToken?: string | null,
       startedAt?: number | null,
     } | null,
+    likeCount?: number | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -352,6 +372,7 @@ export type GetPostQuery = {
       nextToken?: string | null,
       startedAt?: number | null,
     } | null,
+    likeCount?: number | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -390,6 +411,7 @@ export type ListPostsQuery = {
         nextToken?: string | null,
         startedAt?: number | null,
       } | null,
+      likeCount?: number | null,
       createdAt: string,
       updatedAt: string,
       _version: number,
@@ -432,6 +454,7 @@ export type SyncPostsQuery = {
         nextToken?: string | null,
         startedAt?: number | null,
       } | null,
+      likeCount?: number | null,
       createdAt: string,
       updatedAt: string,
       _version: number,
@@ -538,6 +561,7 @@ export type OnCreatePostSubscription = {
       nextToken?: string | null,
       startedAt?: number | null,
     } | null,
+    likeCount?: number | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -572,6 +596,7 @@ export type OnUpdatePostSubscription = {
       nextToken?: string | null,
       startedAt?: number | null,
     } | null,
+    likeCount?: number | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -606,6 +631,7 @@ export type OnDeletePostSubscription = {
       nextToken?: string | null,
       startedAt?: number | null,
     } | null,
+    likeCount?: number | null,
     createdAt: string,
     updatedAt: string,
     _version: number,

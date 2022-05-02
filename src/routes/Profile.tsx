@@ -1,33 +1,48 @@
 import { MouseEventHandler, useState } from 'react'
+import { useSelector } from 'react-redux'
 
+import { getAuth } from '../selectors'
 import { ViewRoute } from '../types'
 import { Link, Container, Box, Avatar, Text, Button, Separator, Icons, Dialog } from '../components'
-import { currentUser, posts } from '../data'
 
 const ProfileView = (): JSX.Element => {
+  // ===========================================================================
+  // State
+  // ===========================================================================
+
   const [currentPostIndex, setCurrentPostIndex] = useState<number | null>(null)
+
+  // ===========================================================================
+  // Selectors
+  // ===========================================================================
+
+  const { currentUser } = useSelector(getAuth)
+
+  // ===========================================================================
+  // Handlers
+  // ===========================================================================
 
   const hanldePostClick = (index: number) => () => setCurrentPostIndex(index)
   const handleBackClick: MouseEventHandler<HTMLButtonElement> = () => {
     if (currentPostIndex === 0 || currentPostIndex === null) return
     setCurrentPostIndex(currentPostIndex - 1)
   }
-  const handleNextClick: MouseEventHandler<HTMLButtonElement> = () => {
+  /*  const handleNextClick: MouseEventHandler<HTMLButtonElement> = () => {
     if (currentPostIndex === posts.length - 1 || currentPostIndex === null) return
     setCurrentPostIndex(currentPostIndex + 1)
-  }
+  } */
 
   return (
     <Container>
       <Box as="section" css={{ display: 'flex', alignItems: 'flex-start' }}>
         <Box css={{ display: 'flex', flexGrow: 1, justifyContent: 'center', mr: '1.875rem' }}>
-          <Avatar size="150px" src={currentUser.avatar} fallback="u" alt={currentUser.username} />
+          <Avatar size="150px" src={currentUser?.avatar} fallback="u" alt={currentUser?.username} />
         </Box>
 
         <Box css={{ flexGrow: 2, '& > *': { mb: '1.25rem' } }}>
           <Box css={{ display: 'Flex', alignItems: 'center' }}>
             <Text as="h2" css={{ fontSize: '$5', fontWeight: 300 }}>
-              {currentUser.username}
+              {currentUser?.username}
             </Text>
             <Button as={Link} to="/app/account/edit" css={{ ml: '1.25rem' }} type="simple">
               Edit Profile
@@ -51,7 +66,7 @@ const ProfileView = (): JSX.Element => {
 
           <Box css={{ fontSize: '$3', '&>*': { mb: '0.5rem' } }}>
             <Text as="div" bold>
-              {currentUser.name}
+              {currentUser?.name}
             </Text>
             <Text as="div">Frontend web developer (React js + AWS Amplify js)</Text>
             <Link as="a" color="primary" href="https://www.nazifbara.com" target="_blank">
@@ -63,7 +78,7 @@ const ProfileView = (): JSX.Element => {
 
       <Separator css={{ my: '1.875rem' }} />
 
-      <Box
+      {/*  <Box
         as="section"
         css={{
           display: 'grid',
@@ -175,7 +190,7 @@ const ProfileView = (): JSX.Element => {
             </Box>
           </Dialog.Content>
         )}
-      </Dialog.Root>
+      </Dialog.Root> */}
     </Container>
   )
 }
