@@ -21,7 +21,7 @@ export const CreateButton = (): JSX.Element => {
   // ===========================================================================
 
   const { currentUser } = useSelector(getAuth)
-  const { isCreatingPost, postCreationSuccess, error } = useSelector(getPost)
+  const { isPosting, postCreationSuccess, error } = useSelector(getPost)
 
   // ===========================================================================
   // State
@@ -32,9 +32,9 @@ export const CreateButton = (): JSX.Element => {
   const [media, setMedia] = useState<File | null>(null)
   const [captionStep, setCaptionStep] = useState(false)
 
-  const showBackButton = captionStep && !isCreatingPost
+  const showBackButton = captionStep && !isPosting
   const showShareButton = showBackButton
-  const showCaption = captionStep && media && !isCreatingPost
+  const showCaption = captionStep && media && !isPosting
 
   // ===========================================================================
   // Dispatch
@@ -117,7 +117,7 @@ export const CreateButton = (): JSX.Element => {
           </StyledTopBar>
           <Separator />
 
-          {isCreatingPost && (
+          {isPosting && (
             <Text as="div" css={{ textAlign: 'center', mt: '50px' }}>
               loading...
             </Text>

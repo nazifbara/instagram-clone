@@ -4,8 +4,8 @@ import { PostState, NewPost, Post } from '../types'
 
 const initialState: PostState = {
   posts: [],
-  isFetchingPosts: false,
-  isCreatingPost: false,
+  isLoading: false,
+  isPosting: false,
   postCreationSuccess: false,
   error: '',
 }
@@ -15,18 +15,18 @@ const postSlice = createSlice({
   initialState,
   reducers: {
     addPost: (state, action: PayloadAction<NewPost>) => {
-      state.isCreatingPost = true
+      state.isPosting = true
     },
 
     addPostSuccess: (state, { payload }: PayloadAction<Post>) => {
       console.log({ addPostSuccess: payload })
-      state.isCreatingPost = false
+      state.isPosting = false
       state.postCreationSuccess = true
       state.posts.unshift(payload)
     },
 
     addPostError: (state, { payload }: PayloadAction<string>) => {
-      state.isCreatingPost = false
+      state.isPosting = false
       state.postCreationSuccess = false
       state.error = payload
     },

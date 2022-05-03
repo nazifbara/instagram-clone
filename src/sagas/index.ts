@@ -3,6 +3,7 @@ import { all, put, takeLatest } from 'redux-saga/effects'
 import { PayloadAction } from '@reduxjs/toolkit'
 import { Auth, API, graphqlOperation, Storage } from 'aws-amplify'
 
+import { getErrorMessage } from '../utils/helpers'
 import { CreateMediaInput, CreateMediaMutation, CreatePostMutation } from '../API'
 import { createPost, createMedia } from '../graphql/mutations'
 import { LoginFormState, SignUpFormState, User, NewPost } from '../types'
@@ -46,15 +47,7 @@ function* createNewPost({ payload: { postInput, medias } }: PayloadAction<NewPos
     }
   } catch (error: any) {
     console.error({ createNewPostError: error })
-    switch (error.code) {
-      case 'NetworkError':
-        yield put(addPostError('Please check your internet connection and try again.'))
-        break
-
-      default:
-        yield put(addPostError('Something went wrong...'))
-        break
-    }
+    yield put(addPostError(getErrorMessage(error)))
   }
 }
 
@@ -96,23 +89,7 @@ function* signUpUser({
     yield put(signUpSuccess())
   } catch (error: any) {
     console.error({ signUpError: error })
-    switch (error.code) {
-      case 'UsernameExistsException':
-        yield put(signUpError('That username is taken. Try another.'))
-        break
-
-      case 'InvalidParameterException':
-        if (error.message.includes('password')) {
-          yield put(signUpError('Password must be at least 8 characters long.'))
-        } else {
-          yield put(signUpError('Something went wrong...'))
-        }
-        break
-
-      default:
-        yield put(signUpError('Something went wrong...'))
-        break
-    }
+    yield put(signUpError(getErrorMessage(error)))
   }
 }
 
@@ -123,21 +100,7 @@ function* loginUser({ payload: { username, password } }: PayloadAction<LoginForm
     yield put(loginSuccess(user))
   } catch (error: any) {
     console.error({ signInError: error })
-
-    switch (error.code) {
-      case 'UserNotFoundException':
-      case 'NotAuthorizedException':
-        yield put(loginError(error.message))
-        break
-
-      case 'NetworkError':
-        yield put(loginError('Please check your internet connection and try again.'))
-        break
-
-      default:
-        yield put(loginError('Something went wrong...'))
-        break
-    }
+    yield put(loginError(getErrorMessage(error)))
   }
 }
 

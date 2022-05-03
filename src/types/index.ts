@@ -7,8 +7,8 @@ import { CreatePostInput, Post as PostAPI } from '../API'
 
 export interface PostState {
   posts: Post[]
-  isFetchingPosts: boolean
-  isCreatingPost: boolean
+  isLoading: boolean
+  isPosting: boolean
   postCreationSuccess: boolean
   error: string
 }
