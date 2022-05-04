@@ -82,3 +82,13 @@ export const { styled, css, globalCss, keyframes, getCssText, theme, createTheme
       wh: (value: string) => ({ width: value, height: value }),
     },
   })
+
+export const overlayShow = keyframes({
+  '0%': { opacity: 0 },
+  '100%': { opacity: 1 },
+})
+
+export const contentShow = keyframes({
+  '0%': { opacity: 0, transform: 'translate(-50%, -50%) scale(1.5)' },
+  '100%': { opacity: 1, transform: 'translate(-50%, -50%) scale(1)' },
+})

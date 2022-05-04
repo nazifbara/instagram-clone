@@ -4,17 +4,7 @@ import { CSSProperties } from '@stitches/react'
 import { MouseEventHandler } from 'react'
 
 import { Icons, IconButton } from '.'
-import { styled, keyframes } from '../stitches.config'
-
-const overlayShow = keyframes({
-  '0%': { opacity: 0 },
-  '100%': { opacity: 1 },
-})
-
-const contentShow = keyframes({
-  '0%': { opacity: 0, transform: 'translate(-50%, -50%) scale(1.5)' },
-  '100%': { opacity: 1, transform: 'translate(-50%, -50%) scale(1)' },
-})
+import { styled, overlayShow, contentShow } from '../stitches.config'
 
 const StyledOverlay = styled(DialogPrimitive.Overlay, {
   backgroundColor: blackA.blackA9,

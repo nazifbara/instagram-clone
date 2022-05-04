@@ -4,13 +4,7 @@ import { PayloadAction } from '@reduxjs/toolkit'
 import { Auth, API, graphqlOperation, Storage } from 'aws-amplify'
 
 import { getErrorMessage } from '../utils/helpers'
-import {
-  CreateMediaInput,
-  CreateMediaMutation,
-  CreatePostMutation,
-  ListPostsQuery,
-  Media,
-} from '../API'
+import { CreateMediaInput, CreateMediaMutation, CreatePostMutation, ListPostsQuery } from '../API'
 import { createPost, createMedia } from '../graphql/mutations'
 import { listPosts } from '../graphql/queries'
 import { LoginFormState, SignUpFormState, User, NewPost, PostToMediaMap } from '../types'

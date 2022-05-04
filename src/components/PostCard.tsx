@@ -1,6 +1,7 @@
 import { useState } from 'react'
+import { DotsHorizontalIcon } from '@radix-ui/react-icons'
 
-import { Link, Box, Avatar, Text, Icons } from '.'
+import { Link, Box, Avatar, Text, Icons, ActionDialog } from '.'
 import { styled } from '../stitches.config'
 import { Post } from '../types'
 import { IconButton } from './IconButton'
@@ -22,8 +23,20 @@ export const PostCard = ({ post, media, ...otherProps }: PostCardProps): JSX.Ele
         <Link to={`/app/${post.owner}`} css={{ ml: '0.875rem' }}>
           {post.owner}
         </Link>
+        <Box css={{ flexGrow: 1 }} />
+
+        <ActionDialog.Root>
+          <IconButton as={ActionDialog.Trigger} css={{ color: '$textBase' }}>
+            <DotsHorizontalIcon fontSize="18px" />
+          </IconButton>
+          <ActionDialog.Content>
+            <ActionDialog.Option kind="danger">Delete</ActionDialog.Option>
+          </ActionDialog.Content>
+        </ActionDialog.Root>
       </Box>
+
       <img src={media} alt="" />
+
       <Box as="section" css={{ p: '0.875rem 1rem' }}>
         <StyledActionBox>
           <StyledActionButton>
