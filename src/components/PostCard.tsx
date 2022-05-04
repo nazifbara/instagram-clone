@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { DotsHorizontalIcon } from '@radix-ui/react-icons'
+import { useSelector } from 'react-redux'
 
+import { getAuth } from '../selectors'
 import { Link, Box, Avatar, Text, Icons, ActionDialog } from '.'
 import { styled } from '../stitches.config'
 import { Post } from '../types'
@@ -12,7 +14,22 @@ type PostCardProps = {
 }
 
 export const PostCard = ({ post, media, ...otherProps }: PostCardProps): JSX.Element => {
+  // ===========================================================================
+  // Selectors
+  // ===========================================================================
+
+  const { currentUser } = useSelector(getAuth)
+
+  // ===========================================================================
+  // State
+  // ===========================================================================
+
   const [more, setMore] = useState(false)
+  const isOwner = currentUser?.username === post.owner
+
+  // ===========================================================================
+  // Handlers
+  // ===========================================================================
 
   const showFullCaption = () => setMore(true)
 
@@ -25,14 +42,16 @@ export const PostCard = ({ post, media, ...otherProps }: PostCardProps): JSX.Ele
         </Link>
         <Box css={{ flexGrow: 1 }} />
 
-        <ActionDialog.Root>
-          <IconButton as={ActionDialog.Trigger} css={{ color: '$textBase' }}>
-            <DotsHorizontalIcon fontSize="18px" />
-          </IconButton>
-          <ActionDialog.Content>
-            <ActionDialog.Option kind="danger">Delete</ActionDialog.Option>
-          </ActionDialog.Content>
-        </ActionDialog.Root>
+        {isOwner && (
+          <ActionDialog.Root>
+            <IconButton as={ActionDialog.Trigger} css={{ color: '$textBase' }}>
+              <DotsHorizontalIcon fontSize="18px" />
+            </IconButton>
+            <ActionDialog.Content>
+              <ActionDialog.Option kind="danger">Delete</ActionDialog.Option>
+            </ActionDialog.Content>
+          </ActionDialog.Root>
+        )}
       </Box>
 
       <img src={media} alt="" />
