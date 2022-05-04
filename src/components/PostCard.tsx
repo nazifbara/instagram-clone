@@ -7,9 +7,10 @@ import { IconButton } from './IconButton'
 
 type PostCardProps = {
   post: Post
+  media: string
 }
 
-export const PostCard = ({ post, ...otherProps }: PostCardProps): JSX.Element => {
+export const PostCard = ({ post, media, ...otherProps }: PostCardProps): JSX.Element => {
   const [more, setMore] = useState(false)
 
   const showFullCaption = () => setMore(true)
@@ -22,7 +23,7 @@ export const PostCard = ({ post, ...otherProps }: PostCardProps): JSX.Element =>
           {post.owner}
         </Link>
       </Box>
-      <img src="" alt="" />
+      <img src={media} alt="" />
       <Box as="section" css={{ p: '0.875rem 1rem' }}>
         <StyledActionBox>
           <StyledActionButton>

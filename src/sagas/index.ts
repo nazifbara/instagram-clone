@@ -4,10 +4,24 @@ import { PayloadAction } from '@reduxjs/toolkit'
 import { Auth, API, graphqlOperation, Storage } from 'aws-amplify'
 
 import { getErrorMessage } from '../utils/helpers'
-import { CreateMediaInput, CreateMediaMutation, CreatePostMutation } from '../API'
+import {
+  CreateMediaInput,
+  CreateMediaMutation,
+  CreatePostMutation,
+  ListPostsQuery,
+  Media,
+} from '../API'
 import { createPost, createMedia } from '../graphql/mutations'
-import { LoginFormState, SignUpFormState, User, NewPost } from '../types'
-import { addPostSuccess, addPostError, addPost } from '../slices/post'
+import { listPosts } from '../graphql/queries'
+import { LoginFormState, SignUpFormState, User, NewPost, PostToMediaMap } from '../types'
+import {
+  loadPosts,
+  loadPostsError,
+  loadPostsSuccess,
+  addPostSuccess,
+  addPostError,
+  addPost,
+} from '../slices/post'
 import {
   signUp,
   signUpSuccess,
@@ -20,13 +34,49 @@ import {
   checkAuthError,
 } from '../slices/auth'
 
+function* fetchPosts() {
+  try {
+    const posts: { data: ListPostsQuery } = yield API.graphql(graphqlOperation(listPosts))
+    console.log({ posts })
+    if (posts.data.listPosts) {
+      const {
+        data: {
+          listPosts: { items },
+        },
+      } = posts
+      let postToMediaMap: PostToMediaMap = {}
+      yield Promise.all(
+        items.map(async (p) => {
+          const url = await getSignedMediaUrl(p.Media?.items[0])
+          if (!url) {
+            return
+          }
+          postToMediaMap[p.id] = url
+        })
+      )
+
+      yield put(loadPostsSuccess({ posts: items, postToMediaMap }))
+    }
+  } catch (error) {
+    console.error(error)
+    yield put(loadPostsError(getErrorMessage(error)))
+  }
+}
+
+const getSignedMediaUrl = async (media: Media | undefined | null) => {
+  if (!media) {
+    return
+  }
+  return await Storage.get(media.mediaKey)
+}
+
 function* createNewPost({ payload: { postInput, medias } }: PayloadAction<NewPost>) {
   console.log(postInput)
 
   try {
-    const post: { data: CreatePostMutation } = yield API.graphql({
-      ...graphqlOperation(createPost, { input: postInput }),
-    })
+    const post: { data: CreatePostMutation } = yield API.graphql(
+      graphqlOperation(createPost, { input: postInput })
+    )
     console.log(post)
     const result: [{ data: CreateMediaMutation }] = yield Promise.all(
       medias.map(async (file) => {
@@ -106,6 +156,7 @@ function* loginUser({ payload: { username, password } }: PayloadAction<LoginForm
 
 export function* rootSaga() {
   yield all([
+    takeLatest(loadPosts.type, fetchPosts),
     takeLatest(addPost.type, createNewPost),
     takeLatest(signUp.type, signUpUser),
     takeLatest(login.type, loginUser),

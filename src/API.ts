@@ -418,7 +418,7 @@ export type ListPostsQuery = {
       _deleted?: boolean | null,
       _lastChangedAt: number,
       owner?: string | null,
-    } | null >,
+    }  >,
     nextToken?: string | null,
     startedAt?: number | null,
   } | null,

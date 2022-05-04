@@ -7,6 +7,7 @@ import { CreatePostInput, Post as PostAPI } from '../API'
 
 export interface PostState {
   posts: Post[]
+  postToMediaMap: PostToMediaMap
   isLoading: boolean
   isPosting: boolean
   postCreationSuccess: boolean
@@ -47,6 +48,10 @@ export interface Post extends PostAPI {}
 export interface NewPost {
   postInput: CreatePostInput
   medias: File[]
+}
+
+export interface PostToMediaMap {
+  [anyProps: string]: string
 }
 
 //==============================================================================
