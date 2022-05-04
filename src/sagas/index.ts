@@ -47,7 +47,7 @@ function* fetchPosts() {
       let postToMediaMap: PostToMediaMap = {}
       yield Promise.all(
         items.map(async (p) => {
-          const url = await getSignedMediaUrl(p.Media?.items[0])
+          const url = await getSignedMediaUrl(p.Media?.items[0]?.mediaKey)
           if (!url) {
             return
           }
@@ -63,11 +63,11 @@ function* fetchPosts() {
   }
 }
 
-const getSignedMediaUrl = async (media: Media | undefined | null) => {
-  if (!media) {
+const getSignedMediaUrl = async (key: string | undefined) => {
+  if (!key) {
     return
   }
-  return await Storage.get(media.mediaKey)
+  return await Storage.get(key)
 }
 
 function* createNewPost({ payload: { postInput, medias } }: PayloadAction<NewPost>) {
@@ -78,12 +78,17 @@ function* createNewPost({ payload: { postInput, medias } }: PayloadAction<NewPos
       graphqlOperation(createPost, { input: postInput })
     )
     console.log(post)
+    let postToMediaMap: PostToMediaMap = {}
+
     const result: [{ data: CreateMediaMutation }] = yield Promise.all(
       medias.map(async (file) => {
         const key = await uploadMedia(file)
+        const url = await getSignedMediaUrl(key)
+        postToMediaMap[post.data.createPost?.id || ''] = url || ''
         return await _createMedia({ postID: post.data.createPost?.id || '', mediaKey: key })
       })
     )
+
     console.info('New post created!')
     result.forEach((m) => {
       if (!m.data.createMedia) {
@@ -93,7 +98,7 @@ function* createNewPost({ payload: { postInput, medias } }: PayloadAction<NewPos
     })
 
     if (post.data.createPost) {
-      yield put(addPostSuccess(post.data.createPost))
+      yield put(addPostSuccess({ post: post.data.createPost, postToMediaMap }))
     }
   } catch (error: any) {
     console.error({ createNewPostError: error })

@@ -25,8 +25,7 @@ const postSlice = createSlice({
     ) => {
       state.isLoading = false
       state.posts = payload.posts
-      state.postToMediaMap = payload.postToMediaMap
-      console.log({ loadPostsSuccess: payload })
+      state.postToMediaMap = { ...state.postToMediaMap, ...payload.postToMediaMap }
     },
 
     loadPostsError: (state, { payload }: PayloadAction<string>) => {
@@ -38,11 +37,15 @@ const postSlice = createSlice({
       state.isPosting = true
     },
 
-    addPostSuccess: (state, { payload }: PayloadAction<Post>) => {
+    addPostSuccess: (
+      state,
+      { payload }: PayloadAction<{ post: Post; postToMediaMap: PostToMediaMap }>
+    ) => {
       console.log({ addPostSuccess: payload })
       state.isPosting = false
       state.postCreationSuccess = true
-      state.posts.unshift(payload)
+      state.posts.unshift(payload.post)
+      state.postToMediaMap = { ...state.postToMediaMap, ...payload.postToMediaMap }
     },
 
     addPostError: (state, { payload }: PayloadAction<string>) => {
