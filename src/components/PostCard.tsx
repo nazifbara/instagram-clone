@@ -26,6 +26,7 @@ export const PostCard = ({ post, media, ...otherProps }: PostCardProps): JSX.Ele
 
   const [more, setMore] = useState(false)
   const isOwner = currentUser?.username === post.owner
+  const isShortCaption = post.caption?.length && post.caption?.length <= 50
 
   // ===========================================================================
   // Handlers
@@ -69,8 +70,14 @@ export const PostCard = ({ post, media, ...otherProps }: PostCardProps): JSX.Ele
       {post.caption && (
         <Box css={{ p: '0 0.875rem 1rem 0.875rem', '&>*': { display: 'inline' } }}>
           <Text bold>{post.owner} </Text>
-          <Text as="p">{more ? post.caption : post.caption.slice(0, 30) + '...'}</Text>
-          {!more && (
+
+          {isShortCaption && <Text as="p">{post.caption}</Text>}
+
+          {!isShortCaption && (
+            <Text as="p">{more ? post.caption : post.caption.slice(0, 50) + '...'}</Text>
+          )}
+
+          {!more && !isShortCaption && (
             <Box
               as="button"
               css={{ border: 'none', backgroundColor: 'transparent', cursor: 'pointer' }}
