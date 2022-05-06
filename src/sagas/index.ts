@@ -33,6 +33,7 @@ import {
 
 function* _logout() {
   try {
+    yield DataStore.clear()
     yield Auth.signOut()
     yield put(logoutSuccess())
   } catch (error) {
