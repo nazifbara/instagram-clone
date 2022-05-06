@@ -1,4 +1,4 @@
-type Post @model @auth(rules: [{allow: public, operations: [read]}, {allow: owner}, {allow: private}]) {
+type Post @model @auth(rules: [{allow: public, operations: [read]}, {allow: owner}, {allow: private, operations: [read, update]}]) {
   id: ID!
   caption: String
   Media: [Media] @hasMany(indexName: "byPost", fields: ["id"])

@@ -76,7 +76,7 @@ export const CreateButton = (): JSX.Element => {
     if (!media) {
       return
     }
-    _createNewPost({ postInput: { caption }, medias: [media] })
+    _createNewPost({ postInput: { caption }, medias: [media], owner: currentUser?.username })
   }
 
   // ===========================================================================

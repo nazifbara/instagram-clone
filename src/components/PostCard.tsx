@@ -37,8 +37,8 @@ export const PostCard = ({ post, media, ...otherProps }: PostCardProps): JSX.Ele
   return (
     <StyledPost {...otherProps}>
       <Box css={{ p: '0.875rem 1rem', display: 'flex', alignItems: 'center' }}>
-        <Avatar size="2rem" src="" fallback="u" alt={post.owner ?? ''} />
-        <Link to={`/app/${post.owner}`} css={{ ml: '0.875rem' }}>
+        <Avatar size="2rem" src="" fallback="u" alt={post.owner || 'username'} />
+        <Link to={`/app/${post.owner}}`} css={{ ml: '0.875rem' }}>
           {post.owner}
         </Link>
         <Box css={{ flexGrow: 1 }} />

@@ -1,5 +1,6 @@
 import { RouteProps } from 'react-router-dom'
-import { CreatePostInput, Post as PostAPI } from '../API'
+import { Post as PostModel } from '../models'
+import { CreatePostInput } from '../API'
 
 //==============================================================================
 // State
@@ -43,11 +44,14 @@ export interface RootState {
 // Posts
 //==============================================================================
 
-export interface Post extends PostAPI {}
+export interface Post extends PostModel {
+  owner?: string
+}
 
 export interface NewPost {
   postInput: CreatePostInput
   medias: File[]
+  owner: string
 }
 
 export interface PostToMediaMap {

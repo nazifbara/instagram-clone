@@ -1,12 +1,11 @@
 import { v4 as uuid } from 'uuid'
 import { all, put, takeLatest } from 'redux-saga/effects'
 import { PayloadAction } from '@reduxjs/toolkit'
-import { Auth, API, graphqlOperation, Storage } from 'aws-amplify'
+import { Auth, Storage, DataStore, Predicates, SortDirection } from 'aws-amplify'
 
+import { Post as PostModel, Media as MediaModel } from '../models'
 import { getErrorMessage } from '../utils/helpers'
-import { CreateMediaInput, CreateMediaMutation, CreatePostMutation, ListPostsQuery } from '../API'
-import { createPost, createMedia } from '../graphql/mutations'
-import { listPosts } from '../graphql/queries'
+import { CreateMediaInput } from '../API'
 import { LoginFormState, SignUpFormState, User, NewPost, PostToMediaMap } from '../types'
 import {
   loadPosts,
@@ -30,26 +29,25 @@ import {
 
 function* fetchPosts() {
   try {
-    const posts: { data: ListPostsQuery } = yield API.graphql(graphqlOperation(listPosts))
+    const posts: PostModel[] = yield DataStore.query(PostModel, Predicates.ALL, {
+      sort: (s) => s.createdAt(SortDirection.DESCENDING),
+    })
     console.log({ posts })
-    if (posts.data.listPosts) {
-      const {
-        data: {
-          listPosts: { items },
-        },
-      } = posts
+    if (posts) {
       let postToMediaMap: PostToMediaMap = {}
       yield Promise.all(
-        items.map(async (p) => {
-          const url = await getSignedMediaUrl(p.Media?.items[0]?.mediaKey)
-          if (!url) {
-            return
-          }
-          postToMediaMap[p.id] = url
+        posts.map(async (p) => {
+          const medias: MediaModel[] = (await DataStore.query(MediaModel)).filter(
+            (m) => m.postID === p.id
+          )
+
+          const url = await getSignedMediaUrl(medias[0].mediaKey)
+
+          postToMediaMap[p.id] = url || ''
         })
       )
 
-      yield put(loadPostsSuccess({ posts: items, postToMediaMap }))
+      yield put(loadPostsSuccess({ posts: posts, postToMediaMap }))
     }
   } catch (error) {
     console.error(error)
@@ -64,36 +62,32 @@ const getSignedMediaUrl = async (key: string | undefined) => {
   return await Storage.get(key)
 }
 
-function* createNewPost({ payload: { postInput, medias } }: PayloadAction<NewPost>) {
+function* createNewPost({ payload: { postInput, medias, owner } }: PayloadAction<NewPost>) {
   console.log(postInput)
 
   try {
-    const post: { data: CreatePostMutation } = yield API.graphql(
-      graphqlOperation(createPost, { input: postInput })
-    )
+    const post: PostModel = yield DataStore.save(new PostModel({ caption: postInput.caption }))
     console.log(post)
     let postToMediaMap: PostToMediaMap = {}
 
-    const result: [{ data: CreateMediaMutation }] = yield Promise.all(
+    const result: MediaModel[] = yield Promise.all(
       medias.map(async (file) => {
         const key = await uploadMedia(file)
         const url = await getSignedMediaUrl(key)
-        postToMediaMap[post.data.createPost?.id || ''] = url || ''
-        return await _createMedia({ postID: post.data.createPost?.id || '', mediaKey: key })
+        postToMediaMap[post.id] = url || ''
+        return await _createMedia({ postID: post.id, mediaKey: key })
       })
     )
 
     console.info('New post created!')
     result.forEach((m) => {
-      if (!m.data.createMedia) {
+      if (!m) {
         return
       }
-      post.data.createPost?.Media?.items.push(m.data.createMedia)
+      post.Media?.push(m)
     })
 
-    if (post.data.createPost) {
-      yield put(addPostSuccess({ post: post.data.createPost, postToMediaMap }))
-    }
+    yield put(addPostSuccess({ post: { ...post, owner }, postToMediaMap }))
   } catch (error: any) {
     console.error({ createNewPostError: error })
     yield put(addPostError(getErrorMessage(error)))
@@ -106,10 +100,8 @@ const uploadMedia = async (media: File): Promise<string> => {
   return mediaKey
 }
 
-const _createMedia = async (input: CreateMediaInput) => {
-  console.log(input)
-
-  return await API.graphql(graphqlOperation(createMedia, { input }))
+const _createMedia = async ({ postID, mediaKey }: CreateMediaInput) => {
+  return await DataStore.save(new MediaModel({ postID, mediaKey }))
 }
 
 function* getCurrentUser() {
