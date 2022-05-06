@@ -1,7 +1,7 @@
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
 import { reset } from 'stitches-reset'
-import { Amplify } from 'aws-amplify'
+import { Amplify, AuthModeStrategyType } from 'aws-amplify'
 import { Provider } from 'react-redux'
 import createSagaMiddleware from '@redux-saga/core'
 import { configureStore } from '@reduxjs/toolkit'
@@ -13,7 +13,12 @@ import reportWebVitals from './reportWebVitals'
 import { globalCss } from './stitches.config'
 import awsExports from './aws-exports'
 
-Amplify.configure(awsExports)
+Amplify.configure({
+  ...awsExports,
+  DataStore: {
+    authModeStrategyType: AuthModeStrategyType.MULTI_AUTH,
+  },
+})
 
 const sagaMiddleware = createSagaMiddleware()
 const store = configureStore({

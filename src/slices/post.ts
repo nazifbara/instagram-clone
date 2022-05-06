@@ -15,6 +15,11 @@ const postSlice = createSlice({
   name: 'post',
   initialState,
   reducers: {
+    deletePost: (state, { payload: postID }: PayloadAction<string>) => {
+      const index = state.posts.findIndex((p) => p.id === postID)
+      state.posts = [...state.posts.slice(0, index), ...state.posts.slice(index + 1)]
+    },
+
     loadPosts: (state) => {
       state.isLoading = true
     },
@@ -62,6 +67,7 @@ const postSlice = createSlice({
 })
 
 export const {
+  deletePost,
   loadPosts,
   loadPostsSuccess,
   loadPostsError,
