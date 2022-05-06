@@ -8,6 +8,7 @@ import { getErrorMessage } from '../utils/helpers'
 import { CreateMediaInput } from '../API'
 import { LoginFormState, SignUpFormState, User, NewPost, PostToMediaMap } from '../types'
 import {
+  deletePost,
   loadPosts,
   loadPostsError,
   loadPostsSuccess,
@@ -26,6 +27,18 @@ import {
   checkAuthSuccess,
   checkAuthError,
 } from '../slices/auth'
+
+function* _deletePost({ payload: postID }: PayloadAction<string>) {
+  try {
+    const postMedias: MediaModel[] = yield DataStore.query(MediaModel, (m) =>
+      m.postID('eq', postID)
+    )
+    yield DataStore.delete(PostModel, (p) => p.id('eq', postID))
+    yield Promise.all(postMedias.map(async (m) => await Storage.remove(m.mediaKey)))
+  } catch (error) {
+    console.error({ deletePostErrro: error })
+  }
+}
 
 function* fetchPosts() {
   try {
@@ -147,6 +160,7 @@ function* loginUser({ payload: { username, password } }: PayloadAction<LoginForm
 
 export function* rootSaga() {
   yield all([
+    takeLatest(deletePost.type, _deletePost),
     takeLatest(loadPosts.type, fetchPosts),
     takeLatest(addPost.type, createNewPost),
     takeLatest(signUp.type, signUpUser),

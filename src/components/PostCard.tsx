@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import { DotsHorizontalIcon } from '@radix-ui/react-icons'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 
+import { deletePost } from '../slices/post'
 import { getAuth } from '../selectors'
 import { Link, Box, Avatar, Text, Icons, ActionDialog } from '.'
 import { styled } from '../stitches.config'
@@ -29,6 +30,13 @@ export const PostCard = ({ post, media, ...otherProps }: PostCardProps): JSX.Ele
   const isShortCaption = post.caption?.length && post.caption?.length <= 50
 
   // ===========================================================================
+  // Dispatch
+  // ===========================================================================
+
+  const dispatch = useDispatch()
+  const _deletePost = (postID: string) => () => dispatch(deletePost(postID))
+
+  // ===========================================================================
   // Handlers
   // ===========================================================================
 
@@ -49,7 +57,9 @@ export const PostCard = ({ post, media, ...otherProps }: PostCardProps): JSX.Ele
               <DotsHorizontalIcon fontSize="18px" />
             </IconButton>
             <ActionDialog.Content>
-              <ActionDialog.Option kind="danger">Delete</ActionDialog.Option>
+              <ActionDialog.Option kind="danger" onClick={_deletePost(post.id)}>
+                Delete
+              </ActionDialog.Option>
             </ActionDialog.Content>
           </ActionDialog.Root>
         )}
