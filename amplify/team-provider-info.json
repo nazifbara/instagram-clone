@@ -21,6 +21,10 @@
         "instagramclone9b2ab60aPreSignup": {
           "deploymentBucketName": "amplify-instagramclone-dev-123606-deployment",
           "s3Key": "amplify-builds/instagramclone9b2ab60aPreSignup-494b4d2f355131714e74-build.zip"
+        },
+        "AdminQueries1bd4ee94": {
+          "deploymentBucketName": "amplify-instagramclone-dev-123606-deployment",
+          "s3Key": "amplify-builds/AdminQueries1bd4ee94-767932466c4345336170-build.zip"
         }
       }
     }

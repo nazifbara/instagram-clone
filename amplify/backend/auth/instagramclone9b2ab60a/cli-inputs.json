@@ -86,8 +86,7 @@
       "Ref": "AWS::StackId"
     },
     "permissions": [],
-    "authTriggerConnections": [
-      "{\"triggerType\":\"PreSignUp\",\"lambdaFunctionName\":\"instagramclone9b2ab60aPreSignup\"}"
-    ]
+    "authTriggerConnections": "[\n  {\n    \"triggerType\": \"PreSignUp\",\n    \"lambdaFunctionName\": \"instagramclone9b2ab60aPreSignup\"\n  }\n]",
+    "adminQueryGroup": "Users"
   }
 }

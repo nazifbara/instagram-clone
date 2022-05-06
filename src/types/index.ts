@@ -6,6 +6,14 @@ import { CreatePostInput } from '../API'
 // State
 //==============================================================================
 
+export interface UserState {
+  userDetail: {
+    data: User | null
+    isLoading: boolean
+    error: string
+  }
+}
+
 export interface PostState {
   posts: Post[]
   postToMediaMap: PostToMediaMap
@@ -36,6 +44,7 @@ export interface AuthState {
 }
 
 export interface RootState {
+  userState: UserState
   postState: PostState
   authState: AuthState
 }

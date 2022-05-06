@@ -1,12 +1,13 @@
 import { v4 as uuid } from 'uuid'
 import { all, put, takeLatest } from 'redux-saga/effects'
 import { PayloadAction } from '@reduxjs/toolkit'
-import { Auth, Storage, DataStore, Predicates, SortDirection } from 'aws-amplify'
+import { Auth, Storage, DataStore, Predicates, SortDirection, API } from 'aws-amplify'
 
 import { Post as PostModel, Media as MediaModel } from '../models'
 import { getErrorMessage } from '../utils/helpers'
 import { CreateMediaInput } from '../API'
 import { LoginFormState, SignUpFormState, User, NewPost, PostToMediaMap } from '../types'
+import { getUserDetail, getUserDetailSuccess, getUserDetailError } from '../slices/user'
 import {
   deletePost,
   loadPosts,
@@ -30,6 +31,33 @@ import {
   checkAuthSuccess,
   checkAuthError,
 } from '../slices/auth'
+
+function* _getUserDetail({ payload }: PayloadAction<string>) {
+  try {
+    const apiName = 'AdminQueries'
+    const path = '/getUser'
+    const session: { [anyProps: string]: any } = yield Auth.currentSession()
+
+    const token = session.getAccessToken().getJwtToken()
+
+    const myInit = {
+      queryStringParameters: {
+        username: payload,
+        groupname: 'Users',
+      },
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: token,
+      },
+    }
+    const user: User = yield API.get(apiName, path, myInit)
+    console.log({ userDetail: user })
+    yield put(getUserDetailSuccess(user))
+  } catch (error) {
+    console.error({ userDetailError: error })
+    yield put(getUserDetailError(getErrorMessage(error)))
+  }
+}
 
 function* _logout() {
   try {
@@ -174,6 +202,7 @@ function* loginUser({ payload: { username, password } }: PayloadAction<LoginForm
 
 export function* rootSaga() {
   yield all([
+    takeLatest(getUserDetail.type, _getUserDetail),
     takeLatest(logout.type, _logout),
     takeLatest(deletePost.type, _deletePost),
     takeLatest(loadPosts.type, fetchPosts),
