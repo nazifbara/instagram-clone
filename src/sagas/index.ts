@@ -17,6 +17,9 @@ import {
   addPost,
 } from '../slices/post'
 import {
+  logout,
+  logoutSuccess,
+  logoutError,
   signUp,
   signUpSuccess,
   signUpError,
@@ -27,6 +30,16 @@ import {
   checkAuthSuccess,
   checkAuthError,
 } from '../slices/auth'
+
+function* _logout() {
+  try {
+    yield Auth.signOut()
+    yield put(logoutSuccess())
+  } catch (error) {
+    console.error({ logoutError: error })
+    yield put(logoutError())
+  }
+}
 
 function* _deletePost({ payload: postID }: PayloadAction<string>) {
   try {
@@ -160,6 +173,7 @@ function* loginUser({ payload: { username, password } }: PayloadAction<LoginForm
 
 export function* rootSaga() {
   yield all([
+    takeLatest(logout.type, _logout),
     takeLatest(deletePost.type, _deletePost),
     takeLatest(loadPosts.type, fetchPosts),
     takeLatest(addPost.type, createNewPost),

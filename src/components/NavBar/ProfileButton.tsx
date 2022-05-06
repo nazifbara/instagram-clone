@@ -1,5 +1,6 @@
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 
+import { logout } from '../../slices/auth'
 import { getAuth } from '../../selectors'
 import { Link, Avatar, Popover, Text, Separator, Icons, IconButton } from '../'
 import { Trigger as PopoverTrigger } from '../Popover'
@@ -11,6 +12,19 @@ export const ProfileButton = (): JSX.Element => {
   // ===========================================================================
 
   const { currentUser } = useSelector(getAuth)
+
+  // ===========================================================================
+  // Dispatch
+  // ===========================================================================
+
+  const dispatch = useDispatch()
+  const _logout = () => dispatch(logout())
+
+  // ===========================================================================
+  // Hanlders
+  // ===========================================================================
+
+  const handleLogout = () => _logout()
 
   return (
     <Popover.Root>
@@ -33,7 +47,7 @@ export const ProfileButton = (): JSX.Element => {
           <Text css={{ ml: '0.75rem' }}>Settings</Text>
         </MenuItem>
         <Separator />
-        <MenuItem text as="span">
+        <MenuItem onClick={handleLogout} text as="span">
           <Text>Logout</Text>
         </MenuItem>
       </Popover.Content>

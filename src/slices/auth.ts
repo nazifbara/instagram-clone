@@ -15,6 +15,19 @@ const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
+    logout: (state) => {
+      state.checking = true
+    },
+
+    logoutSuccess: (state) => {
+      state.currentUser = null
+      state.checking = false
+    },
+
+    logoutError: (state) => {
+      state.checking = false
+    },
+
     signUp: (state, action: PayloadAction<LoginFormState>) => {
       state.loading = true
     },
@@ -71,6 +84,9 @@ const authSlice = createSlice({
 })
 
 export const {
+  logout,
+  logoutSuccess,
+  logoutError,
   signUp,
   signUpSuccess,
   signUpError,
