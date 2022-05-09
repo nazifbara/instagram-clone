@@ -45,8 +45,12 @@ const postSlice = createSlice({
     },
 
     deletePost: (state, { payload: postID }: PayloadAction<string>) => {
-      const index = state.posts.findIndex((p) => p.id === postID)
-      state.posts = [...state.posts.slice(0, index), ...state.posts.slice(index + 1)]
+      const indexFeed = state.posts.findIndex((p) => p.id === postID)
+      const indexProfile = state.userPosts.data.findIndex((p) => p.id === postID)
+      console.log(indexProfile)
+
+      state.posts.splice(indexFeed, 1)
+      state.userPosts.data.splice(indexProfile, 1)
     },
 
     loadPosts: (state) => {

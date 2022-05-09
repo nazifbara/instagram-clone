@@ -1,12 +1,25 @@
 import { MouseEventHandler, useState, useEffect, useCallback } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useParams } from 'react-router-dom'
+import { DotsHorizontalIcon } from '@radix-ui/react-icons'
 
 import { getAuth, getPost, getUser } from '../selectors'
 import { ViewRoute } from '../types'
-import { Link, Container, Box, Avatar, Text, Button, Separator, Icons, Dialog } from '../components'
+import {
+  ActionDialog,
+  IconButton,
+  Link,
+  Container,
+  Box,
+  Avatar,
+  Text,
+  Button,
+  Separator,
+  Icons,
+  Dialog,
+} from '../components'
 import { getUserDetail } from '../slices/user'
-import { getUserPosts } from '../slices/post'
+import { getUserPosts, deletePost } from '../slices/post'
 
 const ProfileView = (): JSX.Element => {
   // ===========================================================================
@@ -17,19 +30,20 @@ const ProfileView = (): JSX.Element => {
   const { userDetail } = useSelector(getUser)
   const { userPosts, postToMediaMap } = useSelector(getPost)
 
-  console.log({ userDetail })
-
   // ===========================================================================
   // State
   // ===========================================================================
 
   const [currentPostIndex, setCurrentPostIndex] = useState<number | null>(null)
+  const isOwner = currentUser?.username === userDetail.data?.Username
+  const postsCount = userPosts.data.length
 
   // ===========================================================================
   // Dispatch
   // ===========================================================================
 
   const dispatch = useDispatch()
+  const _deletePost = (postID: string) => dispatch(deletePost(postID))
   const _getUserDetail = useCallback(
     (username: string) => dispatch(getUserDetail(username)),
     [dispatch]
@@ -56,11 +70,19 @@ const ProfileView = (): JSX.Element => {
   // Handlers
   // ===========================================================================
 
+  const handlePostDelete = (id: string) => () => {
+    if (currentPostIndex === 0 && postsCount === 1) setCurrentPostIndex(null)
+    else if (currentPostIndex === postsCount - 1) setCurrentPostIndex(currentPostIndex - 1)
+    _deletePost(id)
+  }
+
   const hanldePostClick = (index: number) => () => setCurrentPostIndex(index)
+
   const handleBackClick: MouseEventHandler<HTMLButtonElement> = () => {
     if (currentPostIndex === 0 || currentPostIndex === null) return
     setCurrentPostIndex(currentPostIndex - 1)
   }
+
   const handleNextClick: MouseEventHandler<HTMLButtonElement> = () => {
     if (currentPostIndex === userPosts.data.length - 1 || currentPostIndex === null) return
     setCurrentPostIndex(currentPostIndex + 1)
@@ -225,6 +247,22 @@ const ProfileView = (): JSX.Element => {
                       <Link to={`/app/${userDetail.data?.Username}`}>
                         {userDetail.data?.Username}
                       </Link>
+                      <Box css={{ flexGrow: '1' }} />
+                      {isOwner && (
+                        <ActionDialog.Root>
+                          <IconButton as={ActionDialog.Trigger} css={{ color: '$textBase' }}>
+                            <DotsHorizontalIcon fontSize="18px" />
+                          </IconButton>
+                          <ActionDialog.Content>
+                            <ActionDialog.Option
+                              kind="danger"
+                              onClick={handlePostDelete(userPosts.data[currentPostIndex].id)}
+                            >
+                              Delete
+                            </ActionDialog.Option>
+                          </ActionDialog.Content>
+                        </ActionDialog.Root>
+                      )}
                     </Box>
                     <Separator orientation="horizontal" />
                     <Box css={{ p: '0.875rem 1rem' }}>

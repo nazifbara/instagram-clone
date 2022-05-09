@@ -28,7 +28,7 @@ const StyledContent = styled(DialogPrimitive.Content, {
   transition: 'width 0.3s ease-out',
 })
 
-const StyledOption = styled('button', {
+const StyledOption = styled(DialogPrimitive.Close, {
   display: 'block',
   fontSize: '$2',
   color: '$textBase',
