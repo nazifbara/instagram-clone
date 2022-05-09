@@ -5,6 +5,11 @@ import { PostState, NewPost, Post, PostToMediaMap } from '../types'
 const initialState: PostState = {
   posts: [],
   postToMediaMap: {},
+  userPosts: {
+    data: [],
+    isLoading: false,
+    error: '',
+  },
   isLoading: false,
   isPosting: false,
   postCreationSuccess: false,
@@ -15,6 +20,30 @@ const postSlice = createSlice({
   name: 'post',
   initialState,
   reducers: {
+    getUserPosts: (state, action: PayloadAction<string>) => {
+      state.userPosts.isLoading = true
+    },
+
+    getUserPostsSuccess: (
+      state,
+      { payload }: PayloadAction<{ posts: Post[]; postToMediaMap: PostToMediaMap }>
+    ) => {
+      state.userPosts = {
+        data: payload.posts,
+        isLoading: false,
+        error: '',
+      }
+      state.postToMediaMap = { ...state.postToMediaMap, ...payload.postToMediaMap }
+    },
+
+    getUserPostsError: (state, { payload }: PayloadAction<string>) => {
+      state.userPosts = {
+        data: [],
+        isLoading: false,
+        error: payload,
+      }
+    },
+
     deletePost: (state, { payload: postID }: PayloadAction<string>) => {
       const index = state.posts.findIndex((p) => p.id === postID)
       state.posts = [...state.posts.slice(0, index), ...state.posts.slice(index + 1)]
@@ -67,6 +96,9 @@ const postSlice = createSlice({
 })
 
 export const {
+  getUserPosts,
+  getUserPostsError,
+  getUserPostsSuccess,
   deletePost,
   loadPosts,
   loadPostsSuccess,

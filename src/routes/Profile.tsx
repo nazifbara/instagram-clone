@@ -2,10 +2,11 @@ import { MouseEventHandler, useState, useEffect, useCallback } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useParams } from 'react-router-dom'
 
-import { getAuth, getUser } from '../selectors'
+import { getAuth, getPost, getUser } from '../selectors'
 import { ViewRoute } from '../types'
 import { Link, Container, Box, Avatar, Text, Button, Separator, Icons, Dialog } from '../components'
 import { getUserDetail } from '../slices/user'
+import { getUserPosts } from '../slices/post'
 
 const ProfileView = (): JSX.Element => {
   // ===========================================================================
@@ -14,6 +15,7 @@ const ProfileView = (): JSX.Element => {
 
   const { currentUser } = useSelector(getAuth)
   const { userDetail } = useSelector(getUser)
+  const { userPosts, postToMediaMap } = useSelector(getPost)
 
   console.log({ userDetail })
 
@@ -32,6 +34,10 @@ const ProfileView = (): JSX.Element => {
     (username: string) => dispatch(getUserDetail(username)),
     [dispatch]
   )
+  const _getUserPosts = useCallback(
+    (username: string) => dispatch(getUserPosts(username)),
+    [dispatch]
+  )
 
   // ===========================================================================
   // Hooks
@@ -42,8 +48,9 @@ const ProfileView = (): JSX.Element => {
   useEffect(() => {
     if (username) {
       _getUserDetail(username)
+      _getUserPosts(username)
     }
-  }, [username, _getUserDetail])
+  }, [username, _getUserDetail, _getUserPosts])
 
   // ===========================================================================
   // Handlers
@@ -54,10 +61,10 @@ const ProfileView = (): JSX.Element => {
     if (currentPostIndex === 0 || currentPostIndex === null) return
     setCurrentPostIndex(currentPostIndex - 1)
   }
-  /*  const handleNextClick: MouseEventHandler<HTMLButtonElement> = () => {
-    if (currentPostIndex === posts.length - 1 || currentPostIndex === null) return
+  const handleNextClick: MouseEventHandler<HTMLButtonElement> = () => {
+    if (currentPostIndex === userPosts.data.length - 1 || currentPostIndex === null) return
     setCurrentPostIndex(currentPostIndex + 1)
-  } */
+  }
 
   return (
     <Container>
@@ -74,7 +81,7 @@ const ProfileView = (): JSX.Element => {
               size="150px"
               src={currentUser?.avatar}
               fallback="u"
-              alt={currentUser?.username}
+              alt={userDetail.data?.Username}
             />
           </Box>
 
@@ -118,119 +125,135 @@ const ProfileView = (): JSX.Element => {
 
       <Separator css={{ my: '1.875rem' }} />
 
-      {/*  <Box
-        as="section"
-        css={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(3, 1fr)',
-          gridAutoRows: 'auto',
-          gridGap: '1.75rem',
-          alignItems: 'stretch',
-        }}
-      >
-        {posts.map((p, i) => (
+      {userPosts.error && !userPosts.isLoading && (
+        <Text css={{ color: '$dangerSolid' }}>{userPosts.error}</Text>
+      )}
+
+      {userPosts.isLoading && <Text>Loading</Text>}
+
+      {!userDetail.isLoading && !userDetail.error && (
+        <Box>
           <Box
-            key={p.id + i}
-            onClick={hanldePostClick(i)}
+            as="section"
             css={{
-              height: '18.125rem',
-              cursor: 'pointer',
-              border: 'none',
-              p: '0',
-              color: 'inherit',
-              backgroundImage: `url(${p.media})`,
-              backgroundPosition: 'center',
-              backgroundSize: 'cover',
-              '&:hover > div': {
-                display: 'flex',
-              },
+              display: 'grid',
+              gridTemplateColumns: 'repeat(3, 1fr)',
+              gridAutoRows: 'auto',
+              gridGap: '1.75rem',
+              alignItems: 'stretch',
             }}
           >
-            <Box
-              css={{
-                display: 'none',
-                alignItems: 'center',
-                justifyContent: 'center',
-                height: '100%',
-                width: '100%',
-                backgroundColor: '$blackA11',
-              }}
-            >
-              <Icons.Like fill />
-              <Box css={{ ml: '0.5rem', fontWeight: 600, fontSize: '$3' }}>{p.likeCount}</Box>
-            </Box>
-          </Box>
-        ))}
-      </Box>
-      <Dialog.Root
-        open={currentPostIndex !== null}
-        onOpenChange={(o) => !o && setCurrentPostIndex(null)}
-      >
-        {currentPostIndex !== null && (
-          <Dialog.Content
-            navigation={true}
-            currentIndex={currentPostIndex}
-            lastIndex={posts.length - 1}
-            onBackClick={handleBackClick}
-            onNextClick={handleNextClick}
-            css={{ width: '85%', height: '95%', borderRadius: '0 0.75rem 0.75rem 0' }}
-          >
-            <Box
-              css={{
-                height: '100%',
-                width: '100%',
-                display: 'flex',
-              }}
-            >
+            {userPosts.data.map((p, i) => (
               <Box
+                key={'profile-posts-' + p.id}
+                onClick={hanldePostClick(i)}
                 css={{
-                  height: '100%',
-                  width: '62%',
-                  display: 'flex',
-                  backgroundImage: `url("${posts[currentPostIndex].media}")`,
-                  backgroundRepeat: 'no-repeat',
-                  backgroundSize: 'cover',
+                  height: '18.125rem',
+                  cursor: 'pointer',
+                  border: 'none',
+                  p: '0',
+                  color: 'inherit',
+                  backgroundImage: `url(${postToMediaMap[p.id]})`,
                   backgroundPosition: 'center',
+                  backgroundSize: 'cover',
+                  '&:hover > div': {
+                    display: 'flex',
+                  },
                 }}
-              />
-              <Separator orientation="vertical" />
-              <Box css={{ width: '38%' }}>
-                <Box css={{ display: 'flex', alignItems: 'center', mx: '1rem', height: '3.75rem' }}>
-                  <Avatar
-                    src={currentUser.avatar}
-                    fallback="p"
-                    alt={currentUser.username}
-                    size="1.75rem"
-                    css={{ marginRight: '0.75rem' }}
-                  />
-                  <Link to={`/app/${currentUser.username}`}>{currentUser.username}</Link>
+              >
+                <Box
+                  css={{
+                    display: 'none',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    height: '100%',
+                    width: '100%',
+                    backgroundColor: '$blackA11',
+                  }}
+                >
+                  <Icons.Like fill />
+                  <Box css={{ ml: '0.5rem', fontWeight: 600, fontSize: '$3' }}>{p.likeCount}</Box>
                 </Box>
-                <Separator orientation="horizontal" />
-                <Box css={{ p: '0.875rem 1rem' }}>
-                  <Box css={{ display: 'flex' }}>
-                    <Box css={{ width: '2rem', mr: '1rem' }}>
+              </Box>
+            ))}
+          </Box>
+          <Dialog.Root
+            open={currentPostIndex !== null}
+            onOpenChange={(o) => !o && setCurrentPostIndex(null)}
+          >
+            {currentPostIndex !== null && (
+              <Dialog.Content
+                navigation={true}
+                currentIndex={currentPostIndex}
+                lastIndex={userPosts.data.length - 1}
+                onBackClick={handleBackClick}
+                onNextClick={handleNextClick}
+                css={{ width: '85%', height: '95%', borderRadius: '0 0.75rem 0.75rem 0' }}
+              >
+                <Box
+                  css={{
+                    height: '100%',
+                    width: '100%',
+                    display: 'flex',
+                  }}
+                >
+                  <Box
+                    css={{
+                      height: '100%',
+                      width: '62%',
+                      display: 'flex',
+                      backgroundImage: `url("${
+                        postToMediaMap[userPosts.data[currentPostIndex].id]
+                      }")`,
+                      backgroundRepeat: 'no-repeat',
+                      backgroundSize: 'cover',
+                      backgroundPosition: 'center',
+                    }}
+                  />
+                  <Separator orientation="vertical" />
+                  <Box css={{ width: '38%' }}>
+                    <Box
+                      css={{ display: 'flex', alignItems: 'center', mx: '1rem', height: '3.75rem' }}
+                    >
                       <Avatar
+                        src=""
+                        fallback="p"
+                        alt={userDetail.data?.Username}
                         size="1.75rem"
-                        src={posts[currentPostIndex].owner.avatar}
-                        fallback="u"
-                        alt={posts[currentPostIndex].owner.username}
+                        css={{ marginRight: '0.75rem' }}
                       />
+                      <Link to={`/app/${userDetail.data?.Username}`}>
+                        {userDetail.data?.Username}
+                      </Link>
                     </Box>
-                    <Box css={{ display: 'inline' }}>
-                      <Text bold css={{ mr: '0.3125rem' }}>
-                        {posts[currentPostIndex].owner.username}
-                      </Text>
-                      <Text as="p" css={{ display: 'inline' }}>
-                        {posts[currentPostIndex].caption}
-                      </Text>
+                    <Separator orientation="horizontal" />
+                    <Box css={{ p: '0.875rem 1rem' }}>
+                      <Box css={{ display: 'flex' }}>
+                        <Box css={{ width: '2rem', mr: '1rem' }}>
+                          <Avatar
+                            size="1.75rem"
+                            src=""
+                            fallback="u"
+                            alt={userDetail.data?.Username}
+                          />
+                        </Box>
+                        <Box css={{ display: 'inline' }}>
+                          <Text bold css={{ mr: '0.3125rem' }}>
+                            {userDetail.data?.Username}
+                          </Text>
+                          <Text as="p" css={{ display: 'inline' }}>
+                            {userPosts.data[currentPostIndex].caption}
+                          </Text>
+                        </Box>
+                      </Box>
                     </Box>
                   </Box>
                 </Box>
-              </Box>
-            </Box>
-          </Dialog.Content>
-        )}
-      </Dialog.Root> */}
+              </Dialog.Content>
+            )}
+          </Dialog.Root>
+        </Box>
+      )}
     </Container>
   )
 }

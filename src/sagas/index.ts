@@ -1,14 +1,21 @@
-import { v4 as uuid } from 'uuid'
 import { all, put, takeLatest } from 'redux-saga/effects'
 import { PayloadAction } from '@reduxjs/toolkit'
 import { Auth, Storage, DataStore, Predicates, SortDirection, API } from 'aws-amplify'
 
 import { Post as PostModel, Media as MediaModel } from '../models'
-import { getErrorMessage } from '../utils/helpers'
-import { CreateMediaInput } from '../API'
-import { LoginFormState, SignUpFormState, User, NewPost, PostToMediaMap } from '../types'
+import {
+  getErrorMessage,
+  getSignedMediaUrl,
+  mapPostsToMedias,
+  createMedia,
+  uploadMedia,
+} from '../utils/helpers'
+import { LoginFormState, SignUpFormState, User, NewPost, PostToMediaMap, Post } from '../types'
 import { getUserDetail, getUserDetailSuccess, getUserDetailError } from '../slices/user'
 import {
+  getUserPosts,
+  getUserPostsSuccess,
+  getUserPostsError,
   deletePost,
   loadPosts,
   loadPostsError,
@@ -31,6 +38,19 @@ import {
   checkAuthSuccess,
   checkAuthError,
 } from '../slices/auth'
+
+function* _getUserPosts({ payload }: PayloadAction<string>) {
+  try {
+    let posts: Post[] = yield DataStore.query(PostModel)
+    posts = posts.filter((p) => p.owner === payload)
+    let postToMediaMap: PostToMediaMap = yield mapPostsToMedias(posts)
+    yield put(getUserPostsSuccess({ posts: posts, postToMediaMap }))
+    console.log({ profilePosts: posts })
+  } catch (error) {
+    console.error({ profilePostsError: error })
+    yield put(getUserPostsError(getErrorMessage(error)))
+  }
+}
 
 function* _getUserDetail({ payload }: PayloadAction<string>) {
   try {
@@ -89,18 +109,7 @@ function* fetchPosts() {
     })
     console.log({ posts })
     if (posts) {
-      let postToMediaMap: PostToMediaMap = {}
-      yield Promise.all(
-        posts.map(async (p) => {
-          const medias: MediaModel[] = (await DataStore.query(MediaModel)).filter(
-            (m) => m.postID === p.id
-          )
-
-          const url = await getSignedMediaUrl(medias[0].mediaKey)
-
-          postToMediaMap[p.id] = url || ''
-        })
-      )
+      let postToMediaMap: PostToMediaMap = yield mapPostsToMedias(posts)
 
       yield put(loadPostsSuccess({ posts: posts, postToMediaMap }))
     }
@@ -108,13 +117,6 @@ function* fetchPosts() {
     console.error(error)
     yield put(loadPostsError(getErrorMessage(error)))
   }
-}
-
-const getSignedMediaUrl = async (key: string | undefined) => {
-  if (!key) {
-    return
-  }
-  return await Storage.get(key)
 }
 
 function* createNewPost({ payload: { postInput, medias, owner } }: PayloadAction<NewPost>) {
@@ -130,7 +132,7 @@ function* createNewPost({ payload: { postInput, medias, owner } }: PayloadAction
         const key = await uploadMedia(file)
         const url = await getSignedMediaUrl(key)
         postToMediaMap[post.id] = url || ''
-        return await _createMedia({ postID: post.id, mediaKey: key })
+        return await createMedia({ postID: post.id, mediaKey: key })
       })
     )
 
@@ -147,16 +149,6 @@ function* createNewPost({ payload: { postInput, medias, owner } }: PayloadAction
     console.error({ createNewPostError: error })
     yield put(addPostError(getErrorMessage(error)))
   }
-}
-
-const uploadMedia = async (media: File): Promise<string> => {
-  const mediaKey = uuid() + media.name.replace(/\s/g, '-').toLowerCase()
-  await Storage.put(mediaKey, media)
-  return mediaKey
-}
-
-const _createMedia = async ({ postID, mediaKey }: CreateMediaInput) => {
-  return await DataStore.save(new MediaModel({ postID, mediaKey }))
 }
 
 function* getCurrentUser() {
@@ -202,6 +194,7 @@ function* loginUser({ payload: { username, password } }: PayloadAction<LoginForm
 
 export function* rootSaga() {
   yield all([
+    takeLatest(getUserPosts.type, _getUserPosts),
     takeLatest(getUserDetail.type, _getUserDetail),
     takeLatest(logout.type, _logout),
     takeLatest(deletePost.type, _deletePost),
