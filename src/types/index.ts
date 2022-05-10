@@ -12,6 +12,11 @@ export interface UserState {
     isLoading: boolean
     error: string
   }
+  searchResult: {
+    data: User[]
+    isLoading: boolean
+    error: string
+  }
 }
 
 export interface PostState {

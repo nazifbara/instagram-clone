@@ -10,7 +10,13 @@ type AvatarProps = {
   fallback: string
   css?: CSSProperties
 }
-export const Avatar = ({ size = '2.75rem', src, alt, fallback, css }: AvatarProps): JSX.Element => {
+export const Avatar = ({
+  size = '2.75rem',
+  src,
+  alt,
+  fallback = 'U',
+  css,
+}: AvatarProps): JSX.Element => {
   return (
     <StyledAvatar css={{ ...css, wh: size }}>
       <StyledImage src={src} alt={alt} />

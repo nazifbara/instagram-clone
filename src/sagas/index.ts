@@ -11,7 +11,14 @@ import {
   uploadMedia,
 } from '../utils/helpers'
 import { LoginFormState, SignUpFormState, User, NewPost, PostToMediaMap, Post } from '../types'
-import { getUserDetail, getUserDetailSuccess, getUserDetailError } from '../slices/user'
+import {
+  searchUser,
+  searchUserSuccess,
+  searchUserError,
+  getUserDetail,
+  getUserDetailSuccess,
+  getUserDetailError,
+} from '../slices/user'
 import {
   getUserPosts,
   getUserPostsSuccess,
@@ -38,6 +45,34 @@ import {
   checkAuthSuccess,
   checkAuthError,
 } from '../slices/auth'
+
+function* _searchUser({ payload: username }: PayloadAction<string>) {
+  try {
+    const apiName = 'AdminQueries'
+    const path = '/listUsers'
+    const session: { [anyProps: string]: any } = yield Auth.currentSession()
+
+    const token = session.getAccessToken().getJwtToken()
+
+    const myInit = {
+      queryStringParameters: {
+        groupname: 'Users',
+      },
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: token,
+      },
+    }
+    let result: { Users: User[] } = yield API.get(apiName, path, myInit)
+    result.Users = result.Users.filter((u) =>
+      u.Username.toLowerCase().includes(username.toLowerCase())
+    )
+    yield put(searchUserSuccess(result.Users))
+  } catch (error) {
+    console.error({ searchUserError: error })
+    yield put(searchUserError(getErrorMessage(error)))
+  }
+}
 
 function* _getUserPosts({ payload }: PayloadAction<string>) {
   try {
@@ -194,6 +229,7 @@ function* loginUser({ payload: { username, password } }: PayloadAction<LoginForm
 
 export function* rootSaga() {
   yield all([
+    takeLatest(searchUser.type, _searchUser),
     takeLatest(getUserPosts.type, _getUserPosts),
     takeLatest(getUserDetail.type, _getUserDetail),
     takeLatest(logout.type, _logout),

@@ -13,11 +13,11 @@ export const ResultItem = forwardRef(
         css={{ marginRight: '0.75rem' }}
         src={item.avatar}
         alt={item.name ?? ''}
-        fallback={item.username[0].toUpperCase()}
+        fallback={item.Username[0].toUpperCase()}
       />
       <div>
         <Box>
-          <Text bold>{item.username}</Text>
+          <Text bold>{item.Username}</Text>
         </Box>
         <Box css={{ mt: '0.25rem' }}>
           <Text gray>{item.name}</Text>

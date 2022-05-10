@@ -8,13 +8,38 @@ const initialState: UserState = {
     isLoading: false,
     error: '',
   },
+  searchResult: {
+    data: [],
+    isLoading: false,
+    error: '',
+  },
 }
 
 const userSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {
-    getUserDetail: (state, { payload }: PayloadAction<string>) => {
+    searchUser: (state, action: PayloadAction<string>) => {
+      state.searchResult.isLoading = true
+    },
+
+    searchUserSuccess: (state, { payload }: PayloadAction<User[]>) => {
+      state.searchResult = {
+        data: payload,
+        isLoading: false,
+        error: '',
+      }
+    },
+
+    searchUserError: (state, { payload }: PayloadAction<string>) => {
+      state.searchResult = {
+        data: [],
+        isLoading: false,
+        error: payload,
+      }
+    },
+
+    getUserDetail: (state, action: PayloadAction<string>) => {
       state.userDetail.isLoading = true
     },
 
@@ -36,6 +61,13 @@ const userSlice = createSlice({
   },
 })
 
-export const { getUserDetail, getUserDetailError, getUserDetailSuccess } = userSlice.actions
+export const {
+  searchUser,
+  searchUserSuccess,
+  searchUserError,
+  getUserDetail,
+  getUserDetailError,
+  getUserDetailSuccess,
+} = userSlice.actions
 
 export const userReducer = userSlice.reducer

@@ -1,15 +1,48 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { Cross1Icon, MagnifyingGlassIcon } from '@radix-ui/react-icons'
 import { useCombobox } from 'downshift'
 import { useNavigate } from 'react-router-dom'
+import { useSelector, useDispatch } from 'react-redux'
 
+import { Text, Box } from '../'
+import { getUser } from '../../selectors'
+import { searchUser } from '../../slices/user'
 import { Popover } from '../'
 import { ResultItem } from './ResultItem'
 import { styled } from '../../stitches.config'
 
 export const SearchInput = (): JSX.Element => {
+  // ===========================================================================
+  // Selectors
+  // ===========================================================================
+
+  const {
+    searchResult: { data: result, isLoading, error },
+  } = useSelector(getUser)
+
+  // ===========================================================================
+  // State
+  // ===========================================================================
+
   const [focused, setFocused] = useState(false)
-  /*   const [inputItems, setInputItems] = useState(users)
+  const noResult = result.length === 0 && !isLoading
+  const hasResult = !noResult && !isLoading && !error
+  const showSearchStatus = isLoading || error || noResult
+
+  // ===========================================================================
+  // Dispatch
+  // ===========================================================================
+
+  const dispatch = useDispatch()
+
+  const _searchUser = (username: string) => dispatch(searchUser(username))
+
+  // ===========================================================================
+  // Hooks
+  // ===========================================================================
+
+  const timer = useRef<any | null>(null)
+
   const {
     isOpen,
     getMenuProps,
@@ -20,27 +53,34 @@ export const SearchInput = (): JSX.Element => {
     inputValue,
     setInputValue,
   } = useCombobox({
-    items: inputItems,
-    onInputValueChange: () => {
-      setInputItems(users)
+    items: result,
+    onInputValueChange: ({ inputValue }) => {
+      if (timer.current) {
+        clearTimeout(timer.current)
+      }
+      timer.current = setTimeout(() => {
+        if (inputValue) {
+          _searchUser(inputValue)
+        }
+      }, 300)
     },
     onSelectedItemChange: (changes) => {
       if (changes.selectedItem) {
-        setInputValue(changes.selectedItem.username)
-        navigate(`/app/${changes.selectedItem.username}`)
+        setInputValue(changes.selectedItem.Username)
+        navigate(`/app/${changes.selectedItem.Username}`)
       }
     },
-  }) */
+  })
   const navigate = useNavigate()
 
   const handleFocus = () => setFocused(true)
   const handleBlur = () => setFocused(false)
-  /*   const handleDismiss = () => setInputValue('')
-   */ const preventDefault = (e: Event) => e.preventDefault()
+  const handleDismiss = () => setInputValue('')
+  const preventDefault = (e: Event) => e.preventDefault()
 
   return (
     <Popover.Root open={true}>
-      {/* <Wrapper {...getComboboxProps()}>
+      <Wrapper {...getComboboxProps()}>
         {!focused && (
           <SearchIconWrapper>
             <SearchIcon width="20px" height="20px" />
@@ -68,19 +108,42 @@ export const SearchInput = (): JSX.Element => {
           hidden={!isOpen || inputValue === ''}
           {...getMenuProps()}
         >
-          <ul>
-            {inputItems.map((item, index) => (
-              <ResultItem
-                key={`${item.id}-search-item}`}
-                highlighted={highlightedIndex === index}
-                item={item}
-                itemProps={getItemProps({ item, index })}
-              />
-            ))}
-          </ul>
+          {showSearchStatus && (
+            <Box
+              css={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                p: '1rem',
+                height: '100%',
+              }}
+            >
+              {isLoading && <Text gray>searching...</Text>}
+
+              {error && (
+                <Text gray css={{ color: '$dangerSolid' }}>
+                  {error}
+                </Text>
+              )}
+
+              {noResult && <Text gray>No results found.</Text>}
+            </Box>
+          )}
+          {hasResult && (
+            <ul>
+              {result.map((item, index) => (
+                <ResultItem
+                  key={`${item.Attributes[0].Value}-search-item}`}
+                  highlighted={highlightedIndex === index}
+                  item={item}
+                  itemProps={getItemProps({ item, index })}
+                />
+              ))}
+            </ul>
+          )}
           <Popover.Arrow />
         </Popover.Content>
-      </Wrapper> */}
+      </Wrapper>
     </Popover.Root>
   )
 }
