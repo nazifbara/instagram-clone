@@ -112,22 +112,22 @@ const ProfileView = (): JSX.Element => {
               <Text as="h2" css={{ fontSize: '$5', fontWeight: 300 }}>
                 {userDetail.data?.Username}
               </Text>
-              <Button as={Link} to="/app/account/edit" css={{ ml: '1.25rem' }} type="simple">
+              <Button css={{ ml: '1.25rem' }} type="simple">
                 Edit Profile
               </Button>
             </Box>
 
             <Box as="ul" css={{ display: 'flex', fontSize: '$3', '&>li': { mr: '2.5rem' } }}>
               <Box as="li">
-                <Text bold>12 </Text>
+                <Text bold>{userPosts.data.length} </Text>
                 <Text>posts</Text>
               </Box>
               <Box as="li">
-                <Text bold>30 </Text>
+                <Text bold>0 </Text>
                 <Text>followers</Text>
               </Box>
               <Box as="li">
-                <Text bold>100 </Text>
+                <Text bold>0 </Text>
                 <Text>following</Text>
               </Box>
             </Box>
