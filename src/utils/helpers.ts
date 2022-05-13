@@ -5,6 +5,9 @@ import { Media as MediaModel } from '../models'
 import { PostToMediaMap, Post } from '../types'
 import { CreateMediaInput } from '../API'
 
+export const getAvatarURL = (username: string = 'random') =>
+  `https://avatars.dicebear.com/api/avataaars/${username}.svg`
+
 export const updateLikesMap = (
   likesMapStr: string | null | undefined,
   prevLikeCount: number | null | undefined,

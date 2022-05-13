@@ -20,6 +20,7 @@ import {
 } from '../components'
 import { getUserDetail } from '../slices/user'
 import { getUserPosts, deletePost } from '../slices/post'
+import { getAvatarURL } from '../utils/helpers'
 
 const ProfileView = (): JSX.Element => {
   // ===========================================================================
@@ -101,7 +102,7 @@ const ProfileView = (): JSX.Element => {
           <Box css={{ display: 'flex', flexGrow: 1, justifyContent: 'center', mr: '1.875rem' }}>
             <Avatar
               size="150px"
-              src={currentUser?.avatar}
+              src={getAvatarURL(userDetail.data?.Username)}
               fallback="u"
               alt={userDetail.data?.Username}
             />
@@ -238,8 +239,8 @@ const ProfileView = (): JSX.Element => {
                       css={{ display: 'flex', alignItems: 'center', mx: '1rem', height: '3.75rem' }}
                     >
                       <Avatar
-                        src=""
-                        fallback="p"
+                        src={getAvatarURL(userDetail.data?.Username)}
+                        fallback="u"
                         alt={userDetail.data?.Username}
                         size="1.75rem"
                         css={{ marginRight: '0.75rem' }}
@@ -266,24 +267,27 @@ const ProfileView = (): JSX.Element => {
                     </Box>
                     <Separator orientation="horizontal" />
                     <Box css={{ p: '0.875rem 1rem' }}>
-                      <Box css={{ display: 'flex' }}>
-                        <Box css={{ width: '2rem', mr: '1rem' }}>
-                          <Avatar
-                            size="1.75rem"
-                            src=""
-                            fallback="u"
-                            alt={userDetail.data?.Username}
-                          />
+                      {userPosts.data[currentPostIndex].caption && (
+                        <Box css={{ display: 'flex', alignItems: 'center' }}>
+                          <Box css={{ width: '2rem', mr: '.5rem' }}>
+                            <Avatar
+                              size="1.75rem"
+                              src={getAvatarURL(userDetail.data?.Username)}
+                              fallback="u"
+                              alt={userDetail.data?.Username}
+                            />
+                          </Box>
+
+                          <Box css={{ display: 'inline' }}>
+                            <Text bold css={{ mr: '0.3125rem' }}>
+                              {userDetail.data?.Username}
+                            </Text>
+                            <Text as="p" css={{ display: 'inline' }}>
+                              {userPosts.data[currentPostIndex].caption}
+                            </Text>
+                          </Box>
                         </Box>
-                        <Box css={{ display: 'inline' }}>
-                          <Text bold css={{ mr: '0.3125rem' }}>
-                            {userDetail.data?.Username}
-                          </Text>
-                          <Text as="p" css={{ display: 'inline' }}>
-                            {userPosts.data[currentPostIndex].caption}
-                          </Text>
-                        </Box>
-                      </Box>
+                      )}
                     </Box>
                   </Box>
                 </Box>

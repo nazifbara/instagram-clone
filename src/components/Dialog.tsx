@@ -19,6 +19,7 @@ const StyledContent = styled(DialogPrimitive.Content, {
   backgroundColor: '$accentBg',
   borderRadius: 12,
   position: 'fixed',
+  overflow: 'hidden',
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',

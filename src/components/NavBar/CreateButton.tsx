@@ -14,6 +14,7 @@ import { getAuth, getPost } from '../../selectors'
 import { Dialog, Icons, Separator, Box, Button, Text, IconButton, Avatar } from '../'
 
 import { styled } from '../../stitches.config'
+import { getAvatarURL } from '../../utils/helpers'
 
 export const CreateButton = (): JSX.Element => {
   // ===========================================================================
@@ -163,7 +164,7 @@ export const CreateButton = (): JSX.Element => {
               <Box css={{ flexGrow: 1 }}>
                 <Box css={{ display: 'flex', alignItems: 'center', mx: '1rem', height: '3.75rem' }}>
                   <Avatar
-                    src={currentUser?.avatar}
+                    src={getAvatarURL(currentUser?.username)}
                     fallback="p"
                     alt={currentUser?.username}
                     size="1.75rem"

@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { DotsHorizontalIcon } from '@radix-ui/react-icons'
 import { useSelector, useDispatch } from 'react-redux'
 
+import { getAvatarURL } from '../utils/helpers'
 import { deletePost, toggleLike } from '../slices/post'
 import { getAuth } from '../selectors'
 import { Link, Box, Avatar, Text, Icons, ActionDialog } from '.'
@@ -49,7 +50,12 @@ export const PostCard = ({ post, media, ...otherProps }: PostCardProps): JSX.Ele
   return (
     <StyledPost {...otherProps}>
       <Box css={{ p: '0.875rem 1rem', display: 'flex', alignItems: 'center' }}>
-        <Avatar size="2rem" src="" fallback="u" alt={post.owner || 'username'} />
+        <Avatar
+          size="2rem"
+          src={getAvatarURL(post.owner)}
+          fallback="u"
+          alt={post.owner || 'some user'}
+        />
         <Link to={`/app/${post.owner}`} css={{ ml: '0.875rem' }}>
           {post.owner}
         </Link>

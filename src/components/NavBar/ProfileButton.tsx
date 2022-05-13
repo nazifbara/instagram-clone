@@ -1,5 +1,6 @@
 import { useSelector, useDispatch } from 'react-redux'
 
+import { getAvatarURL } from '../../utils/helpers'
 import { logout } from '../../slices/auth'
 import { getAuth } from '../../selectors'
 import { Link, Avatar, Popover, Text, Separator, Icons, IconButton } from '../'
@@ -31,7 +32,7 @@ export const ProfileButton = (): JSX.Element => {
       <IconButton as={PopoverTrigger}>
         <Avatar
           size="1.5rem"
-          src={currentUser?.avatar}
+          src={getAvatarURL(currentUser?.username)}
           alt={currentUser?.name}
           fallback={currentUser?.username[0].toUpperCase()}
         />
@@ -42,7 +43,7 @@ export const ProfileButton = (): JSX.Element => {
           <Icons.Pofile />
           <Text css={{ ml: '0.75rem' }}>Profile</Text>
         </MenuItem>
-        <MenuItem text to="/app/account/edit">
+        <MenuItem text to={`/app/${currentUser?.username}`}>
           <Icons.Settings />
           <Text css={{ ml: '0.75rem' }}>Settings</Text>
         </MenuItem>

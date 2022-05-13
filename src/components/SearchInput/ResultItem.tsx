@@ -5,13 +5,14 @@ import { styled } from '../../stitches.config'
 import { User } from '../../types'
 import { Text, Avatar } from '../'
 import { Box } from '../Box'
+import { getAvatarURL } from '../../utils/helpers'
 
 export const ResultItem = forwardRef(
   ({ item, itemProps, highlighted }: ResultItemProps, ref: ForwardedRef<HTMLLIElement>) => (
     <StyledResultItem highlighted={highlighted} {...itemProps} ref={ref}>
       <Avatar
         css={{ marginRight: '0.75rem' }}
-        src={item.avatar}
+        src={getAvatarURL(item.Username)}
         alt={item.name ?? ''}
         fallback={item.Username[0].toUpperCase()}
       />
