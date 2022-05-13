@@ -129,8 +129,12 @@ function* _getUserDetail({ payload }: PayloadAction<string>) {
     const user: User = yield API.get(apiName, path, myInit)
     console.log({ userDetail: user })
     yield put(getUserDetailSuccess(user))
-  } catch (error) {
+  } catch (error: any) {
     console.error({ userDetailError: error })
+    if (error.isAxiosError && error.response.data.message.includes('User does not exist')) {
+      error.code = 'UserNotFoundException'
+      error.message = 'User not found.'
+    }
     yield put(getUserDetailError(getErrorMessage(error)))
   }
 }
