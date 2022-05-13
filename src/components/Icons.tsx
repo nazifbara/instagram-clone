@@ -1,3 +1,5 @@
+import { red } from '@radix-ui/colors'
+
 export const Chevron = (): JSX.Element => {
   return (
     <svg color="#eaf6ff" fill="#eaf6ff" height="16" role="img" viewBox="0 0 24 24" width="16">
@@ -6,12 +8,12 @@ export const Chevron = (): JSX.Element => {
   )
 }
 
-export const Like = ({ fill = false }): JSX.Element =>
-  fill ? (
+export const Like = ({ fill = false, liked = false }): JSX.Element =>
+  fill || liked ? (
     <svg
       aria-label="Activity Feed"
-      color="#eaf6ff"
-      fill="#eaf6ff"
+      color={liked ? red.red9 : '#eaf6ff'}
+      fill={liked ? red.red9 : '#eaf6ff'}
       height="24"
       role="img"
       viewBox="0 0 48 48"

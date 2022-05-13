@@ -17,6 +17,7 @@ export declare class Post {
   readonly caption?: string | null;
   readonly Media?: (Media | null)[] | null;
   readonly likeCount?: number | null;
+  readonly likesMap?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
   constructor(init: ModelInit<Post, PostMetaData>);

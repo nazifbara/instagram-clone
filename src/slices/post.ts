@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
+import { updateLikesMap } from '../utils/helpers'
 import { PostState, NewPost, Post, PostToMediaMap } from '../types'
 
 const initialState: PostState = {
@@ -20,6 +21,21 @@ const postSlice = createSlice({
   name: 'post',
   initialState,
   reducers: {
+    toogleLike: (
+      state,
+      { payload: { username, postID } }: PayloadAction<{ postID: string; username: string }>
+    ) => {
+      const post = state.posts.find((p) => p.id === postID)
+      if (!post) {
+        return
+      }
+
+      const updates = updateLikesMap(post.likesMap, post.likeCount, username)
+
+      post.likeCount = updates.likeCount
+      post.likesMap = updates.likesMap
+    },
+
     getUserPosts: (state, action: PayloadAction<string>) => {
       state.userPosts.isLoading = true
     },
@@ -100,6 +116,7 @@ const postSlice = createSlice({
 })
 
 export const {
+  toogleLike,
   getUserPosts,
   getUserPostsError,
   getUserPostsSuccess,

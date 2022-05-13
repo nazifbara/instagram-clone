@@ -5,6 +5,25 @@ import { Media as MediaModel } from '../models'
 import { PostToMediaMap, Post } from '../types'
 import { CreateMediaInput } from '../API'
 
+export const updateLikesMap = (
+  likesMapStr: string | null | undefined,
+  prevLikeCount: number | null | undefined,
+  username: string
+): { likesMap: string; likeCount: number } => {
+  const likesMap: { [anyProps: string]: boolean } = likesMapStr ? JSON.parse(likesMapStr) : {}
+  let likeCount = 0
+
+  if (likesMap[username] && prevLikeCount) {
+    delete likesMap[username]
+    likeCount = prevLikeCount - 1
+  } else {
+    likesMap[username] = true
+    likeCount = prevLikeCount ? prevLikeCount + 1 : 1
+  }
+
+  return { likeCount, likesMap: JSON.stringify(likesMap) }
+}
+
 export const createMedia = async ({ postID, mediaKey }: CreateMediaInput) => {
   return await DataStore.save(new MediaModel({ postID, mediaKey }))
 }

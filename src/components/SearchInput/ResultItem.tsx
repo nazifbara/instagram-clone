@@ -20,7 +20,7 @@ export const ResultItem = forwardRef(
           <Text bold>{item.Username}</Text>
         </Box>
         <Box css={{ mt: '0.25rem' }}>
-          <Text gray>{item.name}</Text>
+          <Text gray>{item.Attributes[2].Value}</Text>
         </Box>
       </div>
     </StyledResultItem>

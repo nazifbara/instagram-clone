@@ -3,7 +3,7 @@
   "serviceConfiguration": {
     "apiName": "instagramclone",
     "serviceName": "AppSync",
-    "gqlSchemaPath": "/tmp/amplify-ac469000-186f-4379-8f2e-ea327ae44dea/amplify/backend/api/instagramclone/schema.graphql",
+    "gqlSchemaPath": "/tmp/amplify-cbddb61b-67cf-476f-96f4-f154a94dcaa8/amplify/backend/api/instagramclone/schema.graphql",
     "defaultAuthType": {
       "mode": "AMAZON_COGNITO_USER_POOLS",
       "cognitoUserPoolId": "authinstagramclone9b2ab60a"

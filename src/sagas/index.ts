@@ -9,6 +9,7 @@ import {
   mapPostsToMedias,
   createMedia,
   uploadMedia,
+  updateLikesMap,
 } from '../utils/helpers'
 import { LoginFormState, SignUpFormState, User, NewPost, PostToMediaMap, Post } from '../types'
 import {
@@ -20,6 +21,7 @@ import {
   getUserDetailError,
 } from '../slices/user'
 import {
+  toogleLike,
   getUserPosts,
   getUserPostsSuccess,
   getUserPostsError,
@@ -45,6 +47,25 @@ import {
   checkAuthSuccess,
   checkAuthError,
 } from '../slices/auth'
+
+function* _toogleLike({
+  payload: { postID, username },
+}: PayloadAction<{ postID: string; username: string }>) {
+  try {
+    const post: PostModel = yield DataStore.query(PostModel, postID)
+
+    const updates = updateLikesMap(post.likesMap, post.likeCount, username)
+
+    yield DataStore.save(
+      PostModel.copyOf(post, (updated) => {
+        updated.likeCount = updates.likeCount
+        updated.likesMap = updates.likesMap
+      })
+    )
+  } catch (error) {
+    console.error({ toogleLikeError: error })
+  }
+}
 
 function* _searchUser({ payload: username }: PayloadAction<string>) {
   try {
@@ -229,6 +250,7 @@ function* loginUser({ payload: { username, password } }: PayloadAction<LoginForm
 
 export function* rootSaga() {
   yield all([
+    takeLatest(toogleLike.type, _toogleLike),
     takeLatest(searchUser.type, _searchUser),
     takeLatest(getUserPosts.type, _getUserPosts),
     takeLatest(getUserDetail.type, _getUserDetail),

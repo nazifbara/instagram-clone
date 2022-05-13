@@ -3,6 +3,7 @@ type Post @model @auth(rules: [{allow: public, operations: [read]}, {allow: owne
   caption: String
   Media: [Media] @hasMany(indexName: "byPost", fields: ["id"])
   likeCount: Int
+  likesMap: String
 }
 
 type Media @model @auth(rules: [{allow: public}, {allow: private}]) {

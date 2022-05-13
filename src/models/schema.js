@@ -38,6 +38,13 @@ export const schema = {
                     "isRequired": false,
                     "attributes": []
                 },
+                "likesMap": {
+                    "name": "likesMap",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
                 "createdAt": {
                     "name": "createdAt",
                     "isArray": false,
@@ -183,5 +190,5 @@ export const schema = {
     },
     "enums": {},
     "nonModels": {},
-    "version": "b04c735b567636ba9d63f21cf15bdfae"
+    "version": "890f777d9f3f2cc63c89f1385c420f5e"
 };
