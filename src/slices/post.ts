@@ -21,7 +21,7 @@ const postSlice = createSlice({
   name: 'post',
   initialState,
   reducers: {
-    toogleLike: (
+    toggleLike: (
       state,
       { payload: { username, postID } }: PayloadAction<{ postID: string; username: string }>
     ) => {
@@ -116,7 +116,7 @@ const postSlice = createSlice({
 })
 
 export const {
-  toogleLike,
+  toggleLike,
   getUserPosts,
   getUserPostsError,
   getUserPostsSuccess,

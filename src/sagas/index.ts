@@ -21,7 +21,7 @@ import {
   getUserDetailError,
 } from '../slices/user'
 import {
-  toogleLike,
+  toggleLike,
   getUserPosts,
   getUserPostsSuccess,
   getUserPostsError,
@@ -48,7 +48,7 @@ import {
   checkAuthError,
 } from '../slices/auth'
 
-function* _toogleLike({
+function* _toggleLike({
   payload: { postID, username },
 }: PayloadAction<{ postID: string; username: string }>) {
   try {
@@ -250,7 +250,7 @@ function* loginUser({ payload: { username, password } }: PayloadAction<LoginForm
 
 export function* rootSaga() {
   yield all([
-    takeLatest(toogleLike.type, _toogleLike),
+    takeLatest(toggleLike.type, _toggleLike),
     takeLatest(searchUser.type, _searchUser),
     takeLatest(getUserPosts.type, _getUserPosts),
     takeLatest(getUserDetail.type, _getUserDetail),

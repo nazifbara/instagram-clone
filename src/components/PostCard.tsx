@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { DotsHorizontalIcon } from '@radix-ui/react-icons'
 import { useSelector, useDispatch } from 'react-redux'
 
-import { deletePost, toogleLike } from '../slices/post'
+import { deletePost, toggleLike } from '../slices/post'
 import { getAuth } from '../selectors'
 import { Link, Box, Avatar, Text, Icons, ActionDialog } from '.'
 import { styled } from '../stitches.config'
@@ -36,15 +36,15 @@ export const PostCard = ({ post, media, ...otherProps }: PostCardProps): JSX.Ele
 
   const dispatch = useDispatch()
   const _deletePost = (postID: string) => () => dispatch(deletePost(postID))
-  const _toogleLike = (postID: string, username: string) =>
-    dispatch(toogleLike({ postID, username }))
+  const _toggleLike = (postID: string, username: string) =>
+    dispatch(toggleLike({ postID, username }))
 
   // ===========================================================================
   // Handlers
   // ===========================================================================
 
   const showFullCaption = () => setMore(true)
-  const handleLike = () => _toogleLike(post.id, currentUser?.username)
+  const handleLike = () => _toggleLike(post.id, currentUser?.username)
 
   return (
     <StyledPost {...otherProps}>
