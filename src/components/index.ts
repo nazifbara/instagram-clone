@@ -1,3 +1,4 @@
+export { PostActionBar } from './PostActionBar'
 export * as ActionDialog from './ActionDialog'
 export { PrivateRoute } from './PrivateRoute'
 export { TextInput } from './TextInput'
