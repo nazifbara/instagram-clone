@@ -4,7 +4,7 @@ import { Hub } from 'aws-amplify'
 import { useDispatch } from 'react-redux'
 
 import { checkAuth } from './slices/auth'
-import { AppBar, ContentBox, PrivateRoute } from './components'
+import { AppBar, ContentBox, PrivateRoute, Box } from './components'
 import routes from './routes'
 
 const App = (): JSX.Element => {
@@ -23,33 +23,60 @@ const App = (): JSX.Element => {
 
   return (
     <>
-      <Routes>
-        <Route path="/" element={<Navigate to="/app" />} />
+      <Box
+        css={{
+          display: 'none !important',
+          '@desktop': {
+            display: 'initial !important',
+          },
+        }}
+      >
+        <Routes>
+          <Route path="/" element={<Navigate to="/app" />} />
 
-        <Route path="app">
-          {routes.privateRoutes.map((r) => (
-            <Route
-              key={r.name}
-              path={r.props.path}
-              element={
-                <PrivateRoute
-                  component={() => (
-                    <>
-                      <AppBar />
+          <Route path="app">
+            {routes.privateRoutes.map((r) => (
+              <Route
+                key={r.name}
+                path={r.props.path}
+                element={
+                  <PrivateRoute
+                    component={() => (
+                      <>
+                        <AppBar />
 
-                      <ContentBox>{r.props.element}</ContentBox>
-                    </>
-                  )}
-                />
-              }
-            />
+                        <ContentBox>{r.props.element}</ContentBox>
+                      </>
+                    )}
+                  />
+                }
+              />
+            ))}
+          </Route>
+          {routes.publicRoutes.map((r) => (
+            <Route key={r.name} {...r.props} />
           ))}
-        </Route>
-        {routes.publicRoutes.map((r) => (
-          <Route key={r.name} {...r.props} />
-        ))}
-        <Route path="*" element={<h1>There's nothing here!</h1>} />
-      </Routes>
+          <Route path="*" element={<h1>There's nothing here!</h1>} />
+        </Routes>
+      </Box>
+
+      <Box
+        as="h1"
+        css={{
+          display: 'none',
+          '@unsupported': {
+            display: 'block',
+            position: 'fixed',
+            fontSize: '20px',
+            color: '$dangerSolid',
+            top: '30%',
+            left: '50%',
+            transform: 'translateX(-50%)',
+          },
+        }}
+      >
+        This app is destop-only for the moment
+      </Box>
     </>
   )
 }
