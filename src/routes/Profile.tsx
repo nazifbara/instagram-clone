@@ -6,6 +6,7 @@ import { DotsHorizontalIcon } from '@radix-ui/react-icons'
 import { getAuth, getPost, getUser } from '../selectors'
 import { ViewRoute } from '../types'
 import {
+  PostActionBar,
   ActionDialog,
   IconButton,
   Link,
@@ -29,7 +30,7 @@ const ProfileView = (): JSX.Element => {
 
   const { currentUser } = useSelector(getAuth)
   const { userDetail } = useSelector(getUser)
-  const { userPosts, postToMediaMap } = useSelector(getPost)
+  const { posts, error, isLoading, postToMediaMap } = useSelector(getPost)
 
   // ===========================================================================
   // State
@@ -37,7 +38,7 @@ const ProfileView = (): JSX.Element => {
 
   const [currentPostIndex, setCurrentPostIndex] = useState<number | null>(null)
   const isOwner = currentUser?.username === userDetail.data?.Username
-  const postsCount = userPosts.data.length
+  const postsCount = posts.length
 
   // ===========================================================================
   // Dispatch
@@ -85,7 +86,7 @@ const ProfileView = (): JSX.Element => {
   }
 
   const handleNextClick: MouseEventHandler<HTMLButtonElement> = () => {
-    if (currentPostIndex === userPosts.data.length - 1 || currentPostIndex === null) return
+    if (currentPostIndex === posts.length - 1 || currentPostIndex === null) return
     setCurrentPostIndex(currentPostIndex + 1)
   }
 
@@ -120,7 +121,7 @@ const ProfileView = (): JSX.Element => {
 
             <Box as="ul" css={{ display: 'flex', fontSize: '$3', '&>li': { mr: '2.5rem' } }}>
               <Box as="li">
-                <Text bold>{userPosts.data.length} </Text>
+                <Text bold>{posts.length} </Text>
                 <Text>posts</Text>
               </Box>
               <Box as="li">
@@ -148,11 +149,9 @@ const ProfileView = (): JSX.Element => {
 
       <Separator css={{ my: '1.875rem' }} />
 
-      {userPosts.error && !userPosts.isLoading && (
-        <Text css={{ color: '$dangerSolid' }}>{userPosts.error}</Text>
-      )}
+      {error && !isLoading && <Text css={{ color: '$dangerSolid' }}>{error}</Text>}
 
-      {userPosts.isLoading && <Text>Loading</Text>}
+      {isLoading && <Text>Loading</Text>}
 
       {!userDetail.isLoading && !userDetail.error && (
         <Box>
@@ -166,7 +165,7 @@ const ProfileView = (): JSX.Element => {
               alignItems: 'stretch',
             }}
           >
-            {userPosts.data.map((p, i) => (
+            {posts.map((p, i) => (
               <Box
                 key={'profile-posts-' + p.id}
                 onClick={hanldePostClick(i)}
@@ -208,7 +207,7 @@ const ProfileView = (): JSX.Element => {
               <Dialog.Content
                 navigation={true}
                 currentIndex={currentPostIndex}
-                lastIndex={userPosts.data.length - 1}
+                lastIndex={postsCount - 1}
                 onBackClick={handleBackClick}
                 onNextClick={handleNextClick}
                 css={{ width: '85%', height: '95%', borderRadius: '0 0.75rem 0.75rem 0' }}
@@ -225,9 +224,7 @@ const ProfileView = (): JSX.Element => {
                       height: '100%',
                       width: '62%',
                       display: 'flex',
-                      backgroundImage: `url("${
-                        postToMediaMap[userPosts.data[currentPostIndex].id]
-                      }")`,
+                      backgroundImage: `url("${postToMediaMap[posts[currentPostIndex].id]}")`,
                       backgroundRepeat: 'no-repeat',
                       backgroundSize: 'cover',
                       backgroundPosition: 'center',
@@ -257,7 +254,7 @@ const ProfileView = (): JSX.Element => {
                           <ActionDialog.Content>
                             <ActionDialog.Option
                               kind="danger"
-                              onClick={handlePostDelete(userPosts.data[currentPostIndex].id)}
+                              onClick={handlePostDelete(posts[currentPostIndex].id)}
                             >
                               Delete
                             </ActionDialog.Option>
@@ -266,8 +263,8 @@ const ProfileView = (): JSX.Element => {
                       )}
                     </Box>
                     <Separator orientation="horizontal" />
-                    <Box css={{ p: '0.875rem 1rem' }}>
-                      {userPosts.data[currentPostIndex].caption && (
+                    <Box css={{ p: '0.875rem 1rem', height: '60%' }}>
+                      {posts[currentPostIndex].caption && (
                         <Box css={{ display: 'flex', alignItems: 'center' }}>
                           <Box css={{ width: '2rem', mr: '.5rem' }}>
                             <Avatar
@@ -283,11 +280,20 @@ const ProfileView = (): JSX.Element => {
                               {userDetail.data?.Username}
                             </Text>
                             <Text as="p" css={{ display: 'inline' }}>
-                              {userPosts.data[currentPostIndex].caption}
+                              {posts[currentPostIndex].caption}
                             </Text>
                           </Box>
                         </Box>
                       )}
+                    </Box>
+                    <Separator orientation="horizontal" />
+
+                    <Box as="section" css={{ p: '0.875rem 1rem' }}>
+                      <PostActionBar post={posts[currentPostIndex]} />
+
+                      <Box css={{ mb: '0.5rem' }}>
+                        <Text bold>{posts[currentPostIndex].likeCount || 0} likes</Text>
+                      </Box>
                     </Box>
                   </Box>
                 </Box>

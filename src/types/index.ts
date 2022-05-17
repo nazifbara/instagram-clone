@@ -22,11 +22,6 @@ export interface UserState {
 export interface PostState {
   posts: Post[]
   postToMediaMap: PostToMediaMap
-  userPosts: {
-    data: Post[]
-    isLoading: boolean
-    error: string
-  }
   isLoading: boolean
   isPosting: boolean
   postCreationSuccess: boolean
