@@ -22,8 +22,8 @@ const SignInView = (): JSX.Element => {
   const dispatch = useDispatch()
 
   const initialState: LoginFormState = {
-    username: '',
-    password: '',
+    username: 'dalton',
+    password: 'VjIURjjd$jS9',
   }
 
   if (isAuthenticated) {
