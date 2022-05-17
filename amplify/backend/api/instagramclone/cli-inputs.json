@@ -3,17 +3,19 @@
   "serviceConfiguration": {
     "apiName": "instagramclone",
     "serviceName": "AppSync",
-    "gqlSchemaPath": "/Users/zifkage/projects/instagram-clone/amplify/backend/api/instagramclone/schema.graphql",
+    "gqlSchemaPath": "/tmp/amplify-9172f805-5668-40fd-b41e-f069fd107ccc/amplify/backend/api/instagramclone/schema.graphql",
     "defaultAuthType": {
       "mode": "AMAZON_COGNITO_USER_POOLS",
       "cognitoUserPoolId": "authinstagramcloneauth"
     },
     "additionalAuthTypes": [
       {
+        "mode": "AWS_IAM"
+      },
+      {
         "mode": "API_KEY",
-        "expirationTime": 365,
-        "apiKeyExpirationDate": "2023-05-17T15:13:03.854Z",
-        "keyDescription": ""
+        "keyDescription": "api key description",
+        "expirationTime": 30
       }
     ],
     "conflictResolution": {

@@ -10,5 +10,4 @@ type Media @model @auth(rules: [{allow: public}, {allow: private}]) {
   id: ID!
   mediaKey: String!
   postID: ID! @index(name: "byPost")
-}
- 
+} 
