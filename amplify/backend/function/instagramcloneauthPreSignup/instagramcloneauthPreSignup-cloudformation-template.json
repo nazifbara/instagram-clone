@@ -1,6 +1,6 @@
 {
   "AWSTemplateFormatVersion": "2010-09-09",
-  "Description": "{\"createdOn\":\"Mac\",\"createdBy\":\"Amplify\",\"createdWith\":\"8.0.2\",\"stackType\":\"function-Lambda\",\"metadata\":{}}",
+  "Description": "{\"createdOn\":\"Mac\",\"createdBy\":\"Amplify\",\"createdWith\":\"8.1.0\",\"stackType\":\"function-Lambda\",\"metadata\":{}}",
   "Parameters": {
     "DOMAINBLACKLIST": {
       "Type": "String",
@@ -71,12 +71,12 @@
         "FunctionName": {
           "Fn::If": [
             "ShouldNotCreateEnvResources",
-            "instagramclone9b2ab60aPreSignup",
+            "instagramcloneauthPreSignup",
             {
               "Fn::Join": [
                 "",
                 [
-                  "instagramclone9b2ab60aPreSignup",
+                  "instagramcloneauthPreSignup",
                   "-",
                   {
                     "Ref": "env"
@@ -129,12 +129,12 @@
         "RoleName": {
           "Fn::If": [
             "ShouldNotCreateEnvResources",
-            "instagramclone9b2ab60aPreSignup",
+            "instagramcloneauthPreSignup",
             {
               "Fn::Join": [
                 "",
                 [
-                  "instagramclone9b2ab60aPreSignup",
+                  "instagramcloneauthPreSignup",
                   "-",
                   {
                     "Ref": "env"

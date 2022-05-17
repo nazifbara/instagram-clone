@@ -1,6 +1,6 @@
 export type AmplifyDependentResourcesAttributes = {
     "auth": {
-        "instagramclone9b2ab60a": {
+        "instagramcloneauth": {
             "IdentityPoolId": "string",
             "IdentityPoolName": "string",
             "UserPoolId": "string",
@@ -11,29 +11,35 @@ export type AmplifyDependentResourcesAttributes = {
         }
     },
     "function": {
-        "instagramclone9b2ab60aPreSignup": {
+        "instagramcloneauthPreSignup": {
             "Name": "string",
             "Arn": "string",
             "LambdaExecutionRole": "string",
             "Region": "string"
         },
-        "AdminQueries1bd4ee94": {
+        "AdminQueries01ab64a5": {
             "Name": "string",
             "Arn": "string",
             "Region": "string",
             "LambdaExecutionRole": "string"
+        },
+        "instagramcloneauthPostConfirmation": {
+            "Name": "string",
+            "Arn": "string",
+            "LambdaExecutionRole": "string",
+            "Region": "string"
         }
     },
     "api": {
-        "instagramclone": {
-            "GraphQLAPIKeyOutput": "string",
-            "GraphQLAPIIdOutput": "string",
-            "GraphQLAPIEndpointOutput": "string"
-        },
         "AdminQueries": {
             "RootUrl": "string",
             "ApiName": "string",
             "ApiId": "string"
+        },
+        "instagramclone": {
+            "GraphQLAPIKeyOutput": "string",
+            "GraphQLAPIIdOutput": "string",
+            "GraphQLAPIEndpointOutput": "string"
         }
     },
     "storage": {

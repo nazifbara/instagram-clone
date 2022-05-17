@@ -15,16 +15,22 @@
     "categories": {
       "auth": {
         "instagramclone3f126768": {},
-        "instagramclone9b2ab60a": {}
+        "instagramclonecognito": {},
+        "instagramcloneauth": {}
       },
       "function": {
-        "instagramclone9b2ab60aPreSignup": {
+        "instagramcloneauthPreSignup": {
           "deploymentBucketName": "amplify-instagramclone-dev-123606-deployment",
-          "s3Key": "amplify-builds/instagramclone9b2ab60aPreSignup-494b4d2f355131714e74-build.zip"
+          "s3Key": "amplify-builds/instagramcloneauthPreSignup-50337934547a68755568-build.zip"
         },
-        "AdminQueries1bd4ee94": {
+        "AdminQueries01ab64a5": {
           "deploymentBucketName": "amplify-instagramclone-dev-123606-deployment",
-          "s3Key": "amplify-builds/AdminQueries1bd4ee94-767932466c4345336170-build.zip"
+          "s3Key": "amplify-builds/AdminQueries01ab64a5-4c7a465354525a306a50-build.zip"
+        },
+        "instagramcloneauthPostConfirmation": {
+          "GROUP": "Users",
+          "deploymentBucketName": "amplify-instagramclone-dev-123606-deployment",
+          "s3Key": "amplify-builds/instagramcloneauthPostConfirmation-484a334e4c7632646f37-build.zip"
         }
       }
     }

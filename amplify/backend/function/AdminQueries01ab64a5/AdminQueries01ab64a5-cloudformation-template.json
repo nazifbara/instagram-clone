@@ -1,13 +1,13 @@
 {
   "AWSTemplateFormatVersion": "2010-09-09",
-  "Description": "{\"createdOn\":\"Mac\",\"createdBy\":\"Amplify\",\"createdWith\":\"8.1.0\",\"stackType\":\"function-Lambda\",\"metadata\":{}}",
+  "Description": "Lambda resource stack creation using Amplify CLI",
   "Parameters": {
     "env": {
       "Type": "String"
     },
-    "authinstagramclone9b2ab60aUserPoolId": {
+    "authinstagramcloneauthUserPoolId": {
       "Type": "String",
-      "Default": "authinstagramclone9b2ab60aUserPoolId"
+      "Default": "authinstagramcloneauthUserPoolId"
     },
     "deploymentBucketName": {
       "Type": "String"
@@ -38,12 +38,12 @@
         "FunctionName": {
           "Fn::If": [
             "ShouldNotCreateEnvResources",
-            "AdminQueries1bd4ee94",
+            "AdminQueries01ab64a5",
             {
               "Fn::Join": [
                 "",
                 [
-                  "AdminQueries1bd4ee94",
+                  "AdminQueries01ab64a5",
                   "-",
                   {
                     "Ref": "env"
@@ -60,7 +60,7 @@
             },
             "GROUP": "Users",
             "USERPOOL": {
-              "Ref": "authinstagramclone9b2ab60aUserPoolId"
+              "Ref": "authinstagramcloneauthUserPoolId"
             }
           }
         },
@@ -88,12 +88,12 @@
         "RoleName": {
           "Fn::If": [
             "ShouldNotCreateEnvResources",
-            "AdminQueries1bd4ee94LambdaRole",
+            "AdminQueries01ab64a5LambdaRole",
             {
               "Fn::Join": [
                 "",
                 [
-                  "AdminQueries1bd4ee94LambdaRole",
+                  "AdminQueries01ab64a5LambdaRole",
                   "-",
                   {
                     "Ref": "env"
@@ -189,7 +189,7 @@
                     },
                     ":userpool/",
                     {
-                      "Ref": "authinstagramclone9b2ab60aUserPoolId"
+                      "Ref": "authinstagramcloneauthUserPoolId"
                     }
                   ]
                 ]

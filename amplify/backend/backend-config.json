@@ -1,12 +1,21 @@
 {
   "auth": {
-    "instagramclone9b2ab60a": {
+    "instagramcloneauth": {
       "service": "Cognito",
       "providerPlugin": "awscloudformation",
       "dependsOn": [
         {
           "category": "function",
-          "resourceName": "instagramclone9b2ab60aPreSignup",
+          "resourceName": "instagramcloneauthPostConfirmation",
+          "triggerProvider": "Cognito",
+          "attributes": [
+            "Arn",
+            "Name"
+          ]
+        },
+        {
+          "category": "function",
+          "resourceName": "instagramcloneauthPreSignup",
           "triggerProvider": "Cognito",
           "attributes": [
             "Arn",
@@ -37,34 +46,61 @@
     }
   },
   "function": {
-    "instagramclone9b2ab60aPreSignup": {
+    "instagramcloneauthPreSignup": {
       "build": true,
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
     },
-    "AdminQueries1bd4ee94": {
+    "AdminQueries01ab64a5": {
       "service": "Lambda",
       "providerPlugin": "awscloudformation",
       "build": true,
       "dependsOn": [
         {
           "category": "auth",
-          "resourceName": "instagramclone9b2ab60a",
+          "resourceName": "instagramcloneauth",
           "attributes": [
             "UserPoolId"
           ]
         }
       ]
+    },
+    "instagramcloneauthPostConfirmation": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
     }
   },
   "api": {
+    "AdminQueries": {
+      "service": "API Gateway",
+      "providerPlugin": "awscloudformation",
+      "authorizationType": "AMAZON_COGNITO_USER_POOLS",
+      "dependsOn": [
+        {
+          "category": "auth",
+          "resourceName": "instagramcloneauth",
+          "attributes": [
+            "UserPoolId"
+          ]
+        },
+        {
+          "category": "function",
+          "resourceName": "AdminQueries01ab64a5",
+          "attributes": [
+            "Arn",
+            "Name"
+          ]
+        }
+      ]
+    },
     "instagramclone": {
       "service": "AppSync",
       "providerPlugin": "awscloudformation",
       "dependsOn": [
         {
           "category": "auth",
-          "resourceName": "instagramclone9b2ab60a",
+          "resourceName": "instagramcloneauth",
           "attributes": [
             "UserPoolId"
           ]
@@ -75,45 +111,21 @@
           "defaultAuthentication": {
             "authenticationType": "AMAZON_COGNITO_USER_POOLS",
             "userPoolConfig": {
-              "userPoolId": "authinstagramclone9b2ab60a"
+              "userPoolId": "authinstagramcloneauth"
             }
           },
           "additionalAuthenticationProviders": [
             {
-              "authenticationType": "AWS_IAM"
-            },
-            {
               "authenticationType": "API_KEY",
               "apiKeyConfig": {
-                "apiKeyExpirationDays": 30,
-                "description": "api key description"
+                "apiKeyExpirationDays": 365,
+                "apiKeyExpirationDate": "2023-05-17T15:13:03.854Z",
+                "description": ""
               }
             }
           ]
         }
       }
-    },
-    "AdminQueries": {
-      "service": "API Gateway",
-      "providerPlugin": "awscloudformation",
-      "authorizationType": "AMAZON_COGNITO_USER_POOLS",
-      "dependsOn": [
-        {
-          "category": "auth",
-          "resourceName": "instagramclone9b2ab60a",
-          "attributes": [
-            "UserPoolId"
-          ]
-        },
-        {
-          "category": "function",
-          "resourceName": "AdminQueries1bd4ee94",
-          "attributes": [
-            "Arn",
-            "Name"
-          ]
-        }
-      ]
     }
   },
   "storage": {

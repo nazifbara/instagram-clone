@@ -3,15 +3,15 @@
   "modules": [
     "custom"
   ],
-  "parentResource": "instagramclone9b2ab60a",
-  "functionName": "instagramclone9b2ab60aPreSignup",
-  "resourceName": "instagramclone9b2ab60aPreSignup",
+  "parentResource": "instagramcloneauth",
+  "functionName": "instagramcloneauthPreSignup",
+  "resourceName": "instagramcloneauthPreSignup",
   "parentStack": "auth",
   "triggerEnvs": "[]",
   "triggerDir": "/snapshot/repo/build/node_modules/@aws-amplify/amplify-category-auth/provider-utils/awscloudformation/triggers/PreSignup",
   "triggerTemplate": "PreSignup.json.ejs",
   "triggerEventPath": "PreSignup.event.json",
-  "roleName": "instagramclone9b2ab60aPreSignup",
+  "roleName": "instagramcloneauthPreSignup",
   "skipEdit": true,
   "enableCors": false
 }

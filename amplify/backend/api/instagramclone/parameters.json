@@ -4,9 +4,8 @@
   "DynamoDBEnableServerSideEncryption": false,
   "AuthCognitoUserPoolId": {
     "Fn::GetAtt": [
-      "authinstagramclone9b2ab60a",
+      "authinstagramcloneauth",
       "Outputs.UserPoolId"
     ]
-  },
-  "AuthModeLastUpdated": "2022-05-06T08:14:44.377Z"
+  }
 }
