@@ -98,7 +98,7 @@ export const SearchInput = (): JSX.Element => {
           </CloseBtn>
         )}
         <Popover.Content
-          css={{ width: '375px', height: '362px' }}
+          css={{ width: '375px', height: '362px', overflowY: 'scroll' }}
           onOpenAutoFocus={preventDefault}
           onCloseAutoFocus={preventDefault}
           onPointerDownOutside={preventDefault}
