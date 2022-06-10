@@ -2,8 +2,7 @@ import { DataStore, Storage } from 'aws-amplify'
 import { v4 as uuid } from 'uuid'
 
 import { Media as MediaModel } from '../models'
-import { PostToMediaMap, Post } from '../types'
-import { CreateMediaInput } from '../API'
+import { PostToMediaMap, Post, CreateMediaInput } from '../types'
 
 export const getAvatarURL = (username: string = 'random') =>
   `https://avatars.dicebear.com/api/avataaars/${username}.svg`
