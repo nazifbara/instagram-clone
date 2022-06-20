@@ -2,13 +2,13 @@ import { Formik, Form, Field, ErrorMessage } from 'formik'
 import { Navigate } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 
-import { ViewRoute, LoginFormState } from '../types'
-import { getAuth } from '../selectors'
-import { login } from '../slices/auth'
-import { TextInput, Text, Logo, Button, Link } from '../components'
-import { styled } from '../stitches.config'
+import { LoginFormState } from '../../types'
+import { getAuth } from '../../selectors'
+import { login } from '../../slices/auth'
+import { TextInput, Text, Logo, Button, Link } from '../../components'
+import { styled } from '../../stitches.config'
 
-const SignInView = (): JSX.Element => {
+export const SignIn = (): JSX.Element => {
   // ===========================================================================
   // Selectors
   // ===========================================================================
@@ -87,11 +87,3 @@ const Wrapper = styled('div', {
   backgroundColor: '$accentBg',
   border: '1px solid $grayBorder',
 })
-
-export const signInRoute: ViewRoute = {
-  name: 'SignInView',
-  props: {
-    path: '/auth/login',
-    element: <SignInView />,
-  },
-}

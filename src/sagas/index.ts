@@ -241,7 +241,7 @@ function* signUpUser({
   }
 }
 
-function* loginUser({ payload: { username, password } }: PayloadAction<LoginFormState>) {
+export function* loginUser({ payload: { username, password } }: PayloadAction<LoginFormState>) {
   try {
     const user: User = yield Auth.signIn({ username, password })
     console.info({ signedInUser: user })

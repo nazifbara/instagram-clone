@@ -1,4 +1,4 @@
-import { signInRoute } from './SignIn'
+import { signInRoute } from './SignInView'
 import { signUpRoute } from './SignUp'
 import { profileRoute } from './Profile'
 import { homeRoute } from './Home'
