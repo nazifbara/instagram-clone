@@ -3,13 +3,13 @@ import { Formik, Form, Field, ErrorMessage } from 'formik'
 import { Navigate } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 
-import { signUp, signUpReset } from '../slices/auth'
-import { getAuth } from '../selectors'
-import { ViewRoute, SignUpFormState } from '../types'
-import { TextInput, Text, Logo, Button, Link } from '../components'
-import { styled } from '../stitches.config'
+import { signUp, signUpReset } from '../../slices/auth'
+import { getAuth } from '../../selectors'
+import { SignUpFormState } from '../../types'
+import { TextInput, Text, Logo, Button, Link } from '../../components'
+import { styled } from '../../stitches.config'
 
-const SignUp = (): JSX.Element => {
+export const SignUp = (): JSX.Element => {
   // ===========================================================================
   // State
   // ===========================================================================
@@ -122,11 +122,3 @@ const Wrapper = styled('div', {
   backgroundColor: '$accentBg',
   border: '1px solid $grayBorder',
 })
-
-export const signUpRoute: ViewRoute = {
-  name: 'SignUpView',
-  props: {
-    path: '/auth/signup',
-    element: <SignUp />,
-  },
-}

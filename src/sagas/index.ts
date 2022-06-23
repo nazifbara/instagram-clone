@@ -221,7 +221,7 @@ function* getCurrentUser() {
   }
 }
 
-function* signUpUser({
+export function* signUpUser({
   payload: { username, password, email, fullName },
 }: PayloadAction<SignUpFormState>) {
   try {
