@@ -2,8 +2,8 @@ import { Link, useMatch } from 'react-router-dom'
 
 import { styled } from '../../stitches.config'
 import { Icons } from '../'
-import { ProfileButton } from './ProfileButton'
-import { CreateButton } from './CreateButton'
+import { ProfileButton } from '../ProfileButton'
+import { CreateButton } from '../CreateButton'
 
 export const NavBar = (): JSX.Element => {
   const homeMatch = useMatch('/')

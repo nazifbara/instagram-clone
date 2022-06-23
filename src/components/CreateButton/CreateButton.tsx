@@ -11,7 +11,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { NewPost } from '../../types'
 import { addPost, addPostReset } from '../../slices/post'
 import { getAuth, getPost } from '../../selectors'
-import { Dialog, Icons, Separator, Box, Button, Text, IconButton, Avatar } from '../'
+import { Dialog, Icons, Separator, Box, Button, Text, IconButton, Avatar } from '..'
 
 import { styled } from '../../stitches.config'
 import { getAvatarURL } from '../../utils/helpers'

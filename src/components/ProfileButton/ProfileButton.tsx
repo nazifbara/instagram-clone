@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { getAvatarURL } from '../../utils/helpers'
 import { logout } from '../../slices/auth'
 import { getAuth } from '../../selectors'
-import { Link, Avatar, Popover, Text, Separator, Icons, IconButton } from '../'
+import { Link, Avatar, Popover, Text, Separator, Icons, IconButton } from '..'
 import { Trigger as PopoverTrigger } from '../Popover'
 import { styled } from '../../stitches.config'
 
