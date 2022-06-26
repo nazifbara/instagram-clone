@@ -2,12 +2,12 @@ import { useState } from 'react'
 import { DotsHorizontalIcon } from '@radix-ui/react-icons'
 import { useSelector, useDispatch } from 'react-redux'
 
-import { getAvatarURL } from '../utils/helpers'
-import { deletePost } from '../slices/post'
-import { getAuth } from '../selectors'
-import { Link, Box, Avatar, Text, ActionDialog, IconButton, PostActionBar } from '.'
-import { styled } from '../stitches.config'
-import { Post } from '../types'
+import { getAvatarURL } from '../../utils/helpers'
+import { deletePost } from '../../slices/post'
+import { getAuth } from '../../selectors'
+import { Link, Box, Avatar, Text, ActionDialog, IconButton, PostActionBar } from '..'
+import { styled } from '../../stitches.config'
+import { Post } from '../../types'
 
 type PostCardProps = {
   post: Post
@@ -58,7 +58,11 @@ export const PostCard = ({ post, media, ...otherProps }: PostCardProps): JSX.Ele
 
         {isOwner && (
           <ActionDialog.Root>
-            <IconButton as={ActionDialog.Trigger} css={{ color: '$textBase' }}>
+            <IconButton
+              aria-label="more options"
+              as={ActionDialog.Trigger}
+              css={{ color: '$textBase' }}
+            >
               <DotsHorizontalIcon fontSize="18px" />
             </IconButton>
             <ActionDialog.Content>
@@ -70,7 +74,7 @@ export const PostCard = ({ post, media, ...otherProps }: PostCardProps): JSX.Ele
         )}
       </Box>
 
-      <img src={media} alt="" />
+      <img aria-label="Post media" src={media} alt="" />
 
       <Box as="section" css={{ p: '0.875rem 1rem' }}>
         <PostActionBar post={post} />

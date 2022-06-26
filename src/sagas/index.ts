@@ -48,7 +48,7 @@ import {
   checkAuthError,
 } from '../slices/auth'
 
-function* _toggleLike({
+export function* _toggleLike({
   payload: { postID, username },
 }: PayloadAction<{ postID: string; username: string }>) {
   try {
@@ -150,7 +150,7 @@ function* _logout() {
   }
 }
 
-function* _deletePost({ payload: postID }: PayloadAction<string>) {
+export function* _deletePost({ payload: postID }: PayloadAction<string>) {
   try {
     const postMedias: MediaModel[] = yield DataStore.query(MediaModel, (m) =>
       m.postID('eq', postID)

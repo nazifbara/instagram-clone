@@ -1,6 +1,7 @@
 import { render as rtlRender } from '@testing-library/react'
 import { configureStore } from '@reduxjs/toolkit'
 import createSagaMiddleware from '@redux-saga/core'
+import { all } from 'redux-saga/effects'
 import { Provider } from 'react-redux'
 
 import reducer from '../slices'
@@ -26,6 +27,11 @@ function render(
 
   return rtlRender(ui, { wrapper: Wrapper, ...renderOptions })
 }
+
+export const getSaga = (effects: unknown[]) =>
+  function* () {
+    yield all(effects)
+  }
 
 export * from '@testing-library/react'
 export { render }
