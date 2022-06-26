@@ -179,9 +179,7 @@ function* fetchPosts() {
   }
 }
 
-function* createNewPost({ payload: { postInput, medias, owner } }: PayloadAction<NewPost>) {
-  console.log(postInput)
-
+export function* createNewPost({ payload: { postInput, medias, owner } }: PayloadAction<NewPost>) {
   try {
     const post: PostModel = yield DataStore.save(new PostModel({ caption: postInput.caption }))
     console.log(post)

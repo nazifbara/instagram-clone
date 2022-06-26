@@ -143,6 +143,7 @@ export const CreateButton = (): JSX.Element => {
                 id="media-input"
                 type="file"
                 accept=".png,.jpeg"
+                data-testid="media-input"
                 onChange={handleMediaSelect}
               />
               <Text css={{ fontSize: '1.375rem', fontWeight: 300 }}>Choose a photo</Text>
