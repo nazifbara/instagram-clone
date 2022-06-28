@@ -11,7 +11,7 @@ export const Chevron = (): JSX.Element => {
 export const Like = ({ fill = false, liked = false }): JSX.Element =>
   fill || liked ? (
     <svg
-      aria-label="Activity Feed"
+      aria-label="Like"
       color={liked ? red.red9 : '#eaf6ff'}
       fill={liked ? red.red9 : '#eaf6ff'}
       height="24"

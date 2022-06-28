@@ -162,7 +162,7 @@ export function* _deletePost({ payload: postID }: PayloadAction<string>) {
   }
 }
 
-function* fetchPosts() {
+export function* fetchPosts() {
   try {
     const posts: PostModel[] = yield DataStore.query(PostModel, Predicates.ALL, {
       sort: (s) => s.createdAt(SortDirection.DESCENDING),
