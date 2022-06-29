@@ -65,8 +65,11 @@ export const { styled, css, globalCss, keyframes, getCssText, theme, createTheme
       },
     },
     media: {
-      unsupported: '(max-width: 1023px)',
-      desktop: '(min-width: 1024px)',
+      xm: '(max-width: 30rem)',
+      sm: '(min-width: 30.063rem)',
+      md: '(min-width: 48.063rem)',
+      lg: '(min-width: 64.063rem)',
+      xlg: '(min-width: 75.063rem)',
     },
     utils: {
       m: (value: string) => ({ margin: value }),
