@@ -160,12 +160,17 @@ const SearchIconWrapper = styled('span', {
 })
 
 const Wrapper = styled(Popover.Anchor, {
-  position: 'relative',
-  backgroundColor: '$accentBase',
-  borderRadius: '0.25rem',
-  width: '100%',
-  maxWidth: '16.75rem',
-  border: 'none',
+  display: 'none',
+
+  '@md': {
+    display: 'initial',
+    position: 'relative',
+    backgroundColor: '$accentBase',
+    borderRadius: '0.25rem',
+    width: '100%',
+    maxWidth: '16.75rem',
+    border: 'none',
+  },
 })
 
 const InputField = styled('input', {

@@ -1,3 +1,4 @@
+export { SearchButton } from './SearchButton'
 export { SignUp } from './SignUp'
 export { SignIn } from './SignIn'
 export { PostActionBar } from './PostActionBar'

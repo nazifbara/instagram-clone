@@ -16,7 +16,11 @@ export const AppBar = (): JSX.Element => (
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        height: '3.75rem',
+        height: '3.125rem',
+
+        '@md': {
+          height: '3.75rem',
+        },
       }}
     >
       <Link to="/">
