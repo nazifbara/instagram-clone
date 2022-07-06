@@ -7,7 +7,7 @@ export const Container = styled('div', {
   variants: {
     type: {
       feed: {
-        maxWidth: '38.375rem',
+        maxWidth: '29.375rem',
         px: '0',
       },
     },
