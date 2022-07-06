@@ -1,14 +1,10 @@
 import { MouseEventHandler, useState, useEffect, useCallback } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useParams } from 'react-router-dom'
-import { DotsHorizontalIcon } from '@radix-ui/react-icons'
 
 import { getAuth, getPost, getUser } from '../selectors'
 import { ViewRoute } from '../types'
 import {
-  PostActionBar,
-  ActionDialog,
-  IconButton,
   Link,
   Container,
   Box,
@@ -17,7 +13,7 @@ import {
   Button,
   Separator,
   Icons,
-  Dialog,
+  PostDialog,
 } from '../components'
 import { getUserDetail } from '../slices/user'
 import { getUserPosts, deletePost } from '../slices/post'
@@ -199,107 +195,23 @@ const ProfileView = (): JSX.Element => {
               </Box>
             ))}
           </Box>
-          <Dialog.Root
+          <PostDialog.Root
             open={currentPostIndex !== null}
             onOpenChange={(o) => !o && setCurrentPostIndex(null)}
           >
             {currentPostIndex !== null && (
-              <Dialog.Content
-                navigation={true}
+              <PostDialog.Content
+                isOwner={isOwner}
+                currentImgSrc={postToMediaMap[posts[currentPostIndex].id]}
+                post={posts[currentPostIndex]}
                 currentIndex={currentPostIndex}
                 lastIndex={postsCount - 1}
                 onBackClick={handleBackClick}
                 onNextClick={handleNextClick}
-                css={{ width: '85%', height: '95%', borderRadius: '0 0.75rem 0.75rem 0' }}
-              >
-                <Box
-                  css={{
-                    height: '100%',
-                    width: '100%',
-                    display: 'flex',
-                  }}
-                >
-                  <Box
-                    css={{
-                      height: '100%',
-                      width: '62%',
-                      display: 'flex',
-                      backgroundImage: `url("${postToMediaMap[posts[currentPostIndex].id]}")`,
-                      backgroundRepeat: 'no-repeat',
-                      backgroundSize: 'cover',
-                      backgroundPosition: 'center',
-                    }}
-                  />
-                  <Separator orientation="vertical" />
-                  <Box css={{ width: '38%' }}>
-                    <Box
-                      css={{ display: 'flex', alignItems: 'center', mx: '1rem', height: '3.75rem' }}
-                    >
-                      <Avatar
-                        src={getAvatarURL(userDetail.data?.Username)}
-                        fallback="u"
-                        alt={userDetail.data?.Username}
-                        size="1.75rem"
-                        css={{ marginRight: '0.75rem' }}
-                      />
-                      <Link to={`/app/${userDetail.data?.Username}`}>
-                        {userDetail.data?.Username}
-                      </Link>
-                      <Box css={{ flexGrow: '1' }} />
-                      {isOwner && (
-                        <ActionDialog.Root>
-                          <IconButton as={ActionDialog.Trigger} css={{ color: '$textBase' }}>
-                            <DotsHorizontalIcon fontSize="18px" />
-                          </IconButton>
-                          <ActionDialog.Content>
-                            <ActionDialog.Option
-                              kind="danger"
-                              onClick={handlePostDelete(posts[currentPostIndex].id)}
-                            >
-                              Delete
-                            </ActionDialog.Option>
-                          </ActionDialog.Content>
-                        </ActionDialog.Root>
-                      )}
-                    </Box>
-                    <Separator orientation="horizontal" />
-                    <Box css={{ p: '0.875rem 1rem', height: '60%' }}>
-                      {posts[currentPostIndex].caption && (
-                        <Box css={{ display: 'flex', alignItems: 'center' }}>
-                          <Box css={{ width: '2rem', mr: '.5rem' }}>
-                            <Avatar
-                              size="1.75rem"
-                              src={getAvatarURL(userDetail.data?.Username)}
-                              fallback="u"
-                              alt={userDetail.data?.Username}
-                            />
-                          </Box>
-
-                          <Box css={{ display: 'inline' }}>
-                            <Text bold css={{ mr: '0.3125rem' }}>
-                              {userDetail.data?.Username}
-                            </Text>
-                            <Text as="p" css={{ display: 'inline' }}>
-                              {posts[currentPostIndex].caption}
-                            </Text>
-                          </Box>
-                        </Box>
-                      )}
-                    </Box>
-                    <Separator orientation="horizontal" />
-
-                    <Box as="section" css={{ p: '0.875rem 1rem' }}>
-                      <PostActionBar post={posts[currentPostIndex]} />
-
-                      <Box css={{ mb: '0.5rem' }}>
-                        <Text bold>{posts[currentPostIndex].likeCount || 0} likes</Text>
-                      </Box>
-                    </Box>
-                  </Box>
-                </Box>
-              </Dialog.Content>
+                handlePostDelete={handlePostDelete}
+              />
             )}
-          </Dialog.Root>
+          </PostDialog.Root>
         </Box>
       )}
     </Container>

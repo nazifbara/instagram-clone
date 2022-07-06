@@ -1,3 +1,4 @@
+export { PostDialog } from './PostDialog'
 export { SearchButton } from './SearchButton'
 export { SignUp } from './SignUp'
 export { SignIn } from './SignIn'

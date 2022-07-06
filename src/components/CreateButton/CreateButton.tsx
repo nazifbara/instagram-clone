@@ -105,91 +105,100 @@ export const CreateButton = (): JSX.Element => {
           setIsOpen(o)
         }}
       >
-        <Dialog.Content css={{ width: captionStep ? '57.5625rem' : '36.3125rem', height: '39rem' }}>
-          <StyledTopBar>
-            {showBackButton && (
-              <IconButton onClick={handleBackClick}>
-                <Icons.Back />
-              </IconButton>
+        <Dialog.Portal>
+          <Dialog.Content
+            css={{ width: captionStep ? '57.5625rem' : '36.3125rem', height: '39rem' }}
+          >
+            <StyledTopBar>
+              {showBackButton && (
+                <IconButton onClick={handleBackClick}>
+                  <Icons.Back />
+                </IconButton>
+              )}
+              <Dialog.Title css={{ flexGrow: 1 }}>Create new post</Dialog.Title>
+
+              {showShareButton && <Button onClick={handleShare}>Share</Button>}
+              <Dialog.Close css={{ pl: '2rem' }}>
+                <Icons.Close />
+              </Dialog.Close>
+            </StyledTopBar>
+            <Separator />
+
+            {isPosting && (
+              <Text as="div" css={{ textAlign: 'center', mt: '50px' }}>
+                loading...
+              </Text>
             )}
-            <Dialog.Title css={{ flexGrow: 1 }}>Create new post</Dialog.Title>
 
-            {showShareButton && <Button onClick={handleShare}>Share</Button>}
-          </StyledTopBar>
-          <Separator />
-
-          {isPosting && (
-            <Text as="div" css={{ textAlign: 'center', mt: '50px' }}>
-              loading...
-            </Text>
-          )}
-
-          {!captionStep && (
-            <Box
-              css={{
-                p: '1.25rem',
-                height: '100%',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-                '& > :not(last-child)': {
-                  mb: '1.51rem',
-                },
-              }}
-            >
-              <Icons.Media />
-              <StyledFileInput
-                id="media-input"
-                type="file"
-                accept=".png,.jpeg"
-                data-testid="media-input"
-                onChange={handleMediaSelect}
-              />
-              <Text css={{ fontSize: '1.375rem', fontWeight: 300 }}>Choose a photo</Text>
-              <Button as="label" type="contained" htmlFor="media-input">
-                Select from computer
-              </Button>
-            </Box>
-          )}
-
-          {showCaption && (
-            <Box
-              css={{
-                height: '100%',
-                display: 'flex',
-              }}
-            >
-              <MediaBox media={media} />
-              <Separator orientation="vertical" />
-              <Box css={{ flexGrow: 1 }}>
-                <Box css={{ display: 'flex', alignItems: 'center', mx: '1rem', height: '3.75rem' }}>
-                  <Avatar
-                    src={getAvatarURL(currentUser?.username)}
-                    fallback="p"
-                    alt={currentUser?.username}
-                    size="1.75rem"
-                    css={{ marginRight: '0.75rem' }}
-                  />
-                  <Text bold>{currentUser?.username}</Text>
-                </Box>
-
-                {error && (
-                  <Text as="div" css={{ color: '$dangerSolid', px: '1rem' }}>
-                    {error}
-                  </Text>
-                )}
-
-                <StyledCaptionInput
-                  placeholder="Write a caption..."
-                  onChange={handleCaptionChange}
-                  value={caption}
+            {!captionStep && (
+              <Box
+                css={{
+                  p: '1.25rem',
+                  height: '100%',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  '& > :not(last-child)': {
+                    mb: '1.51rem',
+                  },
+                }}
+              >
+                <Icons.Media />
+                <StyledFileInput
+                  id="media-input"
+                  type="file"
+                  accept=".png,.jpeg"
+                  data-testid="media-input"
+                  onChange={handleMediaSelect}
                 />
-                <Separator orientation="horizontal" />
+                <Text css={{ fontSize: '1.375rem', fontWeight: 300 }}>Choose a photo</Text>
+                <Button as="label" type="contained" htmlFor="media-input">
+                  Select from computer
+                </Button>
               </Box>
-            </Box>
-          )}
-        </Dialog.Content>
+            )}
+
+            {showCaption && (
+              <Box
+                css={{
+                  height: '100%',
+                  display: 'flex',
+                }}
+              >
+                <MediaBox media={media} />
+                <Separator orientation="vertical" />
+                <Box css={{ flexGrow: 1 }}>
+                  <Box
+                    css={{ display: 'flex', alignItems: 'center', mx: '1rem', height: '3.75rem' }}
+                  >
+                    <Avatar
+                      src={getAvatarURL(currentUser?.username)}
+                      fallback="p"
+                      alt={currentUser?.username}
+                      size="1.75rem"
+                      css={{ marginRight: '0.75rem' }}
+                    />
+                    <Text bold>{currentUser?.username}</Text>
+                  </Box>
+
+                  {error && (
+                    <Text as="div" css={{ color: '$dangerSolid', px: '1rem' }}>
+                      {error}
+                    </Text>
+                  )}
+
+                  <StyledCaptionInput
+                    placeholder="Write a caption..."
+                    onChange={handleCaptionChange}
+                    value={caption}
+                  />
+                  <Separator orientation="horizontal" />
+                </Box>
+              </Box>
+            )}
+          </Dialog.Content>
+        </Dialog.Portal>
       </Dialog.Root>
     </>
   )
