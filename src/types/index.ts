@@ -20,6 +20,8 @@ export interface UserState {
 
 export interface PostState {
   posts: Post[]
+  view: null | 'profile' | 'feed'
+  profileUsername: null | string
   postToMediaMap: PostToMediaMap
   isLoading: boolean
   isPosting: boolean

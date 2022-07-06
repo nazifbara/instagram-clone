@@ -87,7 +87,13 @@ describe('<CreateButton />', () => {
     const caption = 'This is a caption'
 
     mockedCreateNewPost.mockImplementation(function* (_) {
-      yield put(addPostSuccess({ post: { caption: '', id: '' }, postToMediaMap: {} }))
+      yield put(
+        addPostSuccess({
+          username: currentUser.username,
+          post: { caption: '', id: '' },
+          postToMediaMap: {},
+        })
+      )
     })
 
     fireEvent.click(screen.getByRole('button', { name: /new post/i }))
@@ -122,7 +128,13 @@ describe('<CreateButton />', () => {
     const file = new File(['(⌐□_□)'], 'chucknorris.png', { type: 'image/png' })
 
     mockedCreateNewPost.mockImplementation(function* (_) {
-      yield put(addPostSuccess({ post: { caption: '', id: '' }, postToMediaMap: {} }))
+      yield put(
+        addPostSuccess({
+          username: currentUser.username,
+          post: { caption: '', id: '' },
+          postToMediaMap: {},
+        })
+      )
     })
 
     fireEvent.click(screen.getByRole('button', { name: /new post/i }))

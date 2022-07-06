@@ -5,6 +5,8 @@ import { PostState, NewPost, Post, PostToMediaMap } from '../types'
 
 const initialState: PostState = {
   posts: [],
+  view: null,
+  profileUsername: null,
   postToMediaMap: {},
   isLoading: false,
   isPosting: false,
@@ -37,9 +39,13 @@ const postSlice = createSlice({
 
     getUserPostsSuccess: (
       state,
-      { payload }: PayloadAction<{ posts: Post[]; postToMediaMap: PostToMediaMap }>
+      {
+        payload,
+      }: PayloadAction<{ username: string; posts: Post[]; postToMediaMap: PostToMediaMap }>
     ) => {
       state.posts = payload.posts
+      state.view = 'profile'
+      state.profileUsername = payload.username
       state.isLoading = false
       state.error = ''
       state.postToMediaMap = { ...state.postToMediaMap, ...payload.postToMediaMap }
@@ -66,6 +72,8 @@ const postSlice = createSlice({
       { payload }: PayloadAction<{ posts: Post[]; postToMediaMap: PostToMediaMap }>
     ) => {
       state.isLoading = false
+      state.view = 'feed'
+      state.profileUsername = null
       state.posts = payload.posts
       state.postToMediaMap = { ...state.postToMediaMap, ...payload.postToMediaMap }
     },
@@ -81,11 +89,16 @@ const postSlice = createSlice({
 
     addPostSuccess: (
       state,
-      { payload }: PayloadAction<{ post: Post; postToMediaMap: PostToMediaMap }>
+      { payload }: PayloadAction<{ username: string; post: Post; postToMediaMap: PostToMediaMap }>
     ) => {
       console.log({ addPostSuccess: payload })
       state.isPosting = false
       state.postCreationSuccess = true
+
+      if (state.view === 'profile' && payload.username !== state.profileUsername) {
+        return
+      }
+
       state.posts.unshift(payload.post)
       state.postToMediaMap = { ...state.postToMediaMap, ...payload.postToMediaMap }
     },

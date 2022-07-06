@@ -100,7 +100,7 @@ function* _getUserPosts({ payload }: PayloadAction<string>) {
     let posts: Post[] = yield DataStore.query(PostModel)
     posts = posts.filter((p) => p.owner === payload)
     let postToMediaMap: PostToMediaMap = yield mapPostsToMedias(posts)
-    yield put(getUserPostsSuccess({ posts: posts, postToMediaMap }))
+    yield put(getUserPostsSuccess({ username: payload, posts: posts, postToMediaMap }))
     console.log({ profilePosts: posts })
   } catch (error) {
     console.error({ profilePostsError: error })
@@ -202,7 +202,7 @@ export function* createNewPost({ payload: { postInput, medias, owner } }: Payloa
       post.Media?.push(m)
     })
 
-    yield put(addPostSuccess({ post: { ...post, owner }, postToMediaMap }))
+    yield put(addPostSuccess({ username: owner, post: { ...post, owner }, postToMediaMap }))
   } catch (error: any) {
     console.error({ createNewPostError: error })
     yield put(addPostError(getErrorMessage(error)))
