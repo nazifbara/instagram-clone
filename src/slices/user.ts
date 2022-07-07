@@ -9,7 +9,7 @@ const initialState: UserState = {
     error: '',
   },
   searchResult: {
-    data: [],
+    data: null,
     isLoading: false,
     error: '',
   },
@@ -20,10 +20,14 @@ const userSlice = createSlice({
   initialState,
   reducers: {
     searchUser: (state, action: PayloadAction<string>) => {
-      state.searchResult.isLoading = true
+      state.searchResult = {
+        data: null,
+        isLoading: true,
+        error: '',
+      }
     },
 
-    searchUserSuccess: (state, { payload }: PayloadAction<User[]>) => {
+    searchUserSuccess: (state, { payload }: PayloadAction<User[] | null>) => {
       state.searchResult = {
         data: payload,
         isLoading: false,
@@ -33,7 +37,7 @@ const userSlice = createSlice({
 
     searchUserError: (state, { payload }: PayloadAction<string>) => {
       state.searchResult = {
-        data: [],
+        data: null,
         isLoading: false,
         error: payload,
       }

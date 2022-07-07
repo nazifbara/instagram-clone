@@ -88,7 +88,7 @@ function* _searchUser({ payload: username }: PayloadAction<string>) {
     result.Users = result.Users.filter((u) =>
       u.Username.toLowerCase().includes(username.toLowerCase())
     )
-    yield put(searchUserSuccess(result.Users))
+    yield put(searchUserSuccess(result.Users.length === 0 ? null : result.Users))
   } catch (error) {
     console.error({ searchUserError: error })
     yield put(searchUserError(getErrorMessage(error)))

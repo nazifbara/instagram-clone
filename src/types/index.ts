@@ -12,7 +12,7 @@ export interface UserState {
     error: string
   }
   searchResult: {
-    data: User[]
+    data: User[] | null
     isLoading: boolean
     error: string
   }

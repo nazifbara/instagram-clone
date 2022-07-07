@@ -1,82 +1,35 @@
-import { useState, useRef } from 'react'
 import { Cross1Icon, MagnifyingGlassIcon } from '@radix-ui/react-icons'
-import { useCombobox } from 'downshift'
-import { useNavigate } from 'react-router-dom'
-import { useSelector, useDispatch } from 'react-redux'
 
+import { useSearch } from '../../utils/hooks'
 import { Text, Box } from '../'
-import { getUser } from '../../selectors'
-import { searchUser } from '../../slices/user'
 import { Popover } from '../'
 import { ResultItem } from './ResultItem'
 import { styled } from '../../stitches.config'
 
 export const SearchInput = (): JSX.Element => {
   // ===========================================================================
-  // Selectors
-  // ===========================================================================
-
-  const {
-    searchResult: { data: result, isLoading, error },
-  } = useSelector(getUser)
-
-  // ===========================================================================
-  // State
-  // ===========================================================================
-
-  const [focused, setFocused] = useState(false)
-  const noResult = result.length === 0 && !isLoading
-  const hasResult = !noResult && !isLoading && !error
-  const showSearchStatus = isLoading || error || noResult
-
-  // ===========================================================================
-  // Dispatch
-  // ===========================================================================
-
-  const dispatch = useDispatch()
-
-  const _searchUser = (username: string) => dispatch(searchUser(username))
-
-  // ===========================================================================
   // Hooks
   // ===========================================================================
 
-  const timer = useRef<any | null>(null)
-
   const {
+    searchResult,
+    hasResult,
+    error,
+    focused,
+    showSearchStatus,
     isOpen,
+    isLoading,
     getMenuProps,
-    getInputProps,
+    getItemProps,
     getComboboxProps,
     highlightedIndex,
-    getItemProps,
+    getInputProps,
     inputValue,
-    setInputValue,
-  } = useCombobox({
-    items: result,
-    onInputValueChange: ({ inputValue }) => {
-      if (timer.current) {
-        clearTimeout(timer.current)
-      }
-      timer.current = setTimeout(() => {
-        if (inputValue) {
-          _searchUser(inputValue)
-        }
-      }, 300)
-    },
-    onSelectedItemChange: (changes) => {
-      if (changes.selectedItem) {
-        setInputValue(changes.selectedItem.Username)
-        navigate(`/app/${changes.selectedItem.Username}`)
-      }
-    },
-  })
-  const navigate = useNavigate()
-
-  const handleFocus = () => setFocused(true)
-  const handleBlur = () => setFocused(false)
-  const handleDismiss = () => setInputValue('')
-  const preventDefault = (e: Event) => e.preventDefault()
+    handleFocus,
+    handleBlur,
+    handleDismiss,
+    preventDefault,
+  } = useSearch()
 
   return (
     <Popover.Root open={true}>
@@ -126,19 +79,20 @@ export const SearchInput = (): JSX.Element => {
                 </Text>
               )}
 
-              {noResult && <Text gray>No results found.</Text>}
+              {!hasResult && !isLoading && !error && <Text gray>No results found.</Text>}
             </Box>
           )}
           {hasResult && (
             <ul>
-              {result.map((item, index) => (
-                <ResultItem
-                  key={`${item.Attributes[0].Value}-search-item}`}
-                  highlighted={highlightedIndex === index}
-                  item={item}
-                  itemProps={getItemProps({ item, index })}
-                />
-              ))}
+              {searchResult &&
+                searchResult.map((item, index) => (
+                  <ResultItem
+                    key={`${item.Attributes[0].Value}-search-item}`}
+                    highlighted={highlightedIndex === index}
+                    item={item}
+                    itemProps={getItemProps({ item, index })}
+                  />
+                ))}
             </ul>
           )}
           <Popover.Arrow />
