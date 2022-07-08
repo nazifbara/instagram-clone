@@ -51,6 +51,6 @@ export const Content = ({ children }: { children?: JSX.Element }): JSX.Element =
   )
 }
 
-export const Root = Dialog.Root
-export const Trigger = Dialog.Trigger
+export const Root = DialogPrimitive.Root
+export const Trigger = DialogPrimitive.Trigger
 export const Option = StyledOption
