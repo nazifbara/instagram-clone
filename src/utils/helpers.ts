@@ -52,9 +52,11 @@ export const mapPostsToMedias = async (posts: Post[]): Promise<PostToMediaMap> =
         (m) => m.postID === p.id
       )
 
-      const url = await getSignedMediaUrl(medias[0].mediaKey)
+      if (medias[0]) {
+        const url = await getSignedMediaUrl(medias[0].mediaKey)
 
-      postToMediaMap[p.id] = url || ''
+        postToMediaMap[p.id] = url || ''
+      }
     })
   )
   return postToMediaMap
