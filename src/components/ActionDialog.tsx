@@ -1,32 +1,7 @@
 import * as DialogPrimitive from '@radix-ui/react-dialog'
-import { blackA } from '@radix-ui/colors'
 
-import { styled, overlayShow, contentShow } from '../stitches.config'
-
-const StyledOverlay = styled(DialogPrimitive.Overlay, {
-  backgroundColor: blackA.blackA9,
-  position: 'fixed',
-  inset: 0,
-  '@media (prefers-reduced-motion: no-preference)': {
-    animation: `${overlayShow} 150ms cubic-bezier(0.16, 1, 0.3, 1) forwards`,
-  },
-})
-
-const StyledContent = styled(DialogPrimitive.Content, {
-  backgroundColor: '$accentBg',
-  borderRadius: 12,
-  position: 'fixed',
-  minWidth: '25rem',
-  overflowY: 'hidden',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  '@media (prefers-reduced-motion: no-preference)': {
-    animation: `${contentShow} 150ms cubic-bezier(0.16, 1, 0.3, 1) forwards`,
-  },
-  '&:focus': { outline: 'none' },
-  transition: 'width 0.3s ease-out',
-})
+import { styled } from '../stitches.config'
+import { Dialog } from '.'
 
 const StyledOption = styled(DialogPrimitive.Close, {
   display: 'block',
@@ -61,16 +36,21 @@ const StyledOption = styled(DialogPrimitive.Close, {
 
 export const Content = ({ children }: { children?: JSX.Element }): JSX.Element => {
   return (
-    <DialogPrimitive.DialogPortal>
-      <StyledOverlay />
-      <StyledContent>
+    <Dialog.Portal>
+      <Dialog.Overlay />
+      <Dialog.Content
+        css={{
+          width: '95%',
+          maxWidth: '25rem',
+        }}
+      >
         {children}
         <StyledOption as={DialogPrimitive.Close}>Cancel</StyledOption>
-      </StyledContent>
-    </DialogPrimitive.DialogPortal>
+      </Dialog.Content>
+    </Dialog.Portal>
   )
 }
 
-export const Root = DialogPrimitive.Root
-export const Trigger = DialogPrimitive.Trigger
+export const Root = Dialog.Root
+export const Trigger = Dialog.Trigger
 export const Option = StyledOption
