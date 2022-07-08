@@ -107,7 +107,19 @@ export const CreateButton = (): JSX.Element => {
       >
         <Dialog.Portal>
           <Dialog.Content
-            css={{ width: captionStep ? '57.5625rem' : '36.3125rem', height: '39rem' }}
+            css={{
+              width: '100%',
+              height: '100%',
+
+              '@md': {
+                width: captionStep ? '98%' : '36.3125rem',
+                height: '39rem',
+              },
+
+              '@lg': {
+                width: captionStep ? '57.5625rem' : '36.3125rem',
+              },
+            }}
           >
             <StyledTopBar>
               {showBackButton && (
@@ -162,13 +174,24 @@ export const CreateButton = (): JSX.Element => {
             {showCaption && (
               <Box
                 css={{
-                  height: '100%',
                   display: 'flex',
+                  flexDirection: 'column',
+                  height: '100%',
+
+                  '@md': {
+                    flexDirection: 'row',
+                    height: '100%',
+                  },
                 }}
               >
                 <MediaBox media={media} />
-                <Separator orientation="vertical" />
-                <Box css={{ flexGrow: 1 }}>
+
+                <Separator
+                  css={{ display: 'none', '@md': { display: 'initial' } }}
+                  orientation="vertical"
+                />
+
+                <Box css={{ height: '50%' }}>
                   <Box
                     css={{ display: 'flex', alignItems: 'center', mx: '1rem', height: '3.75rem' }}
                   >
@@ -209,16 +232,21 @@ const MediaBox: React.FC<{ media: File }> = memo(({ media }) => (
     css={{
       backgroundImage: `url("${URL.createObjectURL(media)}")`,
       backgroundRepeat: 'no-repeat',
-      backgroundSize: 'cover',
+      backgroundSize: 'contain',
       backgroundPosition: 'center',
-      height: 'calc(100% - 2.625rem)',
-      width: '62%',
+      height: '50%',
+      width: '100%',
+
+      '@md': {
+        width: '62%',
+        height: 'calc(100% - 2.625rem)',
+      },
     }}
   />
 ))
 const StyledCaptionInput = styled('textarea', {
   width: '100%',
-  height: 'calc(50% - 2.625rem)',
+  height: '60%',
   px: '1rem',
   backgroundColor: 'transparent',
   border: 'none',
@@ -228,6 +256,10 @@ const StyledCaptionInput = styled('textarea', {
   overflowY: 'scroll',
   '&:focus': {
     outline: 'none',
+  },
+
+  '@md': {
+    height: 'calc(50% - 2.625rem)',
   },
 })
 
