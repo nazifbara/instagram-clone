@@ -1,9 +1,12 @@
 import { Cross1Icon, MagnifyingGlassIcon } from '@radix-ui/react-icons'
+import { forwardRef, ForwardedRef } from 'react'
+import { GetItemPropsOptions } from 'downshift'
 
+import { User } from '../../types'
+import { getAvatarURL } from '../../utils/helpers'
 import { useSearch } from '../../utils/hooks'
-import { Text, Box } from '../'
+import { Text, Box, Avatar } from '../'
 import { Popover } from '../'
-import { ResultItem } from './ResultItem'
 import { styled } from '../../stitches.config'
 
 export const SearchInput = (): JSX.Element => {
@@ -32,35 +35,37 @@ export const SearchInput = (): JSX.Element => {
   } = useSearch()
 
   return (
-    <Popover.Root open={true}>
-      <Wrapper {...getComboboxProps()}>
+    <Popover.Root open={isOpen && inputValue !== ''}>
+      <SearchInputWrapper
+        css={{ display: 'none', '@md': { display: 'initial' } }}
+        as={Popover.Anchor}
+        {...getComboboxProps()}
+      >
         {!focused && (
-          <SearchIconWrapper>
+          <SearchInputIconWrapper>
             <SearchIcon width="20px" height="20px" />
-          </SearchIconWrapper>
+          </SearchInputIconWrapper>
         )}
-        <InputField
+        <SearchInputField
           {...getInputProps()}
           onFocus={handleFocus}
           onBlur={handleBlur}
           placeholder="Search"
         />
         {inputValue && (
-          <CloseBtn onClick={handleDismiss}>
+          <SearchInputCloseBtn onClick={handleDismiss}>
             <CloseIcon />
-          </CloseBtn>
+          </SearchInputCloseBtn>
         )}
         <Popover.Content
-          css={{ width: '375px', height: '362px', overflowY: 'scroll' }}
+          {...getMenuProps()}
+          css={{ width: '23.4375rem', height: '22.625rem', overflowY: 'scroll' }}
           onOpenAutoFocus={preventDefault}
           onCloseAutoFocus={preventDefault}
-          onPointerDownOutside={preventDefault}
-          onFocusOutside={preventDefault}
-          onInteractOutside={preventDefault}
           sideOffset={6}
-          hidden={!isOpen || inputValue === ''}
-          {...getMenuProps()}
         >
+          <Popover.Arrow />
+
           {showSearchStatus && (
             <Box
               css={{
@@ -95,17 +100,16 @@ export const SearchInput = (): JSX.Element => {
                 ))}
             </ul>
           )}
-          <Popover.Arrow />
         </Popover.Content>
-      </Wrapper>
+      </SearchInputWrapper>
     </Popover.Root>
   )
 }
 
-const CloseIcon = styled(Cross1Icon, { color: '$accentBase' })
-const SearchIcon = styled(MagnifyingGlassIcon, { color: '$grayPlaceholderText' })
+export const CloseIcon = styled(Cross1Icon, { color: '$accentBase' })
+export const SearchIcon = styled(MagnifyingGlassIcon, { color: '$grayPlaceholderText' })
 
-const SearchIconWrapper = styled('span', {
+export const SearchInputIconWrapper = styled('span', {
   position: 'absolute',
   left: '0.625rem',
   top: '50%',
@@ -113,21 +117,25 @@ const SearchIconWrapper = styled('span', {
   backgroundColor: 'transparent',
 })
 
-const Wrapper = styled(Popover.Anchor, {
-  display: 'none',
+export const SearchInputWrapper = styled('div', {
+  position: 'relative',
+  backgroundColor: '$accentBase',
+  borderRadius: '0.25rem',
+  width: '100%',
+  maxWidth: '16.75rem',
+  height: '2.25rem',
+  border: 'none',
 
-  '@md': {
-    display: 'initial',
-    position: 'relative',
-    backgroundColor: '$accentBase',
-    borderRadius: '0.25rem',
-    width: '100%',
-    maxWidth: '16.75rem',
-    border: 'none',
+  variants: {
+    fullWidth: {
+      true: {
+        maxWidth: 'initial',
+      },
+    },
   },
 })
 
-const InputField = styled('input', {
+export const SearchInputField = styled('input', {
   color: '$accentTextContrast',
   backgroundColor: 'transparent',
   border: 'none',
@@ -141,7 +149,7 @@ const InputField = styled('input', {
   },
 })
 
-const CloseBtn = styled('button', {
+export const SearchInputCloseBtn = styled('button', {
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'space-around',
@@ -156,4 +164,49 @@ const CloseBtn = styled('button', {
   width: '1rem',
   padding: '0.125rem',
   cursor: 'pointer',
+})
+
+export const ResultItem = forwardRef(
+  ({ item, itemProps, highlighted }: ResultItemProps, ref: ForwardedRef<HTMLLIElement>) => (
+    <StyledResultItem highlighted={highlighted} {...itemProps} ref={ref}>
+      <Avatar
+        css={{ marginRight: '0.75rem' }}
+        src={getAvatarURL(item.Username)}
+        alt={item.name ?? ''}
+        fallback={item.Username[0].toUpperCase()}
+      />
+      <div>
+        <Box>
+          <Text bold>{item.Username}</Text>
+        </Box>
+        <Box css={{ mt: '0.25rem' }}>
+          <Text gray>{item.Attributes[2].Value}</Text>
+        </Box>
+      </div>
+    </StyledResultItem>
+  )
+)
+
+type ResultItemProps = {
+  highlighted: boolean
+  item: User
+  itemProps: GetItemPropsOptions<HTMLLIElement>
+}
+
+const StyledResultItem = styled('li', {
+  display: 'flex',
+  alignItems: 'center',
+  p: '0.5rem 1rem',
+  cursor: 'pointer',
+  lineHeight: 'initial',
+  '&:hover': {
+    backgroundColor: '$accentBgHover',
+  },
+  variants: {
+    highlighted: {
+      true: {
+        backgroundColor: '$accentBgHover',
+      },
+    },
+  },
 })
