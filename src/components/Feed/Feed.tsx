@@ -1,7 +1,7 @@
 import { useEffect, useCallback } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
-import { PostCard, Container, Text } from '../'
+import { Container, Text, PostList } from '../'
 import { getPost } from '../../selectors'
 import { loadPosts } from '../../slices/post'
 
@@ -28,15 +28,8 @@ export const Feed = (): JSX.Element => {
   }, [_loadPosts])
 
   return (
-    <Container type="feed">
-      <ul>
-        {!error &&
-          posts?.map((p) => (
-            <li key={p.id}>
-              <PostCard post={p} media={postToMediaMap[p.id]} />
-            </li>
-          ))}
-      </ul>
+    <Container>
+      {!error && <PostList posts={posts} postToMediaMap={postToMediaMap} />}
 
       {isLoading && (
         <Text as="div" css={{ textAlign: 'center' }}>

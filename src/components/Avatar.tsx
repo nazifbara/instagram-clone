@@ -1,5 +1,3 @@
-import { CSSProperties } from '@stitches/react'
-
 import { styled } from '../stitches.config'
 import * as AvatarPrimitive from '@radix-ui/react-avatar'
 
@@ -8,7 +6,7 @@ type AvatarProps = {
   src: string
   alt: string
   fallback: string
-  css?: CSSProperties
+  css?: any
 }
 export const Avatar = ({
   size = '2.75rem',
@@ -18,7 +16,7 @@ export const Avatar = ({
   css,
 }: AvatarProps): JSX.Element => {
   return (
-    <StyledAvatar css={{ ...css, wh: size }}>
+    <StyledAvatar css={{ wh: size, ...css }}>
       <StyledImage src={src} alt={alt} />
       <StyledFallback delayMs={600}>{fallback}</StyledFallback>
     </StyledAvatar>
