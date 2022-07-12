@@ -33,8 +33,8 @@ export const ProfileButton = (): JSX.Element => {
         <Avatar
           size="1.5rem"
           src={getAvatarURL(currentUser?.username)}
-          alt={currentUser?.name}
-          fallback={currentUser?.username[0].toUpperCase()}
+          alt={currentUser?.fullName ?? ''}
+          fallback={currentUser?.username[0].toUpperCase() ?? 'U'}
         />
       </IconButton>
       <Popover.Content sideOffset={6}>

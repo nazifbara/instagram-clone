@@ -91,7 +91,6 @@ const postSlice = createSlice({
       state,
       { payload }: PayloadAction<{ username: string; post: Post; postToMediaMap: PostToMediaMap }>
     ) => {
-      console.log({ addPostSuccess: payload })
       state.isPosting = false
       state.postCreationSuccess = true
 

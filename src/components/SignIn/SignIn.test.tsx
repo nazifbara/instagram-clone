@@ -74,8 +74,10 @@ describe('<SignIn />', () => {
   it('allows user to log in', async () => {
     const history = createMemoryHistory()
 
-    mockedLoginUser.mockImplementation(function* ({ payload: { username } }) {
-      yield put(loginSuccess({ username }))
+    mockedLoginUser.mockImplementation(function* ({ payload }) {
+      yield put(
+        loginSuccess({ username: payload.username, email: 'e@e.co', fullName: 'full name' })
+      )
     })
 
     render(

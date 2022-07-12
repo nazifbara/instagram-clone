@@ -92,7 +92,7 @@ export const SearchInput = (): JSX.Element => {
               {searchResult &&
                 searchResult.map((item, index) => (
                   <ResultItem
-                    key={`${item.Attributes[0].Value}-search-item}`}
+                    key={`${item.username}-search-item}`}
                     highlighted={highlightedIndex === index}
                     item={item}
                     itemProps={getItemProps({ item, index })}
@@ -171,16 +171,16 @@ export const ResultItem = forwardRef(
     <StyledResultItem highlighted={highlighted} {...itemProps} ref={ref}>
       <Avatar
         css={{ marginRight: '0.75rem' }}
-        src={getAvatarURL(item.Username)}
-        alt={item.name ?? ''}
-        fallback={item.Username[0].toUpperCase()}
+        src={getAvatarURL(item.username)}
+        alt={item.fullName ?? ''}
+        fallback={item.username[0].toUpperCase()}
       />
       <div>
         <Box>
-          <Text bold>{item.Username}</Text>
+          <Text bold>{item.username}</Text>
         </Box>
         <Box css={{ mt: '0.25rem' }}>
-          <Text gray>{item.Attributes[2].Value}</Text>
+          <Text gray>{item.fullName}</Text>
         </Box>
       </div>
     </StyledResultItem>

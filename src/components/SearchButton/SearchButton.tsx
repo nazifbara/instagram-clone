@@ -89,7 +89,7 @@ export const SearchButton = (): JSX.Element => {
                 searchResult &&
                 searchResult.map((item, index) => (
                   <ResultItem
-                    key={`${item.Attributes[0].Value}-search-item}`}
+                    key={`${item.username}-search-item}`}
                     highlighted={highlightedIndex === index}
                     item={item}
                     itemProps={getItemProps({ item, index })}

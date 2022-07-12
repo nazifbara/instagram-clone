@@ -41,9 +41,9 @@ describe('<SearchInput />', () => {
   it('makes search suggestions', async () => {
     const history = createMemoryHistory()
     const users = [
-      { Username: 'joe', Attributes: [{ Value: '1' }, {}, { Value: 'Joe Doe' }] },
-      { Username: 'bob', Attributes: [{ Value: '2' }, {}, { Value: 'Bob Doe' }] },
-      { Username: 'peter', Attributes: [{ Value: '3' }, {}, { Value: 'Peter Doe' }] },
+      { username: 'joe', fullName: 'Joe Doe', email: 'e@m.co' },
+      { username: 'bob', fullName: 'Bob Doe', email: 'e@m.co' },
+      { username: 'peter', fullName: 'Peter Doe', email: 'e@m.co' },
     ]
 
     mockedSearchUserSaga.mockImplementation(function* () {
@@ -61,7 +61,7 @@ describe('<SearchInput />', () => {
 
     await Promise.all(
       users.map(async (user) => {
-        expect(await screen.findByText(user.Username)).toBeInTheDocument()
+        expect(await screen.findByText(user.username)).toBeInTheDocument()
       })
     )
   })

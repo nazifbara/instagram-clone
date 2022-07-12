@@ -85,7 +85,9 @@ export interface PostToMediaMap {
 //==============================================================================
 
 export interface User {
-  [anyProp: string]: any
+  username: string
+  fullName: string
+  email: string
 }
 
 //==============================================================================

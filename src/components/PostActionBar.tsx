@@ -17,7 +17,9 @@ export const PostActionBar = ({ post }: { post: Post }): JSX.Element => {
   // State
   // ===========================================================================
 
-  const liked = post.likesMap ? Boolean(JSON.parse(post.likesMap)[currentUser?.username]) : false
+  const liked = post.likesMap
+    ? Boolean(JSON.parse(post.likesMap)[currentUser?.username ?? ''])
+    : false
 
   // ===========================================================================
   // Dispatch
@@ -31,7 +33,7 @@ export const PostActionBar = ({ post }: { post: Post }): JSX.Element => {
   // Handlers
   // ===========================================================================
 
-  const handleLike = () => _toggleLike(post.id, currentUser?.username)
+  const handleLike = () => _toggleLike(post.id, currentUser?.username ?? '')
 
   return (
     <StyledActionBox>

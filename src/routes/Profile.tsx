@@ -34,7 +34,7 @@ const ProfileView = (): JSX.Element => {
   // ===========================================================================
 
   const [currentPostIndex, setCurrentPostIndex] = useState<number | null>(null)
-  const isOwner = currentUser?.username === userDetail.data?.Username
+  const isOwner = currentUser?.username === userDetail.data?.username
   const postsCount = posts.length
 
   // ===========================================================================
@@ -127,9 +127,9 @@ const ProfileView = (): JSX.Element => {
             >
               <Avatar
                 css={{ wh: '77px', '@sm': { wh: '150px' } }}
-                src={getAvatarURL(userDetail.data?.Username)}
+                src={getAvatarURL(userDetail.data?.username)}
                 fallback="u"
-                alt={userDetail.data?.Username}
+                alt={userDetail.data?.fullName ?? ''}
               />
             </Box>
 
@@ -157,7 +157,7 @@ const ProfileView = (): JSX.Element => {
                   as="h2"
                   css={{ fontSize: '$5', fontWeight: 300, mb: '1rem', '@sm': { mb: '0' } }}
                 >
-                  {userDetail.data?.Username}
+                  {userDetail.data?.username}
                 </Text>
                 <Button
                   css={{ fontSize: '$2', width: '100%', ml: '0', '@sm': { ml: '1.25rem' } }}
@@ -212,7 +212,7 @@ const ProfileView = (): JSX.Element => {
                 }}
               >
                 <Text as="div" bold>
-                  {userDetail.data?.UserAttributes[2].Value}
+                  {userDetail.data?.fullName}
                 </Text>
                 <Text as="p">
                   Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras cursus commodo nunc
@@ -236,7 +236,7 @@ const ProfileView = (): JSX.Element => {
             }}
           >
             <Text as="div" bold>
-              {userDetail.data?.UserAttributes[2].Value}
+              {userDetail.data?.fullName}
             </Text>
             <Text as="p">
               Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras cursus commodo nunc sed

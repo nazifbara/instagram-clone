@@ -86,7 +86,7 @@ export function* _searchUser({ payload: username }: PayloadAction<string>) {
     }
     let result: { Users: User[] } = yield API.get(apiName, path, myInit)
     result.Users = result.Users.filter((u) =>
-      u.Username.toLowerCase().includes(username.toLowerCase())
+      u.username.toLowerCase().includes(username.toLowerCase())
     )
     yield put(searchUserSuccess(result.Users.length === 0 ? null : result.Users))
   } catch (error) {
@@ -101,7 +101,6 @@ function* _getUserPosts({ payload }: PayloadAction<string>) {
     posts = posts.filter((p) => p.owner === payload)
     let postToMediaMap: PostToMediaMap = yield mapPostsToMedias(posts)
     yield put(getUserPostsSuccess({ username: payload, posts: posts, postToMediaMap }))
-    console.log({ profilePosts: posts })
   } catch (error) {
     console.error({ profilePostsError: error })
     yield put(getUserPostsError(getErrorMessage(error)))
@@ -126,9 +125,15 @@ function* _getUserDetail({ payload }: PayloadAction<string>) {
         Authorization: token,
       },
     }
-    const user: User = yield API.get(apiName, path, myInit)
-    console.log({ userDetail: user })
-    yield put(getUserDetailSuccess(user))
+    const cognitoUser: { [anyProps: string]: any } = yield API.get(apiName, path, myInit)
+
+    yield put(
+      getUserDetailSuccess({
+        username: cognitoUser.Username,
+        fullName: cognitoUser.UserAttributes[2].Value,
+        email: cognitoUser.UserAttributes[3].Value,
+      })
+    )
   } catch (error: any) {
     console.error({ userDetailError: error })
     if (error.isAxiosError && error.response.data.message.includes('User does not exist')) {
@@ -167,7 +172,7 @@ export function* fetchPosts() {
     const posts: PostModel[] = yield DataStore.query(PostModel, Predicates.ALL, {
       sort: (s) => s.createdAt(SortDirection.DESCENDING),
     })
-    console.log({ posts })
+
     if (posts) {
       let postToMediaMap: PostToMediaMap = yield mapPostsToMedias(posts)
 
@@ -182,7 +187,7 @@ export function* fetchPosts() {
 export function* createNewPost({ payload: { postInput, medias, owner } }: PayloadAction<NewPost>) {
   try {
     const post: PostModel = yield DataStore.save(new PostModel({ caption: postInput.caption }))
-    console.log(post)
+
     let postToMediaMap: PostToMediaMap = {}
 
     const result: MediaModel[] = yield Promise.all(
@@ -211,10 +216,17 @@ export function* createNewPost({ payload: { postInput, medias, owner } }: Payloa
 
 function* getCurrentUser() {
   try {
-    const user: User = yield Auth.currentAuthenticatedUser()
-    console.log(user)
-    yield put(checkAuthSuccess(user))
+    const user: { [anyProps: string]: any } = yield Auth.currentAuthenticatedUser()
+
+    yield put(
+      checkAuthSuccess({
+        username: user.username,
+        fullName: user.attributes.name,
+        email: user.attributes.email,
+      })
+    )
   } catch (error) {
+    console.error(error)
     yield put(checkAuthError())
   }
 }

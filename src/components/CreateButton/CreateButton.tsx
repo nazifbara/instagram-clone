@@ -77,7 +77,11 @@ export const CreateButton = (): JSX.Element => {
     if (!media) {
       return
     }
-    _createNewPost({ postInput: { caption }, medias: [media], owner: currentUser?.username })
+    _createNewPost({
+      postInput: { caption },
+      medias: [media],
+      owner: currentUser?.username || 'user',
+    })
   }
 
   // ===========================================================================
@@ -198,7 +202,7 @@ export const CreateButton = (): JSX.Element => {
                     <Avatar
                       src={getAvatarURL(currentUser?.username)}
                       fallback="p"
-                      alt={currentUser?.username}
+                      alt={currentUser?.username ?? ''}
                       size="1.75rem"
                       css={{ marginRight: '0.75rem' }}
                     />

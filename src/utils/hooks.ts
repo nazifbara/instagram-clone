@@ -60,8 +60,8 @@ export const useSearch = () => {
     },
     onSelectedItemChange: (changes) => {
       if (changes.selectedItem) {
-        setInputValue(changes.selectedItem.Username)
-        navigate(`/app/${changes.selectedItem.Username}`)
+        setInputValue(changes.selectedItem.username)
+        navigate(`/app/${changes.selectedItem.username}`)
       }
     },
   })
