@@ -67,7 +67,7 @@ export function* _toggleLike({
   }
 }
 
-function* _searchUser({ payload: username }: PayloadAction<string>) {
+export function* _searchUser({ payload: username }: PayloadAction<string>) {
   try {
     const apiName = 'AdminQueries'
     const path = '/listUsers'
