@@ -84,11 +84,22 @@ export function* _searchUser({ payload: username }: PayloadAction<string>) {
         Authorization: token,
       },
     }
-    let result: { Users: User[] } = yield API.get(apiName, path, myInit)
+    let result: { Users: { [anyProps: string]: any }[] } = yield API.get(apiName, path, myInit)
+
     result.Users = result.Users.filter((u) =>
-      u.username.toLowerCase().includes(username.toLowerCase())
+      u.Username.toLowerCase().includes(username.toLowerCase())
     )
-    yield put(searchUserSuccess(result.Users.length === 0 ? null : result.Users))
+    yield put(
+      searchUserSuccess(
+        result.Users.length === 0
+          ? null
+          : result.Users.map((u) => ({
+              username: u.Username,
+              fullName: u.Attributes[2].Value,
+              email: u.Attributes[3].Value,
+            }))
+      )
+    )
   } catch (error) {
     console.error({ searchUserError: error })
     yield put(searchUserError(getErrorMessage(error)))

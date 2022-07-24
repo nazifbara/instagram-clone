@@ -18,6 +18,7 @@ export const SearchButton = (): JSX.Element => {
   // ===========================================================================
 
   const {
+    isOpen,
     searchResult,
     hasResult,
     error,
@@ -70,7 +71,7 @@ export const SearchButton = (): JSX.Element => {
               </Dialog.Close>
             </Box>
 
-            {showSearchStatus && (
+            {showSearchStatus && isOpen && (
               <Box css={{ p: '1rem' }}>
                 {isLoading && <Text gray>searching...</Text>}
 
