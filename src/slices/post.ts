@@ -63,7 +63,7 @@ const postSlice = createSlice({
       state.posts.splice(indexFeed, 1)
     },
 
-    loadPosts: (state) => {
+    loadPosts: (state, _action: PayloadAction<{ page: number }>) => {
       state.isLoading = true
     },
 

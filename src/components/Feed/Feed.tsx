@@ -1,4 +1,4 @@
-import { useEffect, useCallback } from 'react'
+import { useEffect, useCallback, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
 import { Container, Text, PostList } from '../'
@@ -6,6 +6,12 @@ import { getPost } from '../../selectors'
 import { loadPosts } from '../../slices/post'
 
 export const Feed = (): JSX.Element => {
+  // ===========================================================================
+  // States
+  // ===========================================================================
+
+  const [page, setPage] = useState(0)
+
   // ===========================================================================
   // Selectors
   // ===========================================================================
@@ -17,7 +23,7 @@ export const Feed = (): JSX.Element => {
   // ===========================================================================
 
   const dispatch = useDispatch()
-  const _loadPosts = useCallback(() => dispatch(loadPosts()), [dispatch])
+  const _loadPosts = useCallback(() => dispatch(loadPosts({ page })), [dispatch, page])
 
   // ===========================================================================
   // Hooks
