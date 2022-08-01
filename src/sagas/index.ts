@@ -3,6 +3,7 @@ import { PayloadAction } from '@reduxjs/toolkit'
 import { Auth, Storage, DataStore, Predicates, SortDirection, API } from 'aws-amplify'
 
 import { Post as PostModel, Media as MediaModel } from '../models'
+import { client } from '../utils/client'
 import {
   getErrorMessage,
   getSignedMediaUrl,
@@ -264,14 +265,12 @@ export function* signUpUser({
   }
 }
 
-export function* loginUser({ payload: { username, password } }: PayloadAction<LoginFormState>) {
+export function* loginUser({ payload }: PayloadAction<LoginFormState>) {
   try {
-    const user: User = yield Auth.signIn({ username, password })
-    console.info({ signedInUser: user })
+    const user: User = yield client.login(payload)
     yield put(loginSuccess(user))
   } catch (error: any) {
-    console.error({ signInError: error })
-    yield put(loginError(getErrorMessage(error)))
+    yield put(loginError(error))
   }
 }
 
