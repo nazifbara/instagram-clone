@@ -3,12 +3,20 @@ import { Router } from 'react-router-dom'
 import { createMemoryHistory } from 'history'
 
 import { Feed } from './Feed'
-import { fireEvent, getSaga, render, screen, within } from '../../utils/test'
+import {
+  fireEvent,
+  getSaga,
+  render,
+  screen,
+  within,
+  setupIntersectionObserverMock,
+} from '../../utils/test'
 import { loadPosts, loadPostsSuccess, loadPostsError } from '../../slices/post'
 import { _loadPosts } from '../../sagas'
 
 jest.mock('../../sagas')
 const mockedLoadPosts = jest.mocked(_loadPosts, true)
+setupIntersectionObserverMock()
 
 describe('<Feed />', () => {
   it('renders list of posts', () => {

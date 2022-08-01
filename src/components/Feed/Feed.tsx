@@ -1,4 +1,4 @@
-import { useEffect, useCallback, useState } from 'react'
+import { useEffect, useCallback, useState, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
 import { Container, Text, PostList } from '../'
@@ -33,9 +33,27 @@ export const Feed = (): JSX.Element => {
     _loadPosts()
   }, [_loadPosts])
 
+  const intObserver = useRef<IntersectionObserver | null>(null)
+  const lastPostRef = useCallback(
+    (post) => {
+      if (isLoading) return
+
+      if (intObserver.current) intObserver.current.disconnect()
+
+      intObserver.current = new IntersectionObserver((posts) => {
+        if (posts[0].isIntersecting) {
+          console.log('Near the last post')
+        }
+      })
+
+      if (post) intObserver.current.observe(post)
+    },
+    [isLoading]
+  )
+
   return (
     <Container>
-      {!error && <PostList posts={posts} postToMediaMap={postToMediaMap} />}
+      {!error && <PostList ref={lastPostRef} posts={posts} postToMediaMap={postToMediaMap} />}
 
       {isLoading && (
         <Text as="div" css={{ textAlign: 'center' }}>
