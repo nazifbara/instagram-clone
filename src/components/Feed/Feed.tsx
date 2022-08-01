@@ -16,7 +16,7 @@ export const Feed = (): JSX.Element => {
   // Selectors
   // ===========================================================================
 
-  const { posts, postToMediaMap, isLoading, error } = useSelector(getPost)
+  const { posts, hasNextPage, postToMediaMap, isLoading, error } = useSelector(getPost)
 
   // ===========================================================================
   // Dispatch
@@ -41,14 +41,14 @@ export const Feed = (): JSX.Element => {
       if (intObserver.current) intObserver.current.disconnect()
 
       intObserver.current = new IntersectionObserver((posts) => {
-        if (posts[0].isIntersecting) {
-          console.log('Near the last post')
+        if (posts[0].isIntersecting && hasNextPage) {
+          setPage((prev) => prev + 1)
         }
       })
 
       if (post) intObserver.current.observe(post)
     },
-    [isLoading]
+    [isLoading, hasNextPage]
   )
 
   return (

@@ -20,6 +20,7 @@ export interface UserState {
 
 export interface PostState {
   posts: Post[]
+  hasNextPage: boolean
   view: null | 'profile' | 'feed'
   profileUsername: null | string
   postToMediaMap: PostToMediaMap
