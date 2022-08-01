@@ -84,11 +84,22 @@ export function* _searchUser({ payload: username }: PayloadAction<string>) {
         Authorization: token,
       },
     }
-    let result: { Users: User[] } = yield API.get(apiName, path, myInit)
+    let result: { Users: { [anyProps: string]: any }[] } = yield API.get(apiName, path, myInit)
+
     result.Users = result.Users.filter((u) =>
-      u.username.toLowerCase().includes(username.toLowerCase())
+      u.Username.toLowerCase().includes(username.toLowerCase())
     )
-    yield put(searchUserSuccess(result.Users.length === 0 ? null : result.Users))
+    yield put(
+      searchUserSuccess(
+        result.Users.length === 0
+          ? null
+          : result.Users.map((u) => ({
+              username: u.Username,
+              fullName: u.Attributes[2].Value,
+              email: u.Attributes[3].Value,
+            }))
+      )
+    )
   } catch (error) {
     console.error({ searchUserError: error })
     yield put(searchUserError(getErrorMessage(error)))
@@ -167,9 +178,11 @@ export function* _deletePost({ payload: postID }: PayloadAction<string>) {
   }
 }
 
-export function* fetchPosts() {
+export function* _loadPosts({ payload: { page = 0 } }: PayloadAction<{ page: number }>) {
   try {
     const posts: PostModel[] = yield DataStore.query(PostModel, Predicates.ALL, {
+      page,
+      limit: 6,
       sort: (s) => s.createdAt(SortDirection.DESCENDING),
     })
 
@@ -270,7 +283,7 @@ export function* rootSaga() {
     takeLatest(getUserDetail.type, _getUserDetail),
     takeLatest(logout.type, _logout),
     takeLatest(deletePost.type, _deletePost),
-    takeLatest(loadPosts.type, fetchPosts),
+    takeLatest(loadPosts.type, _loadPosts),
     takeLatest(addPost.type, createNewPost),
     takeLatest(signUp.type, signUpUser),
     takeLatest(login.type, loginUser),

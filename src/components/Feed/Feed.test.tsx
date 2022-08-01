@@ -3,12 +3,20 @@ import { Router } from 'react-router-dom'
 import { createMemoryHistory } from 'history'
 
 import { Feed } from './Feed'
-import { fireEvent, getSaga, render, screen, within } from '../../utils/test'
+import {
+  fireEvent,
+  getSaga,
+  render,
+  screen,
+  within,
+  setupIntersectionObserverMock,
+} from '../../utils/test'
 import { loadPosts, loadPostsSuccess, loadPostsError } from '../../slices/post'
-import { fetchPosts } from '../../sagas'
+import { _loadPosts } from '../../sagas'
 
 jest.mock('../../sagas')
-const mockedFetchPosts = jest.mocked(fetchPosts, true)
+const mockedLoadPosts = jest.mocked(_loadPosts, true)
+setupIntersectionObserverMock()
 
 describe('<Feed />', () => {
   it('renders list of posts', () => {
@@ -20,7 +28,7 @@ describe('<Feed />', () => {
     ]
     const username = 'zif'
 
-    mockedFetchPosts.mockImplementation(function* () {
+    mockedLoadPosts.mockImplementation(function* () {
       yield put(loadPostsSuccess({ posts, postToMediaMap: {} }))
     })
 
@@ -34,11 +42,11 @@ describe('<Feed />', () => {
             currentUser: { username },
           },
         },
-        saga: getSaga([takeLatest(loadPosts.type, mockedFetchPosts)]),
+        saga: getSaga([takeLatest(loadPosts.type, mockedLoadPosts)]),
       }
     )
 
-    expect(mockedFetchPosts).toBeCalledTimes(1)
+    expect(mockedLoadPosts).toBeCalledTimes(1)
 
     const listItems = screen.queryAllByRole('listitem')
 
@@ -71,7 +79,7 @@ describe('<Feed />', () => {
     const history = createMemoryHistory()
     const errorMessage = 'something went wrong...'
 
-    mockedFetchPosts.mockImplementation(function* () {
+    mockedLoadPosts.mockImplementation(function* () {
       yield put(loadPostsError(errorMessage))
     })
 
@@ -80,11 +88,11 @@ describe('<Feed />', () => {
         <Feed />
       </Router>,
       {
-        saga: getSaga([takeLatest(loadPosts.type, mockedFetchPosts)]),
+        saga: getSaga([takeLatest(loadPosts.type, mockedLoadPosts)]),
       }
     )
 
-    expect(mockedFetchPosts).toBeCalledTimes(1)
+    expect(mockedLoadPosts).toBeCalledTimes(1)
 
     expect(screen.getByText(errorMessage)).toBeInTheDocument()
   })

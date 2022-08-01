@@ -1,0 +1,101 @@
+import { Router } from 'react-router-dom'
+import { createMemoryHistory } from 'history'
+import { takeLatest, put } from 'redux-saga/effects'
+
+import { SearchButton } from './SearchButton'
+import { render, screen, getSaga, fireEvent } from '../../utils/test'
+import { searchUser, searchUserSuccess, searchUserError } from '../../slices/user'
+import { _searchUser } from '../../sagas'
+
+jest.mock('../../sagas')
+const mockedSearchUserSaga = jest.mocked(_searchUser, true)
+
+describe('<SearchButton />', () => {
+  it('renders the search button', () => {
+    const history = createMemoryHistory()
+
+    render(
+      <Router location={history.location} navigator={history}>
+        <SearchButton />
+      </Router>
+    )
+
+    expect(screen.getByRole('button')).toBeInTheDocument()
+
+    fireEvent.click(screen.getByRole('button'))
+
+    expect(screen.getByPlaceholderText(/search/i)).toBeInTheDocument()
+  })
+
+  it('makes search suggestions', async () => {
+    const history = createMemoryHistory()
+    const users = [
+      { username: 'joe', fullName: 'Joe Doe', email: 'e@m.co' },
+      { username: 'bob', fullName: 'Bob Doe', email: 'e@m.co' },
+      { username: 'peter', fullName: 'Peter Doe', email: 'e@m.co' },
+    ]
+
+    mockedSearchUserSaga.mockImplementation(function* () {
+      yield put(searchUserSuccess(users))
+    })
+
+    render(
+      <Router location={history.location} navigator={history}>
+        <SearchButton />
+      </Router>,
+      { saga: getSaga([takeLatest(searchUser.type, mockedSearchUserSaga)]) }
+    )
+
+    fireEvent.click(screen.getByRole('button'))
+    fireEvent.change(screen.getByPlaceholderText(/search/i), { target: { value: 'something' } })
+
+    await Promise.all(
+      users.map(async (user) => {
+        expect(await screen.findByText(user.username)).toBeInTheDocument()
+      })
+    )
+
+    expect(mockedSearchUserSaga).toBeCalledTimes(1)
+  })
+
+  it('notifies when no users found', async () => {
+    const history = createMemoryHistory()
+
+    mockedSearchUserSaga.mockImplementation(function* () {
+      yield put(searchUserSuccess(null))
+    })
+
+    render(
+      <Router location={history.location} navigator={history}>
+        <SearchButton />
+      </Router>,
+      { saga: getSaga([takeLatest(searchUser.type, mockedSearchUserSaga)]) }
+    )
+
+    fireEvent.click(screen.getByRole('button'))
+    fireEvent.change(screen.getByPlaceholderText(/search/i), { target: { value: 'something' } })
+
+    expect(await screen.findByText(/no results found/i)).toBeInTheDocument()
+  })
+
+  it('notifies when this is an error', async () => {
+    const history = createMemoryHistory()
+    const errorMessage = 'Something went wrong...'
+
+    mockedSearchUserSaga.mockImplementation(function* () {
+      yield put(searchUserError(errorMessage))
+    })
+
+    render(
+      <Router location={history.location} navigator={history}>
+        <SearchButton />
+      </Router>,
+      { saga: getSaga([takeLatest(searchUser.type, mockedSearchUserSaga)]) }
+    )
+
+    fireEvent.click(screen.getByRole('button'))
+    fireEvent.change(screen.getByPlaceholderText(/search/i), { target: { value: 'something' } })
+
+    expect(await screen.findByText(errorMessage)).toBeInTheDocument()
+  })
+})
