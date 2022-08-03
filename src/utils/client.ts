@@ -1,4 +1,4 @@
-import { Auth, DataStore, Predicates, SortDirection, Storage } from 'aws-amplify'
+import { Auth, DataStore, Predicates, SortDirection, Storage, API } from 'aws-amplify'
 
 import { Post as PostModel, Media as MediaModel } from '../models'
 import {
@@ -16,6 +16,47 @@ import {
   createMedia,
   mapPostsToMedias,
 } from './helpers'
+
+//==============================================================================
+// User
+//==============================================================================
+
+export const getUserDetail = async (username: string) => {
+  try {
+    const apiName = 'AdminQueries'
+    const path = '/getUser'
+    const session: { [anyProps: string]: any } = await Auth.currentSession()
+
+    const token = session.getAccessToken().getJwtToken()
+
+    const myInit = {
+      queryStringParameters: {
+        username,
+        groupname: 'Users',
+      },
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: token,
+      },
+    }
+    const cognitoUser: { [anyProps: string]: any } = await API.get(apiName, path, myInit)
+
+    return {
+      username: cognitoUser.Username,
+      fullName: cognitoUser.UserAttributes[2].Value,
+      email: cognitoUser.UserAttributes[3].Value,
+    }
+  } catch (error: any) {
+    console.error({ clientGetUserDetailError: error })
+
+    if (error.isAxiosError && error.response.data.message.includes('User does not exist')) {
+      error.code = 'UserNotFoundException'
+      error.message = 'User not found.'
+    }
+
+    throw new Error(getErrorMessage(error))
+  }
+}
 
 //==============================================================================
 // Post
@@ -150,4 +191,5 @@ export const Client = {
   getPosts,
   deletePost,
   logout,
+  getUserDetail,
 }

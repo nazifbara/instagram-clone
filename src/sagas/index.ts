@@ -122,38 +122,9 @@ function* _getUserPosts({ payload }: PayloadAction<string>) {
 
 function* _getUserDetail({ payload }: PayloadAction<string>) {
   try {
-    const apiName = 'AdminQueries'
-    const path = '/getUser'
-    const session: { [anyProps: string]: any } = yield Auth.currentSession()
-
-    const token = session.getAccessToken().getJwtToken()
-
-    const myInit = {
-      queryStringParameters: {
-        username: payload,
-        groupname: 'Users',
-      },
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: token,
-      },
-    }
-    const cognitoUser: { [anyProps: string]: any } = yield API.get(apiName, path, myInit)
-
-    yield put(
-      getUserDetailSuccess({
-        username: cognitoUser.Username,
-        fullName: cognitoUser.UserAttributes[2].Value,
-        email: cognitoUser.UserAttributes[3].Value,
-      })
-    )
+    yield put(getUserDetailSuccess(yield Client.getUserDetail(payload)))
   } catch (error: any) {
-    console.error({ userDetailError: error })
-    if (error.isAxiosError && error.response.data.message.includes('User does not exist')) {
-      error.code = 'UserNotFoundException'
-      error.message = 'User not found.'
-    }
-    yield put(getUserDetailError(getErrorMessage(error)))
+    yield put(getUserDetailError(getErrorMessage(error.message)))
   }
 }
 
