@@ -31,6 +31,7 @@ export interface UserState {
 
 export interface PostState {
   posts: Post[]
+  prevPage: number
   hasNextPage: boolean
   view: null | 'profile' | 'feed'
   profileUsername: null | string

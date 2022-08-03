@@ -5,6 +5,7 @@ import { PostState, NewPost, Post, PostToMediaMap } from '../types'
 
 const initialState: PostState = {
   posts: [],
+  prevPage: 0,
   hasNextPage: true,
   view: null,
   profileUsername: null,
@@ -64,8 +65,9 @@ const postSlice = createSlice({
       state.posts.splice(indexFeed, 1)
     },
 
-    loadPosts: (state, _action: PayloadAction<{ page: number }>) => {
+    loadPosts: (state, { payload: { page } }: PayloadAction<{ page: number }>) => {
       state.isLoading = true
+      state.prevPage = page
     },
 
     loadPostsSuccess: (
@@ -75,7 +77,7 @@ const postSlice = createSlice({
       state.isLoading = false
       state.view = 'feed'
       state.profileUsername = null
-      state.posts = [...state.posts, ...payload.posts]
+      state.posts = state.prevPage === 0 ? payload.posts : [...state.posts, ...payload.posts]
       state.hasNextPage = Boolean(payload.posts.length)
       state.postToMediaMap = { ...state.postToMediaMap, ...payload.postToMediaMap }
     },
