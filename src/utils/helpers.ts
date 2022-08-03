@@ -1,8 +1,7 @@
-import { DataStore, Storage } from 'aws-amplify'
-import { v4 as uuid } from 'uuid'
+import { DataStore } from 'aws-amplify'
 
 import { Media as MediaModel } from '../models'
-import { PostToMediaMap, Post, CreateMediaInput } from '../types'
+import { CreateMediaInput } from '../types'
 
 export const getAvatarURL = (username: string = 'random') =>
   `https://avatars.dicebear.com/api/avataaars/${username}.svg`
@@ -28,38 +27,6 @@ export const updateLikesMap = (
 
 export const createMedia = async ({ postID, mediaKey }: CreateMediaInput) => {
   return await DataStore.save(new MediaModel({ postID, mediaKey }))
-}
-
-export const uploadMedia = async (media: File): Promise<string> => {
-  const mediaKey = uuid() + media.name.replace(/\s/g, '-').toLowerCase()
-  await Storage.put(mediaKey, media)
-  return mediaKey
-}
-
-export const getSignedMediaUrl = async (key: string | undefined) => {
-  if (!key) {
-    return
-  }
-  return await Storage.get(key)
-}
-
-export const mapPostsToMedias = async (posts: Post[]): Promise<PostToMediaMap> => {
-  const postToMediaMap: PostToMediaMap = {}
-
-  await Promise.all(
-    posts.map(async (p) => {
-      const medias: MediaModel[] = (await DataStore.query(MediaModel)).filter(
-        (m) => m.postID === p.id
-      )
-
-      if (medias[0]) {
-        const url = await getSignedMediaUrl(medias[0].mediaKey)
-
-        postToMediaMap[p.id] = url || ''
-      }
-    })
-  )
-  return postToMediaMap
 }
 
 export const getErrorMessage = (error: any) => {
