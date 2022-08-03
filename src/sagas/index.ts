@@ -1,11 +1,19 @@
 import { all, put, takeLatest } from 'redux-saga/effects'
 import { PayloadAction } from '@reduxjs/toolkit'
-import { Auth, Storage, DataStore, Predicates, SortDirection, API } from 'aws-amplify'
+import { Auth, Storage, DataStore, API } from 'aws-amplify'
 
 import { Post as PostModel, Media as MediaModel } from '../models'
 import { Client } from '../utils/client'
 import { getErrorMessage, mapPostsToMedias, updateLikesMap } from '../utils/helpers'
-import { LoginFormState, SignUpFormState, User, NewPost, PostToMediaMap, Post } from '../types'
+import {
+  LoginFormState,
+  SignUpFormState,
+  User,
+  NewPost,
+  PostToMediaMap,
+  Post,
+  APIGetPostsParam,
+} from '../types'
 import {
   searchUser,
   searchUserSuccess,
@@ -172,22 +180,11 @@ export function* _deletePost({ payload: postID }: PayloadAction<string>) {
   }
 }
 
-export function* _loadPosts({ payload: { page = 0 } }: PayloadAction<{ page: number }>) {
+export function* _loadPosts({ payload }: PayloadAction<APIGetPostsParam>) {
   try {
-    const posts: PostModel[] = yield DataStore.query(PostModel, Predicates.ALL, {
-      page,
-      limit: 6,
-      sort: (s) => s.createdAt(SortDirection.DESCENDING),
-    })
-
-    if (posts) {
-      let postToMediaMap: PostToMediaMap = yield mapPostsToMedias(posts)
-
-      yield put(loadPostsSuccess({ posts: posts, postToMediaMap }))
-    }
-  } catch (error) {
-    console.error(error)
-    yield put(loadPostsError(getErrorMessage(error)))
+    yield put(loadPostsSuccess(yield Client.getPosts(payload)))
+  } catch (error: any) {
+    yield put(loadPostsError(error.message))
   }
 }
 

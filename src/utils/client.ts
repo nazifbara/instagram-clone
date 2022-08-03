@@ -1,12 +1,45 @@
-import { Auth, DataStore } from 'aws-amplify'
+import { Auth, DataStore, Predicates, SortDirection } from 'aws-amplify'
 
 import { Post as PostModel, Media as MediaModel } from '../models'
-import { APILoginParam, User, APISignUpParam, APICreatePostParam, PostToMediaMap } from '../types'
-import { getErrorMessage, uploadMedia, getSignedMediaUrl, createMedia } from './helpers'
+import {
+  APILoginParam,
+  User,
+  APISignUpParam,
+  APICreatePostParam,
+  PostToMediaMap,
+  APIGetPostsParam,
+} from '../types'
+import {
+  getErrorMessage,
+  uploadMedia,
+  getSignedMediaUrl,
+  createMedia,
+  mapPostsToMedias,
+} from './helpers'
 
 //==============================================================================
 // Post
 //==============================================================================
+
+export const getPosts = async ({ page = 0 }: APIGetPostsParam) => {
+  try {
+    const posts: PostModel[] = await DataStore.query(PostModel, Predicates.ALL, {
+      page,
+      limit: 6,
+      sort: (s) => s.createdAt(SortDirection.DESCENDING),
+    })
+
+    if (posts) {
+      let postToMediaMap: PostToMediaMap = await mapPostsToMedias(posts)
+      return { posts: posts, postToMediaMap }
+    }
+
+    return { posts: [], postToMediaMap: {} }
+  } catch (error) {
+    console.error({ clientGetPostsError: error })
+    throw new Error(getErrorMessage(error))
+  }
+}
 
 export const createPost = async ({ postInput, medias, owner }: APICreatePostParam) => {
   try {
@@ -91,4 +124,5 @@ export const Client = {
   signUp,
   getCurrentUser,
   createPost,
+  getPosts,
 }

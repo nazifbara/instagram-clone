@@ -5,6 +5,9 @@ import { Post as PostModel } from '../models'
 // Client
 //==============================================================================
 
+export interface APIGetPostsParam {
+  page?: number
+}
 export interface APICreatePostParam extends NewPost {}
 export interface APISignUpParam extends SignUpFormState {}
 export interface APILoginParam extends LoginFormState {}
