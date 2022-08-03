@@ -22,6 +22,42 @@ import {
 // User
 //==============================================================================
 
+export const searchUser = async (username: string) => {
+  try {
+    const apiName = 'AdminQueries'
+    const path = '/listUsers'
+    const session: { [anyProps: string]: any } = await Auth.currentSession()
+
+    const token = session.getAccessToken().getJwtToken()
+
+    const myInit = {
+      queryStringParameters: {
+        groupname: 'Users',
+      },
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: token,
+      },
+    }
+    let result: { Users: { [anyProps: string]: any }[] } = await API.get(apiName, path, myInit)
+
+    result.Users = result.Users.filter((u) =>
+      u.Username.toLowerCase().includes(username.toLowerCase())
+    )
+
+    return result.Users.length === 0
+      ? null
+      : result.Users.map((u) => ({
+          username: u.Username,
+          fullName: u.Attributes[2].Value,
+          email: u.Attributes[3].Value,
+        }))
+  } catch (error) {
+    console.error({ clientSearchUserError: error })
+    throw new Error(getErrorMessage(error))
+  }
+}
+
 export const getUserDetail = async (username: string) => {
   try {
     const apiName = 'AdminQueries'
@@ -206,4 +242,5 @@ export const Client = {
   logout,
   getUserDetail,
   getUserPosts,
+  searchUser,
 }

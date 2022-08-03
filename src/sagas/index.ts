@@ -1,6 +1,6 @@
 import { all, put, takeLatest } from 'redux-saga/effects'
 import { PayloadAction } from '@reduxjs/toolkit'
-import { Auth, DataStore, API } from 'aws-amplify'
+import { DataStore } from 'aws-amplify'
 
 import { Post as PostModel } from '../models'
 import { Client } from '../utils/client'
@@ -63,40 +63,9 @@ export function* _toggleLike({
 
 export function* _searchUser({ payload: username }: PayloadAction<string>) {
   try {
-    const apiName = 'AdminQueries'
-    const path = '/listUsers'
-    const session: { [anyProps: string]: any } = yield Auth.currentSession()
-
-    const token = session.getAccessToken().getJwtToken()
-
-    const myInit = {
-      queryStringParameters: {
-        groupname: 'Users',
-      },
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: token,
-      },
-    }
-    let result: { Users: { [anyProps: string]: any }[] } = yield API.get(apiName, path, myInit)
-
-    result.Users = result.Users.filter((u) =>
-      u.Username.toLowerCase().includes(username.toLowerCase())
-    )
-    yield put(
-      searchUserSuccess(
-        result.Users.length === 0
-          ? null
-          : result.Users.map((u) => ({
-              username: u.Username,
-              fullName: u.Attributes[2].Value,
-              email: u.Attributes[3].Value,
-            }))
-      )
-    )
-  } catch (error) {
-    console.error({ searchUserError: error })
-    yield put(searchUserError(getErrorMessage(error)))
+    yield put(searchUserSuccess(yield Client.searchUser(username)))
+  } catch (error: any) {
+    yield put(searchUserError(error.message))
   }
 }
 
