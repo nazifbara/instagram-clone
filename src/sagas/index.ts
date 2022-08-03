@@ -4,14 +4,7 @@ import { Auth, Storage, DataStore, Predicates, SortDirection, API } from 'aws-am
 
 import { Post as PostModel, Media as MediaModel } from '../models'
 import { Client } from '../utils/client'
-import {
-  getErrorMessage,
-  getSignedMediaUrl,
-  mapPostsToMedias,
-  createMedia,
-  uploadMedia,
-  updateLikesMap,
-} from '../utils/helpers'
+import { getErrorMessage, mapPostsToMedias, updateLikesMap } from '../utils/helpers'
 import { LoginFormState, SignUpFormState, User, NewPost, PostToMediaMap, Post } from '../types'
 import {
   searchUser,
@@ -198,33 +191,11 @@ export function* _loadPosts({ payload: { page = 0 } }: PayloadAction<{ page: num
   }
 }
 
-export function* createNewPost({ payload: { postInput, medias, owner } }: PayloadAction<NewPost>) {
+export function* createNewPost({ payload }: PayloadAction<NewPost>) {
   try {
-    const post: PostModel = yield DataStore.save(new PostModel({ caption: postInput.caption }))
-
-    let postToMediaMap: PostToMediaMap = {}
-
-    const result: MediaModel[] = yield Promise.all(
-      medias.map(async (file) => {
-        const key = await uploadMedia(file)
-        const url = await getSignedMediaUrl(key)
-        postToMediaMap[post.id] = url || ''
-        return await createMedia({ postID: post.id, mediaKey: key })
-      })
-    )
-
-    console.info('New post created!')
-    result.forEach((m) => {
-      if (!m) {
-        return
-      }
-      post.Media?.push(m)
-    })
-
-    yield put(addPostSuccess({ username: owner, post: { ...post, owner }, postToMediaMap }))
+    yield put(addPostSuccess(yield Client.createPost(payload)))
   } catch (error: any) {
-    console.error({ createNewPostError: error })
-    yield put(addPostError(getErrorMessage(error)))
+    yield put(addPostError(error.message))
   }
 }
 
