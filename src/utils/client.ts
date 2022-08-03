@@ -1,4 +1,5 @@
 import { Auth, DataStore, Predicates, SortDirection, Storage, API } from 'aws-amplify'
+import { v4 as uuid } from 'uuid'
 
 import { Post as PostModel, Media as MediaModel } from '../models'
 import {
@@ -10,14 +11,7 @@ import {
   APIGetPostsParam,
   Post,
 } from '../types'
-import {
-  getErrorMessage,
-  uploadMedia,
-  getSignedMediaUrl,
-  createMedia,
-  mapPostsToMedias,
-  updateLikesMap,
-} from './helpers'
+import { getErrorMessage, createMedia, updateLikesMap } from './helpers'
 
 //==============================================================================
 // User
@@ -191,6 +185,42 @@ export const createPost = async ({ postInput, medias, owner }: APICreatePostPara
     console.error({ clientCreateNewPostError: error })
     throw new Error(getErrorMessage(error))
   }
+}
+
+//==============================================================================
+// Storage
+//==============================================================================
+
+export const getSignedMediaUrl = async (key: string | undefined) => {
+  if (!key) {
+    return
+  }
+  return await Storage.get(key)
+}
+
+export const mapPostsToMedias = async (posts: Post[]): Promise<PostToMediaMap> => {
+  const postToMediaMap: PostToMediaMap = {}
+
+  await Promise.all(
+    posts.map(async (p) => {
+      const medias: MediaModel[] = (await DataStore.query(MediaModel)).filter(
+        (m) => m.postID === p.id
+      )
+
+      if (medias[0]) {
+        const url = await getSignedMediaUrl(medias[0].mediaKey)
+
+        postToMediaMap[p.id] = url || ''
+      }
+    })
+  )
+  return postToMediaMap
+}
+
+export const uploadMedia = async (media: File): Promise<string> => {
+  const mediaKey = uuid() + media.name.replace(/\s/g, '-').toLowerCase()
+  await Storage.put(mediaKey, media)
+  return mediaKey
 }
 
 //==============================================================================
