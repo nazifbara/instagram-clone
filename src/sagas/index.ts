@@ -4,16 +4,8 @@ import { Auth, DataStore, API } from 'aws-amplify'
 
 import { Post as PostModel } from '../models'
 import { Client } from '../utils/client'
-import { getErrorMessage, mapPostsToMedias, updateLikesMap } from '../utils/helpers'
-import {
-  LoginFormState,
-  SignUpFormState,
-  User,
-  NewPost,
-  PostToMediaMap,
-  Post,
-  APIGetPostsParam,
-} from '../types'
+import { getErrorMessage, updateLikesMap } from '../utils/helpers'
+import { LoginFormState, SignUpFormState, User, NewPost, APIGetPostsParam } from '../types'
 import {
   searchUser,
   searchUserSuccess,
@@ -110,13 +102,9 @@ export function* _searchUser({ payload: username }: PayloadAction<string>) {
 
 function* _getUserPosts({ payload }: PayloadAction<string>) {
   try {
-    let posts: Post[] = yield DataStore.query(PostModel)
-    posts = posts.filter((p) => p.owner === payload)
-    let postToMediaMap: PostToMediaMap = yield mapPostsToMedias(posts)
-    yield put(getUserPostsSuccess({ username: payload, posts: posts, postToMediaMap }))
-  } catch (error) {
-    console.error({ profilePostsError: error })
-    yield put(getUserPostsError(getErrorMessage(error)))
+    yield put(getUserPostsSuccess(yield Client.getUserPosts(payload)))
+  } catch (error: any) {
+    yield put(getUserPostsError(error.message))
   }
 }
 

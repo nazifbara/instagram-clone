@@ -8,6 +8,7 @@ import {
   APICreatePostParam,
   PostToMediaMap,
   APIGetPostsParam,
+  Post,
 } from '../types'
 import {
   getErrorMessage,
@@ -61,6 +62,18 @@ export const getUserDetail = async (username: string) => {
 //==============================================================================
 // Post
 //==============================================================================
+
+export const getUserPosts = async (username: string) => {
+  try {
+    let posts: Post[] = await DataStore.query(PostModel)
+    posts = posts.filter((p) => p.owner === username)
+    let postToMediaMap: PostToMediaMap = await mapPostsToMedias(posts)
+    return { username: username, posts: posts, postToMediaMap }
+  } catch (error) {
+    console.error({ clientGetUserPostsError: error })
+    throw new Error(getErrorMessage(error))
+  }
+}
 
 export const deletePost = async (postID: string) => {
   try {
@@ -192,4 +205,5 @@ export const Client = {
   deletePost,
   logout,
   getUserDetail,
+  getUserPosts,
 }
