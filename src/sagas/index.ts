@@ -159,11 +159,9 @@ function* _getUserDetail({ payload }: PayloadAction<string>) {
 
 function* _logout() {
   try {
-    yield DataStore.clear()
-    yield Auth.signOut()
+    yield Client.logout()
     yield put(logoutSuccess())
   } catch (error) {
-    console.error({ logoutError: error })
     yield put(logoutError())
   }
 }

@@ -128,6 +128,16 @@ export const login = async ({ username, password }: APILoginParam) => {
   }
 }
 
+export const logout = async () => {
+  try {
+    await DataStore.clear()
+    await Auth.signOut()
+  } catch (error) {
+    console.error({ clientLogoutError: error })
+    throw error
+  }
+}
+
 //==============================================================================
 // Client export
 //==============================================================================
@@ -139,4 +149,5 @@ export const Client = {
   createPost,
   getPosts,
   deletePost,
+  logout,
 }
