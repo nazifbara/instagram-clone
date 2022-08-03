@@ -1,8 +1,8 @@
 import { all, put, takeLatest } from 'redux-saga/effects'
 import { PayloadAction } from '@reduxjs/toolkit'
-import { Auth, Storage, DataStore, API } from 'aws-amplify'
+import { Auth, DataStore, API } from 'aws-amplify'
 
-import { Post as PostModel, Media as MediaModel } from '../models'
+import { Post as PostModel } from '../models'
 import { Client } from '../utils/client'
 import { getErrorMessage, mapPostsToMedias, updateLikesMap } from '../utils/helpers'
 import {
@@ -168,16 +168,10 @@ function* _logout() {
   }
 }
 
-export function* _deletePost({ payload: postID }: PayloadAction<string>) {
+export function* _deletePost({ payload }: PayloadAction<string>) {
   try {
-    const postMedias: MediaModel[] = yield DataStore.query(MediaModel, (m) =>
-      m.postID('eq', postID)
-    )
-    yield DataStore.delete(PostModel, (p) => p.id('eq', postID))
-    yield Promise.all(postMedias.map(async (m) => await Storage.remove(m.mediaKey)))
-  } catch (error) {
-    console.error({ deletePostErrro: error })
-  }
+    yield Client.deletePost(payload)
+  } catch (error) {}
 }
 
 export function* _loadPosts({ payload }: PayloadAction<APIGetPostsParam>) {

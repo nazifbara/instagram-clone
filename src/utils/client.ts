@@ -1,4 +1,4 @@
-import { Auth, DataStore, Predicates, SortDirection } from 'aws-amplify'
+import { Auth, DataStore, Predicates, SortDirection, Storage } from 'aws-amplify'
 
 import { Post as PostModel, Media as MediaModel } from '../models'
 import {
@@ -20,6 +20,19 @@ import {
 //==============================================================================
 // Post
 //==============================================================================
+
+export const deletePost = async (postID: string) => {
+  try {
+    const postMedias: MediaModel[] = await DataStore.query(MediaModel, (m) =>
+      m.postID('eq', postID)
+    )
+    await DataStore.delete(PostModel, (p) => p.id('eq', postID))
+    await Promise.all(postMedias.map(async (m) => await Storage.remove(m.mediaKey)))
+  } catch (error) {
+    console.error({ clientDeletePostErrro: error })
+    throw error
+  }
+}
 
 export const getPosts = async ({ page = 0 }: APIGetPostsParam) => {
   try {
@@ -125,4 +138,5 @@ export const Client = {
   getCurrentUser,
   createPost,
   getPosts,
+  deletePost,
 }
