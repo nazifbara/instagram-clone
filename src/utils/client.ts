@@ -16,6 +16,7 @@ import {
   getSignedMediaUrl,
   createMedia,
   mapPostsToMedias,
+  updateLikesMap,
 } from './helpers'
 
 //==============================================================================
@@ -98,6 +99,25 @@ export const getUserDetail = async (username: string) => {
 //==============================================================================
 // Post
 //==============================================================================
+
+export const toggleLike = async (postID: string, username: string) => {
+  try {
+    const post: PostModel | undefined = await DataStore.query(PostModel, postID)
+
+    if (!post) throw new Error('Post not found')
+
+    const updates = updateLikesMap(post.likesMap, post.likeCount, username)
+
+    await DataStore.save(
+      PostModel.copyOf(post, (updated) => {
+        updated.likeCount = updates.likeCount
+        updated.likesMap = updates.likesMap
+      })
+    )
+  } catch (error) {
+    console.error({ clientToggleLikeError: error })
+  }
+}
 
 export const getUserPosts = async (username: string) => {
   try {
@@ -243,4 +263,5 @@ export const Client = {
   getUserDetail,
   getUserPosts,
   searchUser,
+  toggleLike,
 }

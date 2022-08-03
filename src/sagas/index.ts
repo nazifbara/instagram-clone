@@ -1,10 +1,7 @@
 import { all, put, takeLatest } from 'redux-saga/effects'
 import { PayloadAction } from '@reduxjs/toolkit'
-import { DataStore } from 'aws-amplify'
 
-import { Post as PostModel } from '../models'
 import { Client } from '../utils/client'
-import { getErrorMessage, updateLikesMap } from '../utils/helpers'
 import { LoginFormState, SignUpFormState, User, NewPost, APIGetPostsParam } from '../types'
 import {
   searchUser,
@@ -46,19 +43,8 @@ export function* _toggleLike({
   payload: { postID, username },
 }: PayloadAction<{ postID: string; username: string }>) {
   try {
-    const post: PostModel = yield DataStore.query(PostModel, postID)
-
-    const updates = updateLikesMap(post.likesMap, post.likeCount, username)
-
-    yield DataStore.save(
-      PostModel.copyOf(post, (updated) => {
-        updated.likeCount = updates.likeCount
-        updated.likesMap = updates.likesMap
-      })
-    )
-  } catch (error) {
-    console.error({ toogleLikeError: error })
-  }
+    yield Client.toggleLike(postID, username)
+  } catch (error) {}
 }
 
 export function* _searchUser({ payload: username }: PayloadAction<string>) {
@@ -81,7 +67,7 @@ function* _getUserDetail({ payload }: PayloadAction<string>) {
   try {
     yield put(getUserDetailSuccess(yield Client.getUserDetail(payload)))
   } catch (error: any) {
-    yield put(getUserDetailError(getErrorMessage(error.message)))
+    yield put(getUserDetailError(error.message))
   }
 }
 
