@@ -230,17 +230,9 @@ export function* createNewPost({ payload: { postInput, medias, owner } }: Payloa
 
 function* getCurrentUser() {
   try {
-    const user: { [anyProps: string]: any } = yield Auth.currentAuthenticatedUser()
-
-    yield put(
-      checkAuthSuccess({
-        username: user.username,
-        fullName: user.attributes.name,
-        email: user.attributes.email,
-      })
-    )
+    const user: User = yield Client.getCurrentUser()
+    yield put(checkAuthSuccess(user))
   } catch (error) {
-    console.error(error)
     yield put(checkAuthError())
   }
 }

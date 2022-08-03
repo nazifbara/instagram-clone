@@ -7,6 +7,21 @@ import { getErrorMessage } from './helpers'
 // Auth
 //==============================================================================
 
+export const getCurrentUser = async () => {
+  try {
+    const user: { [anyProps: string]: any } = await Auth.currentAuthenticatedUser()
+
+    return {
+      username: user.username,
+      fullName: user.attributes.name,
+      email: user.attributes.email,
+    }
+  } catch (error) {
+    console.error({ clientGetCurrentUserError: error })
+    throw error
+  }
+}
+
 export const signUp = async ({ username, password, email, fullName }: APISignUpParam) => {
   try {
     await Auth.signUp({
@@ -40,4 +55,5 @@ export const login = async ({ username, password }: APILoginParam) => {
 export const Client = {
   login,
   signUp,
+  getCurrentUser,
 }
