@@ -30,6 +30,10 @@ const StyledOption = styled(DialogPrimitive.Close, {
         fontWeight: 700,
         color: '$dangerSolid',
       },
+      primary: {
+        fontWeight: 700,
+        color: '$accentText',
+      },
     },
   },
 })

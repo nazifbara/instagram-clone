@@ -15,6 +15,8 @@ import {
   Icons,
   PostDialog,
   PostList,
+  ActionDialog,
+  IconButton,
 } from '../components'
 import { getUserDetail } from '../slices/user'
 import { getUserPosts, deletePost } from '../slices/post'
@@ -125,12 +127,28 @@ const ProfileView = (): JSX.Element => {
                 },
               }}
             >
-              <Avatar
-                css={{ wh: '77px', '@sm': { wh: '150px' } }}
-                src={getAvatarURL(userDetail.data?.username)}
-                fallback="u"
-                alt={userDetail.data?.fullName ?? ''}
-              />
+              {isOwner ? (
+                <ActionDialog.Root>
+                  <IconButton as={ActionDialog.Trigger}>
+                    <Avatar
+                      css={{ wh: '77px', '@sm': { wh: '150px' } }}
+                      src={getAvatarURL(userDetail.data?.username)}
+                      fallback="u"
+                      alt={userDetail.data?.fullName ?? ''}
+                    />
+                  </IconButton>
+                  <ActionDialog.Content>
+                    <ActionDialog.Option kind="primary">Upload Photo</ActionDialog.Option>
+                  </ActionDialog.Content>
+                </ActionDialog.Root>
+              ) : (
+                <Avatar
+                  css={{ wh: '77px', '@sm': { wh: '150px' } }}
+                  src={getAvatarURL(userDetail.data?.username)}
+                  fallback="u"
+                  alt={userDetail.data?.fullName ?? ''}
+                />
+              )}
             </Box>
 
             <Box

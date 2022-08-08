@@ -1,3 +1,12 @@
+type Profile @model @auth(rules: [{allow: private}]) {
+  id: ID!
+  owner: String!
+  bio: String
+  website: AWSURL
+  photo: Media @hasOne
+  name: String
+}
+
 type Post @model @auth(rules: [{allow: public, operations: [read]}, {allow: owner}, {allow: private, operations: [read, update]}]) {
   id: ID!
   caption: String
@@ -10,4 +19,5 @@ type Media @model @auth(rules: [{allow: public}, {allow: private}]) {
   id: ID!
   mediaKey: String!
   postID: ID! @index(name: "byPost")
-} 
+}
+ 
