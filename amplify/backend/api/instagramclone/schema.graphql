@@ -1,10 +1,11 @@
 type Profile @model @auth(rules: [{allow: private}]) {
   id: ID!
-  owner: String!
+  username: String!
   bio: String
   website: AWSURL
-  photo: Media @hasOne
-  name: String
+  fullName: String
+  photoKey: String
+  photoLink: String
 }
 
 type Post @model @auth(rules: [{allow: public, operations: [read]}, {allow: owner}, {allow: private, operations: [read, update]}]) {

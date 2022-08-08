@@ -21,7 +21,6 @@ import {
 } from '../components'
 import { getUserDetail } from '../slices/user'
 import { getUserPosts, deletePost } from '../slices/post'
-import { getAvatarURL } from '../utils/helpers'
 
 const ProfileView = (): JSX.Element => {
   // ===========================================================================
@@ -148,7 +147,7 @@ const ProfileView = (): JSX.Element => {
                   <IconButton as={ActionDialog.Trigger}>
                     <Avatar
                       css={{ wh: '77px', '@sm': { wh: '150px' } }}
-                      src={getAvatarURL(userDetail.data?.username)}
+                      src={userDetail.data?.photoLink || ''}
                       fallback="u"
                       alt={userDetail.data?.fullName ?? ''}
                     />
@@ -169,7 +168,7 @@ const ProfileView = (): JSX.Element => {
               ) : (
                 <Avatar
                   css={{ wh: '77px', '@sm': { wh: '150px' } }}
-                  src={getAvatarURL(userDetail.data?.username)}
+                  src={userDetail.data?.photoLink || ''}
                   fallback="u"
                   alt={userDetail.data?.fullName ?? ''}
                 />
@@ -257,13 +256,9 @@ const ProfileView = (): JSX.Element => {
                 <Text as="div" bold>
                   {userDetail.data?.fullName}
                 </Text>
-                <Text as="p">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras cursus commodo nunc
-                  sed sagittis. Maecenas a lacus eu enim tempus faucibus. Fusce hendrerit tortor ac
-                  massa volutpat, sed luctus lectus.
-                </Text>
-                <Link as="a" color="primary" href="https://www.nazifbara.com" target="_blank">
-                  nazifbara.com
+                <Text as="p">{userDetail.data?.bio}</Text>
+                <Link as="a" color="primary" href={userDetail.data?.website} target="_blank">
+                  website
                 </Link>
               </Box>
             </Box>

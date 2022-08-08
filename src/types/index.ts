@@ -101,6 +101,9 @@ export interface User {
   username: string
   fullName: string
   email: string
+  bio?: string
+  website?: string
+  photoLink?: string
 }
 
 //==============================================================================

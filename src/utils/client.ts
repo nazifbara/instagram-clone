@@ -1,7 +1,7 @@
 import { Auth, DataStore, Predicates, SortDirection, Storage, API } from 'aws-amplify'
 import { v4 as uuid } from 'uuid'
 
-import { Post as PostModel, Media as MediaModel } from '../models'
+import { Post as PostModel, Media as MediaModel, Profile } from '../models'
 import {
   APILoginParam,
   User,
@@ -53,31 +53,10 @@ export const searchUser = async (username: string) => {
   }
 }
 
-export const getUserDetail = async (username: string) => {
+export const getUserDetail = async (username: string): Promise<Profile> => {
   try {
-    const apiName = 'AdminQueries'
-    const path = '/getUser'
-    const session: { [anyProps: string]: any } = await Auth.currentSession()
-
-    const token = session.getAccessToken().getJwtToken()
-
-    const myInit = {
-      queryStringParameters: {
-        username,
-        groupname: 'Users',
-      },
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: token,
-      },
-    }
-    const cognitoUser: { [anyProps: string]: any } = await API.get(apiName, path, myInit)
-
-    return {
-      username: cognitoUser.Username,
-      fullName: cognitoUser.UserAttributes[2].Value,
-      email: cognitoUser.UserAttributes[3].Value,
-    }
+    const profile = await DataStore.query(Profile, (p) => p.username('eq', username))
+    return profile[0]
   } catch (error: any) {
     console.error({ clientGetUserDetailError: error })
 
