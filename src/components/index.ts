@@ -1,3 +1,4 @@
+export { FileInput } from './FileInput'
 export { PostList } from './PostList'
 export { PostDialog } from './PostDialog'
 export { SearchButton } from './SearchButton'

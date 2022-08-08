@@ -1,4 +1,4 @@
-import { MouseEventHandler, useState, useEffect, useCallback } from 'react'
+import { MouseEventHandler, useState, useEffect, useCallback, ChangeEventHandler } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useParams } from 'react-router-dom'
 
@@ -17,6 +17,7 @@ import {
   PostList,
   ActionDialog,
   IconButton,
+  FileInput,
 } from '../components'
 import { getUserDetail } from '../slices/user'
 import { getUserPosts, deletePost } from '../slices/post'
@@ -36,6 +37,8 @@ const ProfileView = (): JSX.Element => {
   // ===========================================================================
 
   const [currentPostIndex, setCurrentPostIndex] = useState<number | null>(null)
+  const [photo, setPhoto] = useState<File | null>(null)
+  const [choosingPhoto, setChoosingPhoto] = useState<boolean>(false)
   const isOwner = currentUser?.username === userDetail.data?.username
   const postsCount = posts.length
 
@@ -89,6 +92,16 @@ const ProfileView = (): JSX.Element => {
     setCurrentPostIndex(currentPostIndex + 1)
   }
 
+  const handleMediaSelect: ChangeEventHandler<HTMLInputElement> = (e) => {
+    setPhoto((s) => {
+      if (e.target.files) {
+        return e.target.files[0]
+      }
+      return s
+    })
+    setChoosingPhoto(false)
+  }
+
   return (
     <Container>
       {userDetail.error && !userDetail.isLoading && (
@@ -128,7 +141,10 @@ const ProfileView = (): JSX.Element => {
               }}
             >
               {isOwner ? (
-                <ActionDialog.Root>
+                <ActionDialog.Root
+                  open={choosingPhoto}
+                  onOpenChange={(open) => setChoosingPhoto(open)}
+                >
                   <IconButton as={ActionDialog.Trigger}>
                     <Avatar
                       css={{ wh: '77px', '@sm': { wh: '150px' } }}
@@ -137,8 +153,17 @@ const ProfileView = (): JSX.Element => {
                       alt={userDetail.data?.fullName ?? ''}
                     />
                   </IconButton>
+                  <FileInput
+                    id="photo-input"
+                    type="file"
+                    accept=".png,.jpeg"
+                    data-testid="photo-input"
+                    onChange={handleMediaSelect}
+                  />
                   <ActionDialog.Content>
-                    <ActionDialog.Option kind="primary">Upload Photo</ActionDialog.Option>
+                    <ActionDialog.Option as="label" kind="primary" htmlFor="photo-input">
+                      Upload Photo
+                    </ActionDialog.Option>
                   </ActionDialog.Content>
                 </ActionDialog.Root>
               ) : (

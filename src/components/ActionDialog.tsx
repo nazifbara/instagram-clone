@@ -10,10 +10,9 @@ const StyledOption = styled(DialogPrimitive.Close, {
   border: 'none',
   borderBottom: '1px solid $grayBorder',
   backgroundColor: 'transparent',
-  p: '0.5rem',
+  p: '1rem',
   width: '100%',
   cursor: 'pointer',
-  minHeight: '3rem',
   textAlign: 'center',
 
   '&:active': {

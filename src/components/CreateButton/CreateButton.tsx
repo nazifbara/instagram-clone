@@ -11,7 +11,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { NewPost } from '../../types'
 import { addPost, addPostReset } from '../../slices/post'
 import { getAuth, getPost } from '../../selectors'
-import { Dialog, Icons, Separator, Box, Button, Text, IconButton, Avatar } from '..'
+import { Dialog, Icons, Separator, Box, Button, Text, IconButton, Avatar, FileInput } from '..'
 
 import { styled } from '../../stitches.config'
 import { getAvatarURL } from '../../utils/helpers'
@@ -161,7 +161,7 @@ export const CreateButton = (): JSX.Element => {
                 }}
               >
                 <Icons.Media />
-                <StyledFileInput
+                <FileInput
                   id="media-input"
                   type="file"
                   accept=".png,.jpeg"
@@ -274,13 +274,4 @@ const StyledTopBar = styled('div', {
   justifyContent: 'space-between',
   alignItems: 'center',
   width: '100%',
-})
-
-const StyledFileInput = styled('input', {
-  width: '0.1px',
-  height: '0.1px',
-  opacity: 0,
-  overflow: 'hidden',
-  position: 'absolute',
-  zIndex: -1,
 })
