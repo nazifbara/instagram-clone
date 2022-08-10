@@ -201,12 +201,17 @@ const ProfileView = (): JSX.Element => {
                 >
                   {userDetail.data?.username}
                 </Text>
-                <Button
-                  css={{ fontSize: '$2', width: '100%', ml: '0', '@sm': { ml: '1.25rem' } }}
-                  type="simple"
-                >
-                  Edit Profile
-                </Button>
+
+                {isOwner && (
+                  <Button
+                    as={Link}
+                    to="/app/edit"
+                    css={{ fontSize: '$2', width: '100%', ml: '0', '@sm': { ml: '1.25rem' } }}
+                    type="simple"
+                  >
+                    Edit Profile
+                  </Button>
+                )}
               </Box>
 
               <Box
@@ -276,13 +281,9 @@ const ProfileView = (): JSX.Element => {
             <Text as="div" bold>
               {userDetail.data?.fullName}
             </Text>
-            <Text as="p">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras cursus commodo nunc sed
-              sagittis. Maecenas a lacus eu enim tempus faucibus. Fusce hendrerit tortor ac massa
-              volutpat, sed luctus lectus.
-            </Text>
-            <Link as="a" color="primary" href="https://www.nazifbara.com" target="_blank">
-              nazifbara.com
+            <Text as="p">{userDetail.data?.bio}</Text>
+            <Link as="a" color="primary" href={userDetail.data?.website} target="_blank">
+              website
             </Link>
           </Box>
         </>
