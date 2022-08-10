@@ -17,6 +17,7 @@ export interface APILoginParam extends LoginFormState {}
 //==============================================================================
 
 export interface UserState {
+  uploadingPhoto: boolean
   userDetail: {
     data: User | null
     isLoading: boolean
@@ -97,12 +98,18 @@ export interface PostToMediaMap {
 // Users
 //==============================================================================
 
+export interface ProfilePhoto {
+  photoKey: string
+  photoLink: string
+}
+
 export interface User {
   username: string
   fullName: string
   email: string
   bio?: string
   website?: string
+  photoKey?: string
   photoLink?: string
 }
 

@@ -19,7 +19,7 @@ import {
   IconButton,
   FileInput,
 } from '../components'
-import { getUserDetail } from '../slices/user'
+import { getUserDetail, uploadProfilePhoto } from '../slices/user'
 import { getUserPosts, deletePost } from '../slices/post'
 
 const ProfileView = (): JSX.Element => {
@@ -28,7 +28,7 @@ const ProfileView = (): JSX.Element => {
   // ===========================================================================
 
   const { currentUser } = useSelector(getAuth)
-  const { userDetail } = useSelector(getUser)
+  const { userDetail, uploadingPhoto } = useSelector(getUser)
   const { posts, error, isLoading, postToMediaMap } = useSelector(getPost)
 
   // ===========================================================================
@@ -36,7 +36,6 @@ const ProfileView = (): JSX.Element => {
   // ===========================================================================
 
   const [currentPostIndex, setCurrentPostIndex] = useState<number | null>(null)
-  const [photo, setPhoto] = useState<File | null>(null)
   const [choosingPhoto, setChoosingPhoto] = useState<boolean>(false)
   const isOwner = currentUser?.username === userDetail.data?.username
   const postsCount = posts.length
@@ -46,6 +45,8 @@ const ProfileView = (): JSX.Element => {
   // ===========================================================================
 
   const dispatch = useDispatch()
+  const _uploadProfilePhoto = (photo: File, username: string) =>
+    dispatch(uploadProfilePhoto({ photo, username }))
   const _deletePost = (postID: string) => dispatch(deletePost(postID))
   const _getUserDetail = useCallback(
     (username: string) => dispatch(getUserDetail(username)),
@@ -92,12 +93,9 @@ const ProfileView = (): JSX.Element => {
   }
 
   const handleMediaSelect: ChangeEventHandler<HTMLInputElement> = (e) => {
-    setPhoto((s) => {
-      if (e.target.files) {
-        return e.target.files[0]
-      }
-      return s
-    })
+    if (e.target.files && username) {
+      _uploadProfilePhoto(e.target.files[0], username)
+    }
     setChoosingPhoto(false)
   }
 
@@ -146,6 +144,8 @@ const ProfileView = (): JSX.Element => {
                 >
                   <IconButton as={ActionDialog.Trigger}>
                     <Avatar
+                      isLoading={uploadingPhoto}
+                      loadingMessage="uploading..."
                       css={{ wh: '77px', '@sm': { wh: '150px' } }}
                       src={userDetail.data?.photoLink || ''}
                       fallback="u"

@@ -10,12 +10,39 @@ import {
   PostToMediaMap,
   APIGetPostsParam,
   Post,
+  ProfilePhoto,
 } from '../types'
 import { getErrorMessage, createMedia, updateLikesMap } from './helpers'
 
 //==============================================================================
 // User
 //==============================================================================
+
+export const uploadProfilePhoto = async (photo: File, username: string): Promise<ProfilePhoto> => {
+  try {
+    const key = uuid() + photo.name.replace(/\s/g, '-').toLowerCase()
+    const link = `https://instagramclone-storage-05ea56e8123606-dev.s3.eu-west-2.amazonaws.com/public/profiles-photos/${key}`
+    const profile = await DataStore.query(Profile, (p) => p.username('eq', username))
+
+    await Storage.remove(`profiles-photos/${profile[0].photoKey}`)
+    await Storage.put(`profiles-photos/${key}`, photo)
+
+    await DataStore.save(
+      Profile.copyOf(profile[0], (updated) => {
+        updated.photoKey = key
+        updated.photoLink = link
+      })
+    )
+
+    return {
+      photoKey: key,
+      photoLink: link,
+    }
+  } catch (error) {
+    console.error({ uploadProfilePhotoError: error })
+    throw new Error(getErrorMessage(error))
+  }
+}
 
 export const searchUser = async (username: string) => {
   try {
@@ -262,6 +289,7 @@ export const logout = async () => {
 //==============================================================================
 
 export const Client = {
+  uploadProfilePhoto,
   login,
   signUp,
   getCurrentUser,

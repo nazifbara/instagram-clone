@@ -2,8 +2,17 @@ import { all, put, takeLatest } from 'redux-saga/effects'
 import { PayloadAction } from '@reduxjs/toolkit'
 
 import { Client } from '../utils/client'
-import { LoginFormState, SignUpFormState, User, NewPost, APIGetPostsParam } from '../types'
 import {
+  LoginFormState,
+  SignUpFormState,
+  User,
+  NewPost,
+  APIGetPostsParam,
+  ProfilePhoto,
+} from '../types'
+import {
+  uploadProfilePhoto,
+  uploadProfilePhotoSuccess,
   searchUser,
   searchUserSuccess,
   searchUserError,
@@ -38,6 +47,17 @@ import {
   checkAuthSuccess,
   checkAuthError,
 } from '../slices/auth'
+
+export function* _uploadProfilePhoto({
+  payload: { photo, username },
+}: PayloadAction<{ photo: File; username: string }>) {
+  try {
+    const result: ProfilePhoto = yield Client.uploadProfilePhoto(photo, username)
+    yield put(uploadProfilePhotoSuccess(result))
+  } catch (error) {
+    throw error
+  }
+}
 
 export function* _toggleLike({
   payload: { postID, username },
@@ -131,6 +151,7 @@ export function* loginUser({ payload }: PayloadAction<LoginFormState>) {
 
 export function* rootSaga() {
   yield all([
+    takeLatest(uploadProfilePhoto.type, _uploadProfilePhoto),
     takeLatest(toggleLike.type, _toggleLike),
     takeLatest(searchUser.type, _searchUser),
     takeLatest(getUserPosts.type, _getUserPosts),
