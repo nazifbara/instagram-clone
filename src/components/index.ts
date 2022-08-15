@@ -1,3 +1,4 @@
+export { EditForm } from './EditForm'
 export { FileInput } from './FileInput'
 export { PostList } from './PostList'
 export { PostDialog } from './PostDialog'

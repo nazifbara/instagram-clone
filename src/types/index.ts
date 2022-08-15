@@ -16,6 +16,12 @@ export interface APILoginParam extends LoginFormState {}
 // State
 //==============================================================================
 
+export interface ProfileUpdates {
+  fullName?: string
+  bio?: string
+  website?: string
+}
+
 export interface UserState {
   uploadingPhoto: boolean
   userDetail: {

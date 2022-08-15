@@ -3,6 +3,7 @@ import { v4 as uuid } from 'uuid'
 
 import { Post as PostModel, Media as MediaModel, Profile } from '../models'
 import {
+  ProfileUpdates,
   APILoginParam,
   User,
   APISignUpParam,
@@ -17,6 +18,24 @@ import { getErrorMessage, createMedia, updateLikesMap } from './helpers'
 //==============================================================================
 // User
 //==============================================================================
+
+export const updateProfile = async (username: string, updates: ProfileUpdates) => {
+  try {
+    const profile = await getUserDetail(username)
+    if (profile) {
+      await DataStore.save(
+        Profile.copyOf(profile, (updated) => {
+          updated.bio = updates.bio
+          updated.website = updates.website
+          updated.fullName = updates.fullName
+        })
+      )
+    }
+  } catch (error) {
+    console.error({ updateProfileError: error })
+    throw new Error(getErrorMessage(error))
+  }
+}
 
 export const uploadProfilePhoto = async (photo: File, username: string): Promise<ProfilePhoto> => {
   try {
@@ -289,6 +308,7 @@ export const logout = async () => {
 //==============================================================================
 
 export const Client = {
+  updateProfile,
   uploadProfilePhoto,
   login,
   signUp,

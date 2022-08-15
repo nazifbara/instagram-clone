@@ -1,7 +1,8 @@
+import { EditForm } from '../components'
 import { ViewRoute } from '../types'
 
 const EditView = (): JSX.Element => {
-  return <h1>Edit profile</h1>
+  return <EditForm />
 }
 
 export const editRoute: ViewRoute = {
