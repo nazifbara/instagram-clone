@@ -6,6 +6,7 @@ const Header = styled('header', {
   backgroundColor: '$accentBg',
   borderBottom: '1px solid $grayBorder',
   position: 'fixed',
+  zIndex: 1,
   width: '100%',
 })
 
