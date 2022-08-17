@@ -43,7 +43,13 @@ export const Content = ({
   return (
     <Dialog.Portal>
       <Dialog.Content
-        css={{ width: '85%', height: '95%', borderRadius: '0 0.75rem 0.75rem 0', ...css }}
+        css={{
+          zIndex: 1,
+          width: '85%',
+          height: '95%',
+          borderRadius: '0 0.75rem 0.75rem 0',
+          ...css,
+        }}
       >
         {lastIndex !== undefined && currentIndex !== undefined && (
           <>

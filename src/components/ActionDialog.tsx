@@ -43,6 +43,7 @@ export const Content = ({ children }: { children?: JSX.Element }): JSX.Element =
       <Dialog.Overlay />
       <Dialog.Content
         css={{
+          zIndex: 1,
           width: '95%',
           maxWidth: '25rem',
         }}
