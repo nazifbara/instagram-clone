@@ -8,7 +8,7 @@ type AvatarProps = {
   size?: string
   src: string
   alt: string
-  fallback: string
+  fallback?: string
   css?: any
 }
 export const Avatar = ({
