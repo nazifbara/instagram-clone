@@ -1,4 +1,4 @@
-import { Auth, DataStore, Predicates, SortDirection, Storage, API } from 'aws-amplify'
+import { Auth, DataStore, Predicates, SortDirection, Storage } from 'aws-amplify'
 import { v4 as uuid } from 'uuid'
 
 import { Post as PostModel, Media as MediaModel, Profile } from '../models'
@@ -65,34 +65,7 @@ export const uploadProfilePhoto = async (photo: File, username: string): Promise
 
 export const searchUser = async (username: string) => {
   try {
-    const apiName = 'AdminQueries'
-    const path = '/listUsers'
-    const session: { [anyProps: string]: any } = await Auth.currentSession()
-
-    const token = session.getAccessToken().getJwtToken()
-
-    const myInit = {
-      queryStringParameters: {
-        groupname: 'Users',
-      },
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: token,
-      },
-    }
-    let result: { Users: { [anyProps: string]: any }[] } = await API.get(apiName, path, myInit)
-
-    result.Users = result.Users.filter((u) =>
-      u.Username.toLowerCase().includes(username.toLowerCase())
-    )
-
-    return result.Users.length === 0
-      ? null
-      : result.Users.map((u) => ({
-          username: u.Username,
-          fullName: u.Attributes[2].Value,
-          email: u.Attributes[3].Value,
-        }))
+    return await DataStore.query(Profile, (p) => p.username('contains', username))
   } catch (error) {
     console.error({ clientSearchUserError: error })
     throw new Error(getErrorMessage(error))

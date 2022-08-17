@@ -44,7 +44,13 @@ export const SearchButton = (): JSX.Element => {
         </IconButton>
         <Dialog.Portal>
           <Dialog.Content
-            css={{ transform: 'initial', height: '100%', width: '100%', borderRadius: 0 }}
+            css={{
+              zIndex: 1,
+              transform: 'initial',
+              height: '100%',
+              width: '100%',
+              borderRadius: 0,
+            }}
             {...getComboboxProps()}
           >
             <Box css={{ display: 'flex' }}>

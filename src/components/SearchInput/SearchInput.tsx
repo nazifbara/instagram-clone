@@ -3,7 +3,6 @@ import { forwardRef, ForwardedRef } from 'react'
 import { GetItemPropsOptions } from 'downshift'
 
 import { User } from '../../types'
-import { getAvatarURL } from '../../utils/helpers'
 import { useSearch } from '../../utils/hooks'
 import { Text, Box, Avatar } from '../'
 import { Popover } from '../'
@@ -171,7 +170,7 @@ export const ResultItem = forwardRef(
     <StyledResultItem highlighted={highlighted} {...itemProps} ref={ref}>
       <Avatar
         css={{ marginRight: '0.75rem' }}
-        src={getAvatarURL(item.username)}
+        src={item.photoLink || ''}
         alt={item.fullName ?? ''}
         fallback={item.username[0].toUpperCase()}
       />
