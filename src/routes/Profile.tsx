@@ -1,4 +1,4 @@
-import { MouseEventHandler, useState, useEffect, useCallback } from 'react'
+import { MouseEventHandler, useState, useEffect, useCallback, ChangeEventHandler } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useParams } from 'react-router-dom'
 
@@ -15,10 +15,12 @@ import {
   Icons,
   PostDialog,
   PostList,
+  ActionDialog,
+  IconButton,
+  FileInput,
 } from '../components'
-import { getUserDetail } from '../slices/user'
+import { getUserDetail, uploadProfilePhoto } from '../slices/user'
 import { getUserPosts, deletePost } from '../slices/post'
-import { getAvatarURL } from '../utils/helpers'
 
 const ProfileView = (): JSX.Element => {
   // ===========================================================================
@@ -26,7 +28,7 @@ const ProfileView = (): JSX.Element => {
   // ===========================================================================
 
   const { currentUser } = useSelector(getAuth)
-  const { userDetail } = useSelector(getUser)
+  const { userDetail, uploadingPhoto } = useSelector(getUser)
   const { posts, error, isLoading, postToMediaMap } = useSelector(getPost)
 
   // ===========================================================================
@@ -34,6 +36,7 @@ const ProfileView = (): JSX.Element => {
   // ===========================================================================
 
   const [currentPostIndex, setCurrentPostIndex] = useState<number | null>(null)
+  const [choosingPhoto, setChoosingPhoto] = useState<boolean>(false)
   const isOwner = currentUser?.username === userDetail.data?.username
   const postsCount = posts.length
 
@@ -42,6 +45,8 @@ const ProfileView = (): JSX.Element => {
   // ===========================================================================
 
   const dispatch = useDispatch()
+  const _uploadProfilePhoto = (photo: File, username: string) =>
+    dispatch(uploadProfilePhoto({ photo, username }))
   const _deletePost = (postID: string) => dispatch(deletePost(postID))
   const _getUserDetail = useCallback(
     (username: string) => dispatch(getUserDetail(username)),
@@ -87,6 +92,13 @@ const ProfileView = (): JSX.Element => {
     setCurrentPostIndex(currentPostIndex + 1)
   }
 
+  const handlePhotoSelect: ChangeEventHandler<HTMLInputElement> = (e) => {
+    if (e.target.files && username) {
+      _uploadProfilePhoto(e.target.files[0], username)
+    }
+    setChoosingPhoto(false)
+  }
+
   return (
     <Container>
       {userDetail.error && !userDetail.isLoading && (
@@ -125,12 +137,42 @@ const ProfileView = (): JSX.Element => {
                 },
               }}
             >
-              <Avatar
-                css={{ wh: '77px', '@sm': { wh: '150px' } }}
-                src={getAvatarURL(userDetail.data?.username)}
-                fallback="u"
-                alt={userDetail.data?.fullName ?? ''}
-              />
+              {isOwner ? (
+                <ActionDialog.Root
+                  open={choosingPhoto}
+                  onOpenChange={(open) => setChoosingPhoto(open)}
+                >
+                  <IconButton as={ActionDialog.Trigger}>
+                    <Avatar
+                      isLoading={uploadingPhoto}
+                      loadingMessage="uploading..."
+                      css={{ wh: '77px', '@sm': { wh: '150px' } }}
+                      src={userDetail.data?.photoLink || ''}
+                      fallback="u"
+                      alt={userDetail.data?.fullName ?? ''}
+                    />
+                  </IconButton>
+                  <FileInput
+                    id="photo-input"
+                    type="file"
+                    accept=".png,.jpeg"
+                    data-testid="photo-input"
+                    onChange={handlePhotoSelect}
+                  />
+                  <ActionDialog.Content>
+                    <ActionDialog.Option as="label" kind="primary" htmlFor="photo-input">
+                      Upload Photo
+                    </ActionDialog.Option>
+                  </ActionDialog.Content>
+                </ActionDialog.Root>
+              ) : (
+                <Avatar
+                  css={{ wh: '77px', '@sm': { wh: '150px' } }}
+                  src={userDetail.data?.photoLink || ''}
+                  fallback="u"
+                  alt={userDetail.data?.fullName ?? ''}
+                />
+              )}
             </Box>
 
             <Box
@@ -159,12 +201,17 @@ const ProfileView = (): JSX.Element => {
                 >
                   {userDetail.data?.username}
                 </Text>
-                <Button
-                  css={{ fontSize: '$2', width: '100%', ml: '0', '@sm': { ml: '1.25rem' } }}
-                  type="simple"
-                >
-                  Edit Profile
-                </Button>
+
+                {isOwner && (
+                  <Button
+                    as={Link}
+                    to="/app/edit"
+                    css={{ fontSize: '$2', width: '100%', ml: '0', '@sm': { ml: '1.25rem' } }}
+                    type="simple"
+                  >
+                    Edit Profile
+                  </Button>
+                )}
               </Box>
 
               <Box
@@ -214,13 +261,9 @@ const ProfileView = (): JSX.Element => {
                 <Text as="div" bold>
                   {userDetail.data?.fullName}
                 </Text>
-                <Text as="p">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras cursus commodo nunc
-                  sed sagittis. Maecenas a lacus eu enim tempus faucibus. Fusce hendrerit tortor ac
-                  massa volutpat, sed luctus lectus.
-                </Text>
-                <Link as="a" color="primary" href="https://www.nazifbara.com" target="_blank">
-                  nazifbara.com
+                <Text as="p">{userDetail.data?.bio}</Text>
+                <Link as="a" color="primary" href={userDetail.data?.website} target="_blank">
+                  website
                 </Link>
               </Box>
             </Box>
@@ -238,13 +281,9 @@ const ProfileView = (): JSX.Element => {
             <Text as="div" bold>
               {userDetail.data?.fullName}
             </Text>
-            <Text as="p">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras cursus commodo nunc sed
-              sagittis. Maecenas a lacus eu enim tempus faucibus. Fusce hendrerit tortor ac massa
-              volutpat, sed luctus lectus.
-            </Text>
-            <Link as="a" color="primary" href="https://www.nazifbara.com" target="_blank">
-              nazifbara.com
+            <Text as="p">{userDetail.data?.bio}</Text>
+            <Link as="a" color="primary" href={userDetail.data?.website} target="_blank">
+              website
             </Link>
           </Box>
         </>

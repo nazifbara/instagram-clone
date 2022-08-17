@@ -1,8 +1,9 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
-import { UserState, User } from '../types'
+import { UserState, User, ProfilePhoto } from '../types'
 
 const initialState: UserState = {
+  uploadingPhoto: false,
   userDetail: {
     data: null,
     isLoading: false,
@@ -19,6 +20,18 @@ const userSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {
+    uploadProfilePhoto: (state, _: PayloadAction<{ photo: File; username: string }>) => {
+      state.uploadingPhoto = true
+    },
+
+    uploadProfilePhotoSuccess: (state, { payload }: PayloadAction<ProfilePhoto>) => {
+      state.uploadingPhoto = false
+
+      if (state.userDetail.data) {
+        state.userDetail.data = { ...state.userDetail.data, ...payload }
+      }
+    },
+
     searchUser: (state, action: PayloadAction<string>) => {
       state.searchResult = {
         data: null,
@@ -66,6 +79,8 @@ const userSlice = createSlice({
 })
 
 export const {
+  uploadProfilePhoto,
+  uploadProfilePhotoSuccess,
   searchUser,
   searchUserSuccess,
   searchUserError,

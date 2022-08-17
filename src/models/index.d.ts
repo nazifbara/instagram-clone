@@ -4,12 +4,30 @@ import { ModelInit, MutableModel, PersistentModelConstructor } from "@aws-amplif
 
 
 
+type ProfileMetaData = {
+  readOnlyFields: 'createdAt' | 'updatedAt';
+}
+
 type PostMetaData = {
   readOnlyFields: 'createdAt' | 'updatedAt';
 }
 
 type MediaMetaData = {
   readOnlyFields: 'createdAt' | 'updatedAt';
+}
+
+export declare class Profile {
+  readonly id: string;
+  readonly username: string;
+  readonly bio?: string | null;
+  readonly website?: string | null;
+  readonly fullName?: string | null;
+  readonly photoKey?: string | null;
+  readonly photoLink?: string | null;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+  constructor(init: ModelInit<Profile, ProfileMetaData>);
+  static copyOf(source: Profile, mutator: (draft: MutableModel<Profile, ProfileMetaData>) => MutableModel<Profile, ProfileMetaData> | void): Profile;
 }
 
 export declare class Post {

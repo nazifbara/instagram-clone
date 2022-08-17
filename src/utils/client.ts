@@ -1,8 +1,9 @@
 import { Auth, DataStore, Predicates, SortDirection, Storage, API } from 'aws-amplify'
 import { v4 as uuid } from 'uuid'
 
-import { Post as PostModel, Media as MediaModel } from '../models'
+import { Post as PostModel, Media as MediaModel, Profile } from '../models'
 import {
+  ProfileUpdates,
   APILoginParam,
   User,
   APISignUpParam,
@@ -10,12 +11,57 @@ import {
   PostToMediaMap,
   APIGetPostsParam,
   Post,
+  ProfilePhoto,
 } from '../types'
 import { getErrorMessage, createMedia, updateLikesMap } from './helpers'
 
 //==============================================================================
 // User
 //==============================================================================
+
+export const updateProfile = async (username: string, updates: ProfileUpdates) => {
+  try {
+    const profile = await getUserDetail(username)
+    if (profile) {
+      await DataStore.save(
+        Profile.copyOf(profile, (updated) => {
+          updated.bio = updates.bio
+          updated.website = updates.website
+          updated.fullName = updates.fullName
+        })
+      )
+    }
+  } catch (error) {
+    console.error({ updateProfileError: error })
+    throw new Error(getErrorMessage(error))
+  }
+}
+
+export const uploadProfilePhoto = async (photo: File, username: string): Promise<ProfilePhoto> => {
+  try {
+    const key = uuid() + photo.name.replace(/\s/g, '-').toLowerCase()
+    const link = `https://instagramclone-storage-05ea56e8123606-dev.s3.eu-west-2.amazonaws.com/public/profiles-photos/${key}`
+    const profile = await DataStore.query(Profile, (p) => p.username('eq', username))
+
+    await Storage.remove(`profiles-photos/${profile[0].photoKey}`)
+    await Storage.put(`profiles-photos/${key}`, photo)
+
+    await DataStore.save(
+      Profile.copyOf(profile[0], (updated) => {
+        updated.photoKey = key
+        updated.photoLink = link
+      })
+    )
+
+    return {
+      photoKey: key,
+      photoLink: link,
+    }
+  } catch (error) {
+    console.error({ uploadProfilePhotoError: error })
+    throw new Error(getErrorMessage(error))
+  }
+}
 
 export const searchUser = async (username: string) => {
   try {
@@ -53,31 +99,10 @@ export const searchUser = async (username: string) => {
   }
 }
 
-export const getUserDetail = async (username: string) => {
+export const getUserDetail = async (username: string): Promise<Profile> => {
   try {
-    const apiName = 'AdminQueries'
-    const path = '/getUser'
-    const session: { [anyProps: string]: any } = await Auth.currentSession()
-
-    const token = session.getAccessToken().getJwtToken()
-
-    const myInit = {
-      queryStringParameters: {
-        username,
-        groupname: 'Users',
-      },
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: token,
-      },
-    }
-    const cognitoUser: { [anyProps: string]: any } = await API.get(apiName, path, myInit)
-
-    return {
-      username: cognitoUser.Username,
-      fullName: cognitoUser.UserAttributes[2].Value,
-      email: cognitoUser.UserAttributes[3].Value,
-    }
+    const profile = await DataStore.query(Profile, (p) => p.username('eq', username))
+    return profile[0]
   } catch (error: any) {
     console.error({ clientGetUserDetailError: error })
 
@@ -283,6 +308,8 @@ export const logout = async () => {
 //==============================================================================
 
 export const Client = {
+  updateProfile,
+  uploadProfilePhoto,
   login,
   signUp,
   getCurrentUser,

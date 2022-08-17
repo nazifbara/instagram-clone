@@ -1,3 +1,6 @@
+export { TextArea } from './TextArea'
+export { EditForm } from './EditForm'
+export { FileInput } from './FileInput'
 export { PostList } from './PostList'
 export { PostDialog } from './PostDialog'
 export { SearchButton } from './SearchButton'
