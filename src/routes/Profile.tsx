@@ -92,7 +92,7 @@ const ProfileView = (): JSX.Element => {
     setCurrentPostIndex(currentPostIndex + 1)
   }
 
-  const handleMediaSelect: ChangeEventHandler<HTMLInputElement> = (e) => {
+  const handlePhotoSelect: ChangeEventHandler<HTMLInputElement> = (e) => {
     if (e.target.files && username) {
       _uploadProfilePhoto(e.target.files[0], username)
     }
@@ -157,7 +157,7 @@ const ProfileView = (): JSX.Element => {
                     type="file"
                     accept=".png,.jpeg"
                     data-testid="photo-input"
-                    onChange={handleMediaSelect}
+                    onChange={handlePhotoSelect}
                   />
                   <ActionDialog.Content>
                     <ActionDialog.Option as="label" kind="primary" htmlFor="photo-input">

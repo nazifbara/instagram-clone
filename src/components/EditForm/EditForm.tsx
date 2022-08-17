@@ -1,12 +1,12 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useState, ChangeEventHandler } from 'react'
 import { Formik, Form, Field } from 'formik'
 import { useSelector, useDispatch } from 'react-redux'
 
 import { styled } from '../../stitches.config'
 import { Client } from '../../utils/client'
-import { TextInput, TextArea, Text, Button, Box, Avatar } from '..'
+import { TextInput, TextArea, Text, Button, Box, Avatar, FileInput } from '..'
 import { getAuth, getUser } from '../../selectors'
-import { getUserDetail } from '../../slices/user'
+import { getUserDetail, uploadProfilePhoto } from '../../slices/user'
 
 export const EditForm = (): JSX.Element => {
   // ===========================================================================
@@ -21,9 +21,7 @@ export const EditForm = (): JSX.Element => {
   // ===========================================================================
 
   const { currentUser } = useSelector(getAuth)
-  const { userDetail } = useSelector(getUser)
-
-  console.log(userDetail)
+  const { userDetail, uploadingPhoto } = useSelector(getUser)
 
   // ===========================================================================
   // Dispatch
@@ -31,6 +29,8 @@ export const EditForm = (): JSX.Element => {
 
   const dispatch = useDispatch()
 
+  const _uploadProfilePhoto = (photo: File, username: string) =>
+    dispatch(uploadProfilePhoto({ photo, username }))
   const _getUserDetail = useCallback(
     (username: string) => dispatch(getUserDetail(username)),
     [dispatch]
@@ -45,6 +45,16 @@ export const EditForm = (): JSX.Element => {
       _getUserDetail(currentUser.username)
     }
   }, [_getUserDetail, currentUser])
+
+  // ===========================================================================
+  // Handlers
+  // ===========================================================================
+
+  const handlePhotoSelect: ChangeEventHandler<HTMLInputElement> = (e) => {
+    if (e.target.files && currentUser?.username) {
+      _uploadProfilePhoto(e.target.files[0], currentUser.username)
+    }
+  }
 
   return (
     <>
@@ -96,7 +106,12 @@ export const EditForm = (): JSX.Element => {
                 </Text>
                 <FormField
                   avatar={
-                    <Avatar src={userDetail.data?.photoLink || ''} alt="user profile image" />
+                    <Avatar
+                      isLoading={uploadingPhoto}
+                      loadingMessage="..."
+                      src={userDetail.data?.photoLink || ''}
+                      alt="user profile image"
+                    />
                   }
                   input={
                     <Box
@@ -105,8 +120,19 @@ export const EditForm = (): JSX.Element => {
                       <Text css={{ mb: '0.5rem', fontSize: '$4 !important' }} bold>
                         {userDetail.data?.username}
                       </Text>
-                      <Button css={{ p: '0', fontSize: '$2 !important' }}>
+                      <Button
+                        as="label"
+                        htmlFor="photo-input"
+                        css={{ p: '0', fontSize: '$2 !important' }}
+                      >
                         Change profile photo
+                        <FileInput
+                          id="photo-input"
+                          type="file"
+                          accept=".png,.jpeg"
+                          data-testid="photo-input"
+                          onChange={handlePhotoSelect}
+                        />
                       </Button>
                     </Box>
                   }
