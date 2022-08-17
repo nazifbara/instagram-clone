@@ -1,8 +1,9 @@
+import { useCallback, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
-import { getAvatarURL } from '../../utils/helpers'
+import { getUserDetail } from '../../slices/user'
 import { logout } from '../../slices/auth'
-import { getAuth } from '../../selectors'
+import { getAuth, getUser } from '../../selectors'
 import { Link, Avatar, Popover, Text, Separator, Icons, IconButton } from '..'
 import { Trigger as PopoverTrigger } from '../Popover'
 import { styled } from '../../stitches.config'
@@ -13,13 +14,29 @@ export const ProfileButton = (): JSX.Element => {
   // ===========================================================================
 
   const { currentUser } = useSelector(getAuth)
+  const { userDetail, uploadingPhoto } = useSelector(getUser)
 
   // ===========================================================================
   // Dispatch
   // ===========================================================================
 
   const dispatch = useDispatch()
+
+  const _getUserDetail = useCallback(
+    (username: string) => dispatch(getUserDetail(username)),
+    [dispatch]
+  )
   const _logout = () => dispatch(logout())
+
+  // ===========================================================================
+  // Hooks
+  // ===========================================================================
+
+  useEffect(() => {
+    if (currentUser?.username) {
+      _getUserDetail(currentUser.username)
+    }
+  }, [_getUserDetail, currentUser])
 
   // ===========================================================================
   // Hanlders
@@ -32,7 +49,9 @@ export const ProfileButton = (): JSX.Element => {
       <IconButton as={PopoverTrigger}>
         <Avatar
           size="1.5rem"
-          src={getAvatarURL(currentUser?.username)}
+          isLoading={uploadingPhoto}
+          loadingMessage="."
+          src={userDetail.data?.photoLink || ''}
           alt={currentUser?.fullName ?? ''}
           fallback={currentUser?.username[0].toUpperCase() ?? 'U'}
         />
