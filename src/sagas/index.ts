@@ -2,6 +2,7 @@ import { all, put, takeLatest } from 'redux-saga/effects'
 import { PayloadAction } from '@reduxjs/toolkit'
 
 import { Client } from '../utils/client'
+import { Profile } from '../models'
 import {
   LoginFormState,
   SignUpFormState,
@@ -55,7 +56,8 @@ export function* _updateInfo({
   payload: { username, updates },
 }: PayloadAction<{ username: string; updates: ProfileUpdates }>) {
   try {
-    yield put(updateInfoSuccess(yield Client.updateProfile(username, updates)))
+    const profile: Profile = yield Client.updateProfile(username, updates)
+    yield put(updateInfoSuccess(profile))
   } catch (error: any) {
     yield put(updateInfoError(error.message))
   }
@@ -98,7 +100,8 @@ function* _getUserPosts({ payload }: PayloadAction<string>) {
 
 function* _loadProfile({ payload }: PayloadAction<string>) {
   try {
-    yield put(loadProfileSuccess(yield Client.getUserDetail(payload)))
+    const profile: Profile = yield Client.getUserDetail(payload)
+    yield put(loadProfileSuccess(profile))
   } catch (error: any) {
     yield put(loadProfileError(error.message))
   }
@@ -138,7 +141,8 @@ export function* createNewPost({ payload }: PayloadAction<NewPost>) {
 function* getCurrentUser() {
   try {
     const user: User = yield Client.getCurrentUser()
-    yield put(setCurrentUserProfile(yield Client.getProfileByUsername(user.username)))
+    const profile: Profile = yield Client.getProfileByUsername(user.username)
+    yield put(setCurrentUserProfile(profile))
     yield put(checkAuthSuccess(user))
   } catch (error) {
     yield put(checkAuthError())

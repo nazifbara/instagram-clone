@@ -15,11 +15,28 @@ const App = (): JSX.Element => {
   const dispatch = useDispatch()
   const _checkAuth = useCallback(() => dispatch(checkAuth()), [dispatch])
 
+  const handleDatastoreReady = useCallback(
+    (data: any) => {
+      const { event } = data.payload
+      console.log({ data })
+
+      if (event === 'ready') {
+        _checkAuth()
+      }
+    },
+    [_checkAuth]
+  )
+
   useEffect(() => {
     _checkAuth()
+
     Hub.listen('auth', _checkAuth)
-    return () => Hub.remove('auth', _checkAuth)
-  }, [_checkAuth])
+    Hub.listen('datastore', handleDatastoreReady)
+    return () => {
+      Hub.remove('auth', _checkAuth)
+      Hub.remove('datastore', handleDatastoreReady)
+    }
+  }, [_checkAuth, handleDatastoreReady])
 
   return (
     <Routes>

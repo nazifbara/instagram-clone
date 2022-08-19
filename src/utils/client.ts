@@ -28,7 +28,10 @@ export const getProfileByUsername = async (username: string): Promise<Profile | 
   }
 }
 
-export const updateProfile = async (username: string, updates: ProfileUpdates) => {
+export const updateProfile = async (
+  username: string,
+  updates: ProfileUpdates
+): Promise<Profile> => {
   try {
     const profile = await getUserDetail(username)
     if (profile) {
