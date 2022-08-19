@@ -1,12 +1,14 @@
 import { combineReducers, Reducer } from 'redux'
 
-import { userReducer } from './user'
+import { searchProfileReducer } from './searchProfile'
+import { profileReducer } from './profile'
 import { postReducer } from './post'
 import { authReducer } from '../slices/auth'
 import { RootState } from '../types'
 
 export const rootReducer: Reducer<RootState> = combineReducers<RootState>({
-  userState: userReducer,
+  searchProfileState: searchProfileReducer,
+  profileState: profileReducer,
   postState: postReducer,
   authState: authReducer,
 })

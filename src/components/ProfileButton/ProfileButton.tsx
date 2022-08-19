@@ -1,9 +1,7 @@
-import { useCallback, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
-import { getUserDetail } from '../../slices/user'
 import { logout } from '../../slices/auth'
-import { getAuth, getUser } from '../../selectors'
+import { getAuth, getProfile } from '../../selectors'
 import { Link, Avatar, Popover, Text, Separator, Icons, IconButton } from '..'
 import { Trigger as PopoverTrigger } from '../Popover'
 import { styled } from '../../stitches.config'
@@ -14,29 +12,14 @@ export const ProfileButton = (): JSX.Element => {
   // ===========================================================================
 
   const { currentUser } = useSelector(getAuth)
-  const { userDetail, uploadingPhoto } = useSelector(getUser)
+  const { currentProfile, updatingPhoto } = useSelector(getProfile)
 
   // ===========================================================================
   // Dispatch
   // ===========================================================================
 
   const dispatch = useDispatch()
-
-  const _getUserDetail = useCallback(
-    (username: string) => dispatch(getUserDetail(username)),
-    [dispatch]
-  )
   const _logout = () => dispatch(logout())
-
-  // ===========================================================================
-  // Hooks
-  // ===========================================================================
-
-  useEffect(() => {
-    if (currentUser?.username) {
-      _getUserDetail(currentUser.username)
-    }
-  }, [_getUserDetail, currentUser])
 
   // ===========================================================================
   // Hanlders
@@ -44,16 +27,19 @@ export const ProfileButton = (): JSX.Element => {
 
   const handleLogout = () => _logout()
 
+  if (!currentProfile) {
+    return <>...</>
+  }
   return (
     <Popover.Root>
       <IconButton as={PopoverTrigger}>
         <Avatar
           size="1.5rem"
-          isLoading={uploadingPhoto}
+          isLoading={updatingPhoto}
           loadingMessage="."
-          src={userDetail.data?.photoLink || ''}
-          alt={currentUser?.fullName ?? ''}
-          fallback={currentUser?.username[0].toUpperCase() ?? 'U'}
+          src={currentProfile.photoLink ?? ''}
+          alt={currentProfile.fullName ?? ''}
+          fallback={currentProfile.username[0]}
         />
       </IconButton>
       <Popover.Content sideOffset={6}>

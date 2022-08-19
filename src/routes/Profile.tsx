@@ -2,8 +2,7 @@ import { MouseEventHandler, useState, useEffect, useCallback, ChangeEventHandler
 import { useSelector, useDispatch } from 'react-redux'
 import { useParams } from 'react-router-dom'
 
-import { useProfileByUsername } from '../utils/hooks'
-import { getAuth, getPost, getUser } from '../selectors'
+import { getAuth, getPost, getProfile } from '../selectors'
 import { ViewRoute } from '../types'
 import {
   Link,
@@ -20,7 +19,7 @@ import {
   IconButton,
   FileInput,
 } from '../components'
-import { getUserDetail, uploadProfilePhoto } from '../slices/user'
+import { loadProfile, updateProfilePhoto } from '../slices/profile'
 import { getUserPosts, deletePost } from '../slices/post'
 
 const ProfileView = (): JSX.Element => {
@@ -29,8 +28,19 @@ const ProfileView = (): JSX.Element => {
   // ===========================================================================
 
   const { currentUser } = useSelector(getAuth)
-  const { userDetail, uploadingPhoto } = useSelector(getUser)
-  const { posts, error, isLoading, postToMediaMap } = useSelector(getPost)
+  const {
+    currentProfile,
+    otherProfile,
+    updatingPhoto,
+    error: profileError,
+    isLoading: isLoadinProfile,
+  } = useSelector(getProfile)
+  const {
+    posts,
+    error: postsError,
+    isLoading: isLoadinPosts,
+    postToMediaMap,
+  } = useSelector(getPost)
 
   // ===========================================================================
   // State
@@ -38,19 +48,17 @@ const ProfileView = (): JSX.Element => {
 
   const [currentPostIndex, setCurrentPostIndex] = useState<number | null>(null)
   const [choosingPhoto, setChoosingPhoto] = useState<boolean>(false)
-  const isOwner = currentUser?.username === userDetail.data?.username
-  const postsCount = posts.length
 
   // ===========================================================================
   // Dispatch
   // ===========================================================================
 
   const dispatch = useDispatch()
-  const _uploadProfilePhoto = (photo: File, username: string) =>
-    dispatch(uploadProfilePhoto({ photo, username }))
+  const _updateProfilePhoto = (photo: File, username: string) =>
+    dispatch(updateProfilePhoto({ photo, username }))
   const _deletePost = (postID: string) => dispatch(deletePost(postID))
-  const _getUserDetail = useCallback(
-    (username: string) => dispatch(getUserDetail(username)),
+  const _loadProfile = useCallback(
+    (username: string) => dispatch(loadProfile(username)),
     [dispatch]
   )
   const _getUserPosts = useCallback(
@@ -63,15 +71,18 @@ const ProfileView = (): JSX.Element => {
   // ===========================================================================
 
   const { username } = useParams()
+  const isOwner = currentUser?.username === username
 
-  const profile = useProfileByUsername(username)
+  //const profile = useProfileByUsername(username)
 
   useEffect(() => {
     if (username) {
-      _getUserDetail(username)
       _getUserPosts(username)
     }
-  }, [username, _getUserDetail, _getUserPosts])
+    if (username && !isOwner) {
+      _loadProfile(username)
+    }
+  }, [username, _loadProfile, _getUserPosts, isOwner])
 
   // ===========================================================================
   // Handlers
@@ -97,20 +108,27 @@ const ProfileView = (): JSX.Element => {
 
   const handlePhotoSelect: ChangeEventHandler<HTMLInputElement> = (e) => {
     if (e.target.files && username) {
-      _uploadProfilePhoto(e.target.files[0], username)
+      _updateProfilePhoto(e.target.files[0], username)
     }
     setChoosingPhoto(false)
   }
 
+  // ===========================================================================
+  // Other
+  // ===========================================================================
+
+  const profile = isOwner ? currentProfile : otherProfile
+  const postsCount = posts.length
+
   return (
     <Container>
-      {userDetail.error && !userDetail.isLoading && (
-        <Text css={{ color: '$dangerSolid' }}>{userDetail.error}</Text>
+      {profileError && !isLoadinProfile && (
+        <Text css={{ color: '$dangerSolid' }}>{profileError}</Text>
       )}
 
-      {userDetail.isLoading && <Text>Loading</Text>}
+      {isLoadinProfile && <Text>Loading</Text>}
 
-      {!userDetail.isLoading && !userDetail.error && (
+      {!isLoadinProfile && !profileError && (
         <>
           <Box
             as="section"
@@ -147,12 +165,12 @@ const ProfileView = (): JSX.Element => {
                 >
                   <IconButton as={ActionDialog.Trigger}>
                     <Avatar
-                      isLoading={uploadingPhoto}
+                      isLoading={updatingPhoto}
                       loadingMessage="uploading..."
                       css={{ wh: '77px', '@sm': { wh: '150px' } }}
-                      src={userDetail.data?.photoLink || ''}
+                      src={profile?.photoLink ?? ''}
                       fallback="u"
-                      alt={userDetail.data?.fullName ?? ''}
+                      alt={profile?.fullName ?? ''}
                     />
                   </IconButton>
                   <FileInput
@@ -171,9 +189,9 @@ const ProfileView = (): JSX.Element => {
               ) : (
                 <Avatar
                   css={{ wh: '77px', '@sm': { wh: '150px' } }}
-                  src={userDetail.data?.photoLink || ''}
+                  src={profile?.photoLink || ''}
                   fallback="u"
-                  alt={userDetail.data?.fullName ?? ''}
+                  alt={profile?.fullName ?? ''}
                 />
               )}
             </Box>
@@ -202,7 +220,7 @@ const ProfileView = (): JSX.Element => {
                   as="h2"
                   css={{ fontSize: '$5', fontWeight: 300, mb: '1rem', '@sm': { mb: '0' } }}
                 >
-                  {userDetail.data?.username}
+                  {profile?.username}
                 </Text>
 
                 {isOwner && (
@@ -262,10 +280,10 @@ const ProfileView = (): JSX.Element => {
                 }}
               >
                 <Text as="div" bold>
-                  {userDetail.data?.fullName}
+                  {profile?.fullName}
                 </Text>
-                <Text as="p">{userDetail.data?.bio}</Text>
-                <Link as="a" color="primary" href={userDetail.data?.website} target="_blank">
+                <Text as="p">{profile?.bio}</Text>
+                <Link as="a" color="primary" href={profile?.website ?? ''} target="_blank">
                   website
                 </Link>
               </Box>
@@ -282,10 +300,10 @@ const ProfileView = (): JSX.Element => {
             }}
           >
             <Text as="div" bold>
-              {userDetail.data?.fullName}
+              {profile?.fullName}
             </Text>
-            <Text as="p">{userDetail.data?.bio}</Text>
-            <Link as="a" color="primary" href={userDetail.data?.website} target="_blank">
+            <Text as="p">{profile?.bio}</Text>
+            <Link as="a" color="primary" href={profile?.website ?? ''} target="_blank">
               website
             </Link>
           </Box>
@@ -329,11 +347,11 @@ const ProfileView = (): JSX.Element => {
         </Box>
       </Box>
 
-      {error && !isLoading && <Text css={{ color: '$dangerSolid' }}>{error}</Text>}
+      {postsError && !isLoadinPosts && <Text css={{ color: '$dangerSolid' }}>{postsError}</Text>}
 
-      {isLoading && <Text>Loading</Text>}
+      {isLoadinPosts && <Text>Loading</Text>}
 
-      {!userDetail.isLoading && !userDetail.error && (
+      {!isLoadinPosts && !postsError && (
         <>
           <Box css={{ display: 'none', '@md': { display: 'initial' } }}>
             <Box

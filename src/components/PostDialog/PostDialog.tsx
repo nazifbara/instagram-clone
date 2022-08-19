@@ -18,7 +18,7 @@ import { Post } from '../../types'
 import { Profile } from '../../models'
 
 type ContentProps = {
-  profile?: Profile
+  profile: Profile | null
   css?: CSSProperties
   isOwner: boolean
   post: Post
@@ -99,7 +99,7 @@ const ImgBox = ({ imgSrc }: { imgSrc: string }): JSX.Element => (
 )
 
 type CaptionBoxProps = {
-  profile?: Profile
+  profile: Profile | null
   isOwner: boolean
   post: Post
   handlePostDelete: (id: string) => () => void

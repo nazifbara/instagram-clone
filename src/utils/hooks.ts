@@ -5,8 +5,8 @@ import { useSelector, useDispatch } from 'react-redux'
 
 import { Client } from './client'
 import { Profile } from '../models'
-import { getUser } from '../selectors'
-import { searchUser } from '../slices/user'
+import { getSearchProfile } from '../selectors'
+import { searchProfile } from '../slices/searchProfile'
 
 export const useProfileByUsername = (username?: string) => {
   // ===========================================================================
@@ -33,9 +33,7 @@ export const useSearch = () => {
   // Selectors
   // ===========================================================================
 
-  const {
-    searchResult: { data: result, isLoading, error },
-  } = useSelector(getUser)
+  const { data: result, isLoading, error } = useSelector(getSearchProfile)
 
   // ===========================================================================
   // State
@@ -51,7 +49,7 @@ export const useSearch = () => {
 
   const dispatch = useDispatch()
 
-  const _searchUser = (username: string) => dispatch(searchUser(username))
+  const _searchUser = (username: string) => dispatch(searchProfile(username))
 
   // ===========================================================================
   // Hooks

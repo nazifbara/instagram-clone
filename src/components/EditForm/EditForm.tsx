@@ -1,27 +1,20 @@
-import { useCallback, useEffect, useState, ChangeEventHandler } from 'react'
+import { ChangeEventHandler } from 'react'
 import { Formik, Form, Field } from 'formik'
 import { useSelector, useDispatch } from 'react-redux'
 
 import { styled } from '../../stitches.config'
-import { Client } from '../../utils/client'
 import { TextInput, TextArea, Text, Button, Box, Avatar, FileInput } from '..'
-import { getAuth, getUser } from '../../selectors'
-import { getUserDetail, uploadProfilePhoto } from '../../slices/user'
+import { getAuth, getProfile } from '../../selectors'
+import { updateProfilePhoto, updateInfo } from '../../slices/profile'
+import { ProfileUpdates } from '../../types'
 
 export const EditForm = (): JSX.Element => {
-  // ===========================================================================
-  // State
-  // ===========================================================================
-
-  const [isUpdating, setIsUpdating] = useState(false)
-  const [error, setError] = useState('')
-
   // ===========================================================================
   // Selectors
   // ===========================================================================
 
   const { currentUser } = useSelector(getAuth)
-  const { userDetail, uploadingPhoto } = useSelector(getUser)
+  const { currentProfile, updatingPhoto, updatingInfo, error } = useSelector(getProfile)
 
   // ===========================================================================
   // Dispatch
@@ -29,22 +22,10 @@ export const EditForm = (): JSX.Element => {
 
   const dispatch = useDispatch()
 
-  const _uploadProfilePhoto = (photo: File, username: string) =>
-    dispatch(uploadProfilePhoto({ photo, username }))
-  const _getUserDetail = useCallback(
-    (username: string) => dispatch(getUserDetail(username)),
-    [dispatch]
-  )
-
-  // ===========================================================================
-  // Hooks
-  // ===========================================================================
-
-  useEffect(() => {
-    if (currentUser?.username) {
-      _getUserDetail(currentUser.username)
-    }
-  }, [_getUserDetail, currentUser])
+  const _updateInfo = (username: string, updates: ProfileUpdates) =>
+    dispatch(updateInfo({ username, updates }))
+  const _updateProfilePhoto = (photo: File, username: string) =>
+    dispatch(updateProfilePhoto({ photo, username }))
 
   // ===========================================================================
   // Handlers
@@ -52,32 +33,21 @@ export const EditForm = (): JSX.Element => {
 
   const handlePhotoSelect: ChangeEventHandler<HTMLInputElement> = (e) => {
     if (e.target.files && currentUser?.username) {
-      _uploadProfilePhoto(e.target.files[0], currentUser.username)
+      _updateProfilePhoto(e.target.files[0], currentUser.username)
     }
   }
 
   return (
     <>
-      {userDetail.data ? (
+      {currentProfile ? (
         <Formik
           initialValues={{
-            fullName: userDetail.data.fullName,
-            bio: userDetail.data.bio,
-            website: userDetail.data.website,
+            fullName: currentProfile.fullName,
+            bio: currentProfile.bio,
+            website: currentProfile.website,
           }}
           onSubmit={async (values) => {
-            setIsUpdating(true)
-            setError('')
-
-            if (userDetail.data) {
-              try {
-                await Client.updateProfile(userDetail.data.username, values)
-              } catch (error: any) {
-                setError(error.message)
-              }
-            }
-
-            setIsUpdating(false)
+            _updateInfo(currentProfile.username, values)
           }}
         >
           {() => (
@@ -107,9 +77,9 @@ export const EditForm = (): JSX.Element => {
                 <FormField
                   avatar={
                     <Avatar
-                      isLoading={uploadingPhoto}
+                      isLoading={updatingPhoto}
                       loadingMessage="..."
-                      src={userDetail.data?.photoLink || ''}
+                      src={currentProfile?.photoLink || ''}
                       alt="user profile image"
                     />
                   }
@@ -118,7 +88,7 @@ export const EditForm = (): JSX.Element => {
                       css={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}
                     >
                       <Text css={{ mb: '0.5rem', fontSize: '$4 !important' }} bold>
-                        {userDetail.data?.username}
+                        {currentProfile.username}
                       </Text>
                       <Button
                         as="label"
@@ -157,7 +127,9 @@ export const EditForm = (): JSX.Element => {
                 />
 
                 <FormField
-                  input={<Button type="contained">{isUpdating ? 'Submitting..' : 'Submit'}</Button>}
+                  input={
+                    <Button type="contained">{updatingInfo ? 'Submitting..' : 'Submit'}</Button>
+                  }
                 />
 
                 <FormField input={<span>{error}</span>} />

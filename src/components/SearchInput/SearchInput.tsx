@@ -2,11 +2,11 @@ import { Cross1Icon, MagnifyingGlassIcon } from '@radix-ui/react-icons'
 import { forwardRef, ForwardedRef } from 'react'
 import { GetItemPropsOptions } from 'downshift'
 
-import { User } from '../../types'
 import { useSearch } from '../../utils/hooks'
 import { Text, Box, Avatar } from '../'
 import { Popover } from '../'
 import { styled } from '../../stitches.config'
+import { Profile } from '../../models'
 
 export const SearchInput = (): JSX.Element => {
   // ===========================================================================
@@ -188,7 +188,7 @@ export const ResultItem = forwardRef(
 
 type ResultItemProps = {
   highlighted: boolean
-  item: User
+  item: Profile
   itemProps: GetItemPropsOptions<HTMLLIElement>
 }
 

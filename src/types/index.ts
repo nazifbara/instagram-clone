@@ -1,5 +1,5 @@
 import { RouteProps } from 'react-router-dom'
-import { Post as PostModel } from '../models'
+import { Post as PostModel, Profile } from '../models'
 
 //==============================================================================
 // Client
@@ -16,10 +16,25 @@ export interface APILoginParam extends LoginFormState {}
 // State
 //==============================================================================
 
+export interface SearchProfileState {
+  data: Profile[] | null
+  isLoading: boolean
+  error: string | null
+}
+
+export interface ProfileState {
+  otherProfile: Profile | null
+  currentProfile: Profile | null
+  isLoading: boolean
+  updatingPhoto: boolean
+  updatingInfo: boolean
+  error: string | null
+}
+
 export interface ProfileUpdates {
-  fullName?: string
-  bio?: string
-  website?: string
+  fullName?: string | null
+  bio?: string | null
+  website?: string | null
 }
 
 export interface UserState {
@@ -70,7 +85,8 @@ export interface AuthState {
 }
 
 export interface RootState {
-  userState: UserState
+  searchProfileState: SearchProfileState
+  profileState: ProfileState
   postState: PostState
   authState: AuthState
 }

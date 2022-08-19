@@ -9,17 +9,20 @@ import {
   NewPost,
   APIGetPostsParam,
   ProfilePhoto,
+  ProfileUpdates,
 } from '../types'
+import { searchProfile, searchProfileSuccess, searchProfileError } from '../slices/searchProfile'
 import {
-  uploadProfilePhoto,
-  uploadProfilePhotoSuccess,
-  searchUser,
-  searchUserSuccess,
-  searchUserError,
-  getUserDetail,
-  getUserDetailSuccess,
-  getUserDetailError,
-} from '../slices/user'
+  updateInfo,
+  updateInfoSuccess,
+  updateInfoError,
+  loadProfile,
+  loadProfileSuccess,
+  loadProfileError,
+  setCurrentUserProfile,
+  updateProfilePhoto,
+  updateProfilePhotoSuccess,
+} from '../slices/profile'
 import {
   toggleLike,
   getUserPosts,
@@ -48,12 +51,22 @@ import {
   checkAuthError,
 } from '../slices/auth'
 
-export function* _uploadProfilePhoto({
+export function* _updateInfo({
+  payload: { username, updates },
+}: PayloadAction<{ username: string; updates: ProfileUpdates }>) {
+  try {
+    yield put(updateInfoSuccess(yield Client.updateProfile(username, updates)))
+  } catch (error: any) {
+    yield put(updateInfoError(error.message))
+  }
+}
+
+export function* _updateProfilePhoto({
   payload: { photo, username },
 }: PayloadAction<{ photo: File; username: string }>) {
   try {
     const result: ProfilePhoto = yield Client.uploadProfilePhoto(photo, username)
-    yield put(uploadProfilePhotoSuccess(result))
+    yield put(updateProfilePhotoSuccess(result))
   } catch (error) {
     throw error
   }
@@ -67,11 +80,11 @@ export function* _toggleLike({
   } catch (error) {}
 }
 
-export function* _searchUser({ payload: username }: PayloadAction<string>) {
+export function* _searchProfile({ payload: username }: PayloadAction<string>) {
   try {
-    yield put(searchUserSuccess(yield Client.searchUser(username)))
+    yield put(searchProfileSuccess(yield Client.searchUser(username)))
   } catch (error: any) {
-    yield put(searchUserError(error.message))
+    yield put(searchProfileError(error.message))
   }
 }
 
@@ -83,11 +96,11 @@ function* _getUserPosts({ payload }: PayloadAction<string>) {
   }
 }
 
-function* _getUserDetail({ payload }: PayloadAction<string>) {
+function* _loadProfile({ payload }: PayloadAction<string>) {
   try {
-    yield put(getUserDetailSuccess(yield Client.getUserDetail(payload)))
+    yield put(loadProfileSuccess(yield Client.getUserDetail(payload)))
   } catch (error: any) {
-    yield put(getUserDetailError(error.message))
+    yield put(loadProfileError(error.message))
   }
 }
 
@@ -125,6 +138,7 @@ export function* createNewPost({ payload }: PayloadAction<NewPost>) {
 function* getCurrentUser() {
   try {
     const user: User = yield Client.getCurrentUser()
+    yield put(setCurrentUserProfile(yield Client.getProfileByUsername(user.username)))
     yield put(checkAuthSuccess(user))
   } catch (error) {
     yield put(checkAuthError())
@@ -151,11 +165,12 @@ export function* loginUser({ payload }: PayloadAction<LoginFormState>) {
 
 export function* rootSaga() {
   yield all([
-    takeLatest(uploadProfilePhoto.type, _uploadProfilePhoto),
+    takeLatest(updateInfo.type, _updateInfo),
+    takeLatest(updateProfilePhoto.type, _updateProfilePhoto),
     takeLatest(toggleLike.type, _toggleLike),
-    takeLatest(searchUser.type, _searchUser),
+    takeLatest(searchProfile.type, _searchProfile),
     takeLatest(getUserPosts.type, _getUserPosts),
-    takeLatest(getUserDetail.type, _getUserDetail),
+    takeLatest(loadProfile.type, _loadProfile),
     takeLatest(logout.type, _logout),
     takeLatest(deletePost.type, _deletePost),
     takeLatest(loadPosts.type, _loadPosts),

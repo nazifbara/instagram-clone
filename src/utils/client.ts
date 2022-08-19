@@ -32,7 +32,7 @@ export const updateProfile = async (username: string, updates: ProfileUpdates) =
   try {
     const profile = await getUserDetail(username)
     if (profile) {
-      await DataStore.save(
+      return await DataStore.save(
         Profile.copyOf(profile, (updated) => {
           updated.bio = updates.bio
           updated.website = updates.website
@@ -40,6 +40,7 @@ export const updateProfile = async (username: string, updates: ProfileUpdates) =
         })
       )
     }
+    return profile
   } catch (error) {
     console.error({ updateProfileError: error })
     throw new Error(getErrorMessage(error))
