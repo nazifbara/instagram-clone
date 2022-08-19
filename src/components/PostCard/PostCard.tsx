@@ -1,14 +1,13 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { DotsHorizontalIcon } from '@radix-ui/react-icons'
 import { useSelector, useDispatch } from 'react-redux'
 
-import { Client } from '../../utils/client'
+import { useProfileByUsername } from '../../utils/hooks'
 import { deletePost } from '../../slices/post'
 import { getAuth } from '../../selectors'
 import { Link, Box, Avatar, Text, ActionDialog, IconButton, PostActionBar } from '..'
 import { styled } from '../../stitches.config'
 import { Post } from '../../types'
-import { Profile } from '../../models'
 
 type PostCardProps = {
   post: Post
@@ -27,7 +26,6 @@ export const PostCard = ({ post, media, ...otherProps }: PostCardProps): JSX.Ele
   // ===========================================================================
 
   const [more, setMore] = useState(false)
-  const [profile, setProfile] = useState<Profile | undefined>(undefined)
   const isOwner = currentUser?.username === post.owner
   const isShortCaption = post.caption?.length && post.caption?.length <= 50
 
@@ -42,11 +40,7 @@ export const PostCard = ({ post, media, ...otherProps }: PostCardProps): JSX.Ele
   // Hooks
   // ===========================================================================
 
-  useEffect(() => {
-    if (post.owner) {
-      Client.getProfileByUsername(post.owner).then(setProfile)
-    }
-  }, [post.owner])
+  const profile = useProfileByUsername(post.owner)
 
   // ===========================================================================
   // Handlers
