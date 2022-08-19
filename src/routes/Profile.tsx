@@ -2,6 +2,7 @@ import { MouseEventHandler, useState, useEffect, useCallback, ChangeEventHandler
 import { useSelector, useDispatch } from 'react-redux'
 import { useParams } from 'react-router-dom'
 
+import { useProfileByUsername } from '../utils/hooks'
 import { getAuth, getPost, getUser } from '../selectors'
 import { ViewRoute } from '../types'
 import {
@@ -62,6 +63,8 @@ const ProfileView = (): JSX.Element => {
   // ===========================================================================
 
   const { username } = useParams()
+
+  const profile = useProfileByUsername(username)
 
   useEffect(() => {
     if (username) {
@@ -392,6 +395,7 @@ const ProfileView = (): JSX.Element => {
             >
               {currentPostIndex !== null && (
                 <PostDialog.Content
+                  profile={profile}
                   isOwner={isOwner}
                   currentImgSrc={postToMediaMap[posts[currentPostIndex].id]}
                   post={posts[currentPostIndex]}

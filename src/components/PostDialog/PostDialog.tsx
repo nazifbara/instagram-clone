@@ -15,9 +15,10 @@ import {
   Dialog,
 } from '..'
 import { Post } from '../../types'
-import { getAvatarURL } from '../../utils/helpers'
+import { Profile } from '../../models'
 
 type ContentProps = {
+  profile?: Profile
   css?: CSSProperties
   isOwner: boolean
   post: Post
@@ -33,6 +34,7 @@ export const Content = ({
   css,
   handlePostDelete,
   isOwner,
+  profile,
   post,
   currentImgSrc,
   currentIndex,
@@ -70,7 +72,12 @@ export const Content = ({
         >
           <ImgBox imgSrc={currentImgSrc} />
           <Separator orientation="vertical" />
-          <CaptionBox post={post} isOwner={isOwner} handlePostDelete={handlePostDelete} />
+          <CaptionBox
+            profile={profile}
+            post={post}
+            isOwner={isOwner}
+            handlePostDelete={handlePostDelete}
+          />
         </Box>
       </Dialog.Content>
     </Dialog.Portal>
@@ -92,19 +99,20 @@ const ImgBox = ({ imgSrc }: { imgSrc: string }): JSX.Element => (
 )
 
 type CaptionBoxProps = {
+  profile?: Profile
   isOwner: boolean
   post: Post
   handlePostDelete: (id: string) => () => void
 }
 
-const CaptionBox = ({ isOwner, handlePostDelete, post }: CaptionBoxProps): JSX.Element => (
+const CaptionBox = ({ isOwner, handlePostDelete, post, profile }: CaptionBoxProps): JSX.Element => (
   <Box css={{ width: '38%' }}>
     <Box css={{ display: 'flex', justifyContent: 'flex-end' }}></Box>
     <Box css={{ display: 'flex', alignItems: 'center', mx: '1rem', height: '3.75rem' }}>
       <Avatar
-        src={getAvatarURL(post.owner)}
+        src={profile?.photoLink ?? ''}
         fallback="u"
-        alt={post.owner || ''}
+        alt={profile?.fullName ?? ''}
         size="1.75rem"
         css={{ marginRight: '0.75rem' }}
       />
@@ -133,9 +141,9 @@ const CaptionBox = ({ isOwner, handlePostDelete, post }: CaptionBoxProps): JSX.E
           <Box css={{ width: '2rem', mr: '.5rem' }}>
             <Avatar
               size="1.75rem"
-              src={getAvatarURL(post.owner)}
+              src={profile?.photoLink ?? ''}
               fallback="u"
-              alt={post.owner || ''}
+              alt={profile?.fullName ?? ''}
             />
           </Box>
 
