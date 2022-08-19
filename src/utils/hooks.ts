@@ -1,10 +1,32 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { useCombobox } from 'downshift'
 import { useNavigate } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 
+import { Client } from './client'
+import { Profile } from '../models'
 import { getUser } from '../selectors'
 import { searchUser } from '../slices/user'
+
+export const useProfileByUsername = (username?: string) => {
+  // ===========================================================================
+  // State
+  // ===========================================================================
+
+  const [profile, setProfile] = useState<Profile | undefined>(undefined)
+
+  // ===========================================================================
+  // Hooks
+  // ===========================================================================
+
+  useEffect(() => {
+    if (username) {
+      Client.getProfileByUsername(username).then(setProfile)
+    }
+  }, [username])
+
+  return profile
+}
 
 export const useSearch = () => {
   // ===========================================================================
