@@ -1,13 +1,14 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { DotsHorizontalIcon } from '@radix-ui/react-icons'
 import { useSelector, useDispatch } from 'react-redux'
 
-import { getAvatarURL } from '../../utils/helpers'
+import { Client } from '../../utils/client'
 import { deletePost } from '../../slices/post'
 import { getAuth } from '../../selectors'
 import { Link, Box, Avatar, Text, ActionDialog, IconButton, PostActionBar } from '..'
 import { styled } from '../../stitches.config'
 import { Post } from '../../types'
+import { Profile } from '../../models'
 
 type PostCardProps = {
   post: Post
@@ -26,6 +27,7 @@ export const PostCard = ({ post, media, ...otherProps }: PostCardProps): JSX.Ele
   // ===========================================================================
 
   const [more, setMore] = useState(false)
+  const [profile, setProfile] = useState<Profile | undefined>(undefined)
   const isOwner = currentUser?.username === post.owner
   const isShortCaption = post.caption?.length && post.caption?.length <= 50
 
@@ -35,6 +37,16 @@ export const PostCard = ({ post, media, ...otherProps }: PostCardProps): JSX.Ele
 
   const dispatch = useDispatch()
   const _deletePost = (postID: string) => () => dispatch(deletePost(postID))
+
+  // ===========================================================================
+  // Hooks
+  // ===========================================================================
+
+  useEffect(() => {
+    if (post.owner) {
+      Client.getProfileByUsername(post.owner).then(setProfile)
+    }
+  }, [post.owner])
 
   // ===========================================================================
   // Handlers
@@ -47,7 +59,7 @@ export const PostCard = ({ post, media, ...otherProps }: PostCardProps): JSX.Ele
       <Box css={{ p: '0.875rem 1rem', display: 'flex', alignItems: 'center' }}>
         <Avatar
           size="2rem"
-          src={getAvatarURL(post.owner)}
+          src={profile?.photoLink || ''}
           fallback="u"
           alt={post.owner || 'some user'}
         />

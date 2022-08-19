@@ -19,6 +19,15 @@ import { getErrorMessage, createMedia, updateLikesMap } from './helpers'
 // User
 //==============================================================================
 
+export const getProfileByUsername = async (username: string): Promise<Profile | undefined> => {
+  try {
+    return (await DataStore.query(Profile, (p) => p.username('eq', username)))[0]
+  } catch (error) {
+    console.error({ getProfileByUsername: error })
+    throw getErrorMessage(error)
+  }
+}
+
 export const updateProfile = async (username: string, updates: ProfileUpdates) => {
   try {
     const profile = await getUserDetail(username)
@@ -281,6 +290,7 @@ export const logout = async () => {
 //==============================================================================
 
 export const Client = {
+  getProfileByUsername,
   updateProfile,
   uploadProfilePhoto,
   login,
