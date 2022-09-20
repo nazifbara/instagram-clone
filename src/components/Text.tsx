@@ -1,13 +1,13 @@
 import { styled } from '../stitches.config'
 
 export const Text = styled('span', {
-  color: '$textBase',
+  color: '$accentTextContrast',
   lineHeight: '1.125rem',
   wordWrap: 'break-word',
   variants: {
     gray: {
       true: {
-        color: '$textGray',
+        color: '$accentText',
       },
     },
     bold: {

@@ -8,7 +8,7 @@ const StyledOption = styled(DialogPrimitive.Close, {
   fontSize: '$2',
   color: '$textBase',
   border: 'none',
-  borderBottom: '1px solid $grayBorder',
+  borderBottom: '1px solid $accentBorder',
   backgroundColor: 'transparent',
   p: '1rem',
   width: '100%',
@@ -27,11 +27,11 @@ const StyledOption = styled(DialogPrimitive.Close, {
     kind: {
       danger: {
         fontWeight: 700,
-        color: '$dangerSolid',
+        color: '$dangerText',
       },
       primary: {
         fontWeight: 700,
-        color: '$accentText',
+        color: '$primaryText',
       },
     },
   },

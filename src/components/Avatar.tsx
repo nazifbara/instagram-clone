@@ -56,7 +56,7 @@ const StyledAvatar = styled(AvatarPrimitive.Root, {
   width: 44,
   height: 44,
   borderRadius: '100%',
-  backgroundColor: '$gray12',
+  backgroundColor: '$primaryBase',
 })
 
 const StyledImage = styled(AvatarPrimitive.Image, {
@@ -72,8 +72,8 @@ const StyledFallback = styled(AvatarPrimitive.Fallback, {
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  backgroundColor: 'accentTextContrast',
-  color: '$accentText',
+  backgroundColor: '$primaryBase',
+  color: '$primaryTextContrast',
   fontSize: 15,
   lineHeight: 1,
   fontWeight: 500,

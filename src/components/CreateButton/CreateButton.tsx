@@ -190,12 +190,7 @@ export const CreateButton = (): JSX.Element => {
               >
                 <MediaBox media={media} />
 
-                <Separator
-                  css={{ display: 'none', '@md': { display: 'initial' } }}
-                  orientation="vertical"
-                />
-
-                <Box css={{ height: '50%' }}>
+                <Box css={{ height: '50%', width: '40%' }}>
                   <Box
                     css={{ display: 'flex', alignItems: 'center', mx: '1rem', height: '3.75rem' }}
                   >
@@ -242,7 +237,7 @@ const MediaBox: React.FC<{ media: File }> = memo(({ media }) => (
       width: '100%',
 
       '@md': {
-        width: '62%',
+        width: '60%',
         height: 'calc(100% - 2.625rem)',
       },
     }}

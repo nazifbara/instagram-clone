@@ -119,6 +119,6 @@ const StyledPost = styled('article', {
   display: 'flex',
   flexDirection: 'column',
   borderRadius: '3px',
-  border: '1px solid $grayBorder',
+  border: '1px solid $accentBorder',
   mb: '1.5rem',
 })

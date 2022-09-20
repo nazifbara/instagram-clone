@@ -4,7 +4,7 @@ import { styled } from '../stitches.config'
 
 const Header = styled('header', {
   backgroundColor: '$accentBg',
-  borderBottom: '1px solid $grayBorder',
+  borderBottom: '1px solid $accentBorder',
   position: 'fixed',
   zIndex: 1,
   width: '100%',

@@ -37,10 +37,10 @@ const globalStyles = globalCss({
     fontFamily: '-apple-system,Roboto,sans-serif',
     fontSize: '$2',
     backgroundColor: '$accentBase',
-    color: '$textBase',
+    color: '$accentTextContrast',
   },
   '::placeholder': {
-    color: '$grayPlaceholderText',
+    color: '$accentPlaceholderText',
   },
   '*, *::before, *::after': {
     boxSizing: 'border-box',

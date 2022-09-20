@@ -6,10 +6,10 @@ export const TextArea = styled('textarea', {
   backgroundColor: '$accentBase',
   color: '$textBase',
   p: '9px 7px',
-  border: '1px solid $grayBorder',
+  border: '1px solid $accentBorder',
   borderRadius: '3px',
   '&:focus': {
-    outline: '2px solid $accentFocus',
+    outline: '2px solid $primaryFocus',
     border: 'none',
   },
 })
