@@ -24,7 +24,7 @@ const authSlice = createSlice({
       state.checking = false
     },
 
-    logoutError: (state) => {
+    logoutError: (state, _action: PayloadAction<string>) => {
       state.checking = false
     },
 

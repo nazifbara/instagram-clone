@@ -1,6 +1,7 @@
 import { all, put, takeLatest } from 'redux-saga/effects'
 import { PayloadAction } from '@reduxjs/toolkit'
 
+import { sagaTryCatch } from '../utils/helpers'
 import { Client } from '../utils/client'
 import { Profile } from '../models'
 import {
@@ -9,7 +10,6 @@ import {
   User,
   NewPost,
   APIGetPostsParam,
-  ProfilePhoto,
   ProfileUpdates,
 } from '../types'
 import { searchProfile, searchProfileSuccess, searchProfileError } from '../slices/searchProfile'
@@ -52,91 +52,61 @@ import {
   checkAuthError,
 } from '../slices/auth'
 
-export function* _updateInfo({
-  payload: { username, updates },
-}: PayloadAction<{ username: string; updates: ProfileUpdates }>) {
-  try {
-    const profile: Profile = yield Client.updateProfile(username, updates)
-    yield put(updateInfoSuccess(profile))
-  } catch (error: any) {
-    yield put(updateInfoError(error.message))
-  }
-}
+export const _updateInfo = sagaTryCatch(
+  async ({
+    payload: { username, updates },
+  }: PayloadAction<{ username: string; updates: ProfileUpdates }>) =>
+    await Client.updateProfile(username, updates),
+  updateInfoSuccess,
+  updateInfoError
+)
 
-export function* _updateProfilePhoto({
-  payload: { photo, username },
-}: PayloadAction<{ photo: File; username: string }>) {
-  try {
-    const result: ProfilePhoto = yield Client.uploadProfilePhoto(photo, username)
-    yield put(updateProfilePhotoSuccess(result))
-  } catch (error) {
-    throw error
-  }
-}
+export const _updateProfilePhoto = sagaTryCatch(
+  async ({ payload: { photo, username } }: PayloadAction<{ photo: File; username: string }>) =>
+    await Client.uploadProfilePhoto(photo, username),
+  updateProfilePhotoSuccess
+)
 
-export function* _toggleLike({
-  payload: { postID, username },
-}: PayloadAction<{ postID: string; username: string }>) {
-  try {
-    yield Client.toggleLike(postID, username)
-  } catch (error) {}
-}
+export const _toggleLike = sagaTryCatch(
+  async ({ payload: { postID, username } }: PayloadAction<{ postID: string; username: string }>) =>
+    await Client.toggleLike(postID, username)
+)
 
-export function* _searchProfile({ payload: username }: PayloadAction<string>) {
-  try {
-    yield put(searchProfileSuccess(yield Client.searchUser(username)))
-  } catch (error: any) {
-    yield put(searchProfileError(error.message))
-  }
-}
+export const _searchProfile = sagaTryCatch(
+  async ({ payload: username }: PayloadAction<string>) => await Client.searchUser(username),
+  searchProfileSuccess,
+  searchProfileError
+)
 
-function* _getUserPosts({ payload }: PayloadAction<string>) {
-  try {
-    yield put(getUserPostsSuccess(yield Client.getUserPosts(payload)))
-  } catch (error: any) {
-    yield put(getUserPostsError(error.message))
-  }
-}
+const _getUserPosts = sagaTryCatch(
+  async ({ payload }: PayloadAction<string>) => await Client.getUserPosts(payload),
+  getUserPostsSuccess,
+  getUserPostsError
+)
 
-function* _loadProfile({ payload }: PayloadAction<string>) {
-  try {
-    const profile: Profile = yield Client.getUserDetail(payload)
-    yield put(loadProfileSuccess(profile))
-  } catch (error: any) {
-    yield put(loadProfileError(error.message))
-  }
-}
+const _loadProfile = sagaTryCatch(
+  async ({ payload }: PayloadAction<string>) => await Client.getUserDetail(payload),
+  loadProfileSuccess,
+  loadProfileError
+)
 
-function* _logout() {
-  try {
-    yield Client.logout()
-    yield put(logoutSuccess())
-  } catch (error) {
-    yield put(logoutError())
-  }
-}
+const _logout = sagaTryCatch(async () => await Client.logout(), logoutSuccess, logoutError)
 
-export function* _deletePost({ payload }: PayloadAction<string>) {
-  try {
-    yield Client.deletePost(payload)
-  } catch (error) {}
-}
+export const _deletePost = sagaTryCatch(
+  async ({ payload }: PayloadAction<string>) => await Client.deletePost(payload)
+)
 
-export function* _loadPosts({ payload }: PayloadAction<APIGetPostsParam>) {
-  try {
-    yield put(loadPostsSuccess(yield Client.getPosts(payload)))
-  } catch (error: any) {
-    yield put(loadPostsError(error.message))
-  }
-}
+export const _loadPosts = sagaTryCatch(
+  async ({ payload }: PayloadAction<APIGetPostsParam>) => await Client.getPosts(payload),
+  loadPostsSuccess,
+  loadPostsError
+)
 
-export function* createNewPost({ payload }: PayloadAction<NewPost>) {
-  try {
-    yield put(addPostSuccess(yield Client.createPost(payload)))
-  } catch (error: any) {
-    yield put(addPostError(error.message))
-  }
-}
+export const createNewPost = sagaTryCatch(
+  async ({ payload }: PayloadAction<NewPost>) => await Client.createPost(payload),
+  addPostSuccess,
+  addPostError
+)
 
 function* getCurrentUser() {
   try {
@@ -149,23 +119,17 @@ function* getCurrentUser() {
   }
 }
 
-export function* signUpUser({ payload }: PayloadAction<SignUpFormState>) {
-  try {
-    yield Client.signUp(payload)
-    yield put(signUpSuccess())
-  } catch (error: any) {
-    yield put(signUpError(error.message))
-  }
-}
+export const signUpUser = sagaTryCatch(
+  async ({ payload }: PayloadAction<SignUpFormState>) => await Client.signUp(payload),
+  signUpSuccess,
+  signUpError
+)
 
-export function* loginUser({ payload }: PayloadAction<LoginFormState>) {
-  try {
-    const user: User = yield Client.login(payload)
-    yield put(loginSuccess(user))
-  } catch (error: any) {
-    yield put(loginError(error.message))
-  }
-}
+export const loginUser = sagaTryCatch(
+  async ({ payload }: PayloadAction<LoginFormState>) => await Client.login(payload),
+  loginSuccess,
+  loginError
+)
 
 export function* rootSaga() {
   yield all([

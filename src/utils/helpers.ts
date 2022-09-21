@@ -1,7 +1,43 @@
+import { ActionCreatorWithPayload, PayloadAction } from '@reduxjs/toolkit'
 import { DataStore } from 'aws-amplify'
+import { put, PutEffect } from 'redux-saga/effects'
 
 import { Media as MediaModel } from '../models'
 import { CreateMediaInput } from '../types'
+
+type TryCatchSagaFn<P, R> = (action: PayloadAction<P>) => Generator<
+  | PutEffect<{
+      payload: string
+      type: string
+    }>
+  | Promise<R>
+  | PutEffect<{
+      payload: R
+      type: string
+    }>,
+  void,
+  unknown
+>
+
+export const sagaTryCatch = <P, R>(
+  fn: (action: PayloadAction<P>) => Promise<R>,
+  tryAction?: ActionCreatorWithPayload<R, string>,
+  catchAction?: ActionCreatorWithPayload<string, string>
+): TryCatchSagaFn<P, R> =>
+  function* (action) {
+    try {
+      let result = yield fn(action)
+
+      if (tryAction) {
+        const r = result as R
+        yield put(tryAction(r))
+      }
+    } catch (error: any) {
+      if (catchAction) {
+        yield put(catchAction(error))
+      }
+    }
+  }
 
 export const getAvatarURL = (username: string = 'random') =>
   `https://avatars.dicebear.com/api/avataaars/${username}.svg`
