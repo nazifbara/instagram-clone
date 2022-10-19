@@ -1,37 +1,19 @@
-import { useEffect, useCallback, useState, useRef } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import { useCallback, useRef } from 'react'
+import { useInfiniteQuery } from 'react-query'
 
 import { Container, Text, PostList } from '../'
-import { getPost } from '../../selectors'
-import { loadPosts } from '../../slices/post'
+import { getPosts } from '../../utils/client'
 
 export const Feed = (): JSX.Element => {
-  // ===========================================================================
-  // States
-  // ===========================================================================
-
-  const [page, setPage] = useState(0)
-
-  // ===========================================================================
-  // Selectors
-  // ===========================================================================
-
-  const { posts, hasNextPage, postToMediaMap, isLoading, error } = useSelector(getPost)
-
-  // ===========================================================================
-  // Dispatch
-  // ===========================================================================
-
-  const dispatch = useDispatch()
-  const _loadPosts = useCallback(() => dispatch(loadPosts({ page })), [dispatch, page])
-
-  // ===========================================================================
-  // Hooks
-  // ===========================================================================
-
-  useEffect(() => {
-    _loadPosts()
-  }, [_loadPosts])
+  const { data, fetchNextPage, hasNextPage, isLoading, isError } = useInfiniteQuery(
+    ['feed-posts'],
+    ({ pageParam = 0 }) => {
+      return getPosts({ page: pageParam })
+    },
+    {
+      getNextPageParam: (prevPage, pages) => (prevPage.hasNext ? pages.length : undefined),
+    }
+  )
 
   const intObserver = useRef<IntersectionObserver | null>(null)
   const lastPostRef = useCallback(
@@ -42,18 +24,24 @@ export const Feed = (): JSX.Element => {
 
       intObserver.current = new IntersectionObserver((posts) => {
         if (posts[0].isIntersecting && hasNextPage) {
-          setPage((prev) => prev + 1)
+          fetchNextPage()
         }
       })
 
       if (post) intObserver.current.observe(post)
     },
-    [isLoading, hasNextPage]
+    [isLoading, fetchNextPage, hasNextPage]
   )
 
   return (
     <Container>
-      {!error && <PostList ref={lastPostRef} posts={posts} postToMediaMap={postToMediaMap} />}
+      {!isError && (
+        <>
+          {data?.pages.map((p) => (
+            <PostList ref={lastPostRef} posts={p.posts} postToMediaMap={p.postToMediaMap} />
+          ))}
+        </>
+      )}
 
       {isLoading && (
         <Text as="div" css={{ textAlign: 'center' }}>
@@ -61,9 +49,9 @@ export const Feed = (): JSX.Element => {
         </Text>
       )}
 
-      {error && (
+      {isError && (
         <Text as="div" css={{ textAlign: 'center', color: '$dangerSolid' }}>
-          {error}
+          Something went wrong...
         </Text>
       )}
     </Container>

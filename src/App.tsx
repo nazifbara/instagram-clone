@@ -18,7 +18,6 @@ const App = (): JSX.Element => {
   const handleDatastoreReady = useCallback(
     (data: any) => {
       const { event } = data.payload
-      console.log({ data })
 
       if (event === 'ready') {
         _checkAuth()

@@ -157,12 +157,12 @@ export const getPosts = async ({ page = 0 }: APIGetPostsParam) => {
       sort: (s) => s.createdAt(SortDirection.DESCENDING),
     })
 
-    if (posts) {
+    if (posts.length !== 0) {
       let postToMediaMap: PostToMediaMap = await mapPostsToMedias(posts)
-      return { posts: posts, postToMediaMap }
+      return { posts: posts, postToMediaMap, hasNext: true }
     }
 
-    return { posts: [], postToMediaMap: {} }
+    return { posts: [], postToMediaMap: {}, hasNext: false }
   } catch (error) {
     console.error({ clientGetPostsError: error })
     throw new Error(getErrorMessage(error))

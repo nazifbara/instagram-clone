@@ -5,6 +5,7 @@ import { Amplify, AuthModeStrategyType } from 'aws-amplify'
 import { Provider } from 'react-redux'
 import createSagaMiddleware from '@redux-saga/core'
 import { configureStore } from '@reduxjs/toolkit'
+import { QueryClient, QueryClientProvider } from 'react-query'
 
 import App from './App'
 import { rootSaga } from './sagas'
@@ -12,6 +13,8 @@ import rootReducer from './slices'
 import reportWebVitals from './reportWebVitals'
 import { globalCss } from './stitches.config'
 import awsExports from './aws-exports'
+
+const queryClient = new QueryClient()
 
 Amplify.configure({
   ...awsExports,
@@ -57,11 +60,13 @@ const Root = (): JSX.Element => {
   globalStyles()
 
   return (
-    <Provider store={store}>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
-    </Provider>
+    <QueryClientProvider client={queryClient}>
+      <Provider store={store}>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </Provider>
+    </QueryClientProvider>
   )
 }
 
