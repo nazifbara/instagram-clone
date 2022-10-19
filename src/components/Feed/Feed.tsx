@@ -35,7 +35,7 @@ export const Feed = (): JSX.Element => {
 
   const intObserver = useRef<IntersectionObserver | null>(null)
   const lastPostRef = useCallback(
-    (post) => {
+    (post: HTMLLIElement) => {
       if (isLoading) return
 
       if (intObserver.current) intObserver.current.disconnect()
